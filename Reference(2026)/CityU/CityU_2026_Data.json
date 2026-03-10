@@ -16,7 +16,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "38",
     "median_score": "39",
-    "score_formula": "Best 5 Subjects (If a student takes both Mathematics and M1/M2, only one subject will be included)"
+    "score_formula": "Best 5 Subjects (If a student takes both Mathematics and M1/M2, only one subject will be included)",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "· Biology | · Chemistry | · M1/M2 | · Physics | 1: Other elective subjects",
+      "subjects_included": "Best 5 subjects (If a student takes both Mathematics and M1/M2, only one subject will be included)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1300",
@@ -35,7 +43,8 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "-",
     "median_score": "New Programme",
-    "score_formula": "3 core + 2 elective subjects"
+    "score_formula": "3 core + 2 elective subjects",
+    "subject_weights_2025": {}
   },
   {
     "jupas_code": "JS1805",
@@ -54,7 +63,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "37.5",
     "median_score": "38.5",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "",
+      "weight_chinese": "",
+      "weight_maths": "",
+      "weight_electives": "2:",
+      "subjects_included": ""
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1806",
@@ -73,7 +90,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "35",
     "median_score": "35.5",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1.5",
+      "weight_electives": "· Biology | · Chemistry | 1.5: | · Business, Accounting and Financial Studies | · Design and Applied Technology | · Information and Communication Technology",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1807",
@@ -92,7 +117,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "43",
     "median_score": "45.5",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "",
+      "weight_chinese": "",
+      "weight_maths": "",
+      "weight_electives": "· M1/M2 | · Physics | 1: Other elective subjects",
+      "subjects_included": ""
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1000",
@@ -111,7 +144,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "23.5",
     "median_score": "24.5",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1001",
@@ -130,7 +171,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "28",
     "median_score": "29.5",
-    "score_formula": "Best 5 Subjects"
+    "score_formula": "Best 5 Subjects",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1002",
@@ -149,7 +198,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "21.5",
     "median_score": "22",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1005",
@@ -168,7 +225,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "21.5",
     "median_score": "22",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1007",
@@ -187,7 +252,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "23.5",
     "median_score": "24.5",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1.5",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1012",
@@ -206,7 +279,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "22.5",
     "median_score": "23",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1017",
@@ -225,7 +306,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "20.5",
     "median_score": "21",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1018",
@@ -244,7 +333,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "23.5",
     "median_score": "24",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1019",
@@ -263,7 +360,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "21",
     "median_score": "21",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1026",
@@ -282,7 +387,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "21",
     "median_score": "21.5",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1027",
@@ -301,7 +414,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "21",
     "median_score": "21.5",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1052",
@@ -320,7 +441,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "39.5",
     "median_score": "40",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part) and one subject from Biology / Chemistry / Physics) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part) and one subject from Biology / Chemistry / Physics) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2.5",
+      "weight_electives": "· Physics | 2nd Elective | 1.5: | · Biology | · Chemistry",
+      "subjects_included": "Best 5 subjects (include English, Mathematics and one subject from Biology, Chemistry or Physics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1053",
@@ -339,7 +468,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "39.5",
     "median_score": "40",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part) and one subject from Biology / Chemistry / Physics) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part) and one subject from Biology / Chemistry / Physics) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2.5",
+      "weight_electives": "2nd Elective | 2.5: | · Economics | · Business, Accounting and Financial Studies | 1.5: | · Biology | · Chemistry | · Geography | · M1/M2 | · Physics | 1: Other elective subjects",
+      "subjects_included": "Best 5 subjects (include English, Mathematics and one subject from Biology, Chemistry or Physics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1062",
@@ -358,7 +495,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "25",
     "median_score": "29",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "1.5",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1013",
@@ -377,7 +522,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "21.5",
     "median_score": "22",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1014",
@@ -396,7 +549,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "21.5",
     "median_score": "21.5",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1221",
@@ -415,7 +576,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "22",
     "median_score": "23",
-    "score_formula": "Best 5 Subjects"
+    "score_formula": "Best 5 Subjects",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1070",
@@ -434,7 +603,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "30",
     "median_score": "31",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1071",
@@ -453,7 +630,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "27.5",
     "median_score": "27.5",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1072",
@@ -472,7 +657,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "28.5",
     "median_score": "29",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1074",
@@ -491,7 +684,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "27.5",
     "median_score": "28",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1204",
@@ -510,7 +711,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "22",
     "median_score": "23",
-    "score_formula": "Best 5 Subjects"
+    "score_formula": "Best 5 Subjects",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1218",
@@ -529,7 +738,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "20.5",
     "median_score": "20.5",
-    "score_formula": "Best 5 Subjects"
+    "score_formula": "Best 5 Subjects",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1201",
@@ -548,7 +765,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "42.5",
     "median_score": "43.5",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2.5",
+      "weight_chinese": "1.5",
+      "weight_maths": "2.5",
+      "weight_electives": "2.5: | · M1/M2 | · Physics | 1: Other elective subjects | 2:",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1205",
@@ -567,7 +792,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "37",
     "median_score": "39",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "· Information and Communication Technology | · M1/M2 | · Physics | 1.5: | · Biology | · Chemistry | 1: Other elective subjects | 2: Physics",
+      "subjects_included": "Best 5 subjects (include English and Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1207",
@@ -586,7 +819,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "34",
     "median_score": "34.5",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "1.5: | · Chemistry | · Design and Applied Technology | · M1/M2 | 1: Other elective subjects",
+      "subjects_included": "Best 5 subjects (include Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1210",
@@ -605,7 +846,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "32.5",
     "median_score": "34",
-    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "1.5",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "2: Physics | 1.5: | · Biology | · Chemistry | · M1/M2 | 1: Other elective subjects | 2:",
+      "subjects_included": "Best 5 subjects (include Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1216",
@@ -624,7 +873,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "18",
     "median_score": "20",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part))"
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part))",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "· Information and Communication Technology | · M1/M2 | · Physics | 1.5: | · Chemistry | · Design and Applied Technology | 1: Other elective subjects | 2:",
+      "subjects_included": "Best 5 subjects (include English and Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1217",
@@ -643,7 +900,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "38",
     "median_score": "38.5",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "· Biology | · Chemistry | · Design and Applied Technology | · Information and Communication Technology | · M1/M2 | · Physics | 1: Other elective subjects | 2: | · Biology | · Chemistry",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1219",
@@ -662,7 +927,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "18.5",
     "median_score": "19.5",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2",
+      "weight_electives": "· Design and Applied Technology | · Economics | · Information and Communication Technology | · M1/M2 | · Physics | 1: Other elective subjects",
+      "subjects_included": "Best 5 subjects (include English and Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1102",
@@ -681,7 +954,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "23.5",
     "median_score": "24",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "1.5",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1 | 1.5: | · Chinese History",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1103",
@@ -700,7 +981,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "35.5",
     "median_score": "36",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "2",
+      "weight_maths": "1",
+      "weight_electives": "· Chinese Literature | · History | · Visual Arts | 1: Other elective subjects",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1104",
@@ -719,7 +1008,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "29.5",
     "median_score": "32",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2.5",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1.5: Literature in English | 1: Other elective subjects",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1106",
@@ -738,7 +1035,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "20",
     "median_score": "20.5",
-    "score_formula": "Best 4 Subjects (includes English Language) "
+    "score_formula": "Best 4 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "1.25",
+      "weight_chinese": "1.25",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 4 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1108",
@@ -757,7 +1062,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "23",
     "median_score": "23.5",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "1.5",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1109",
@@ -776,7 +1089,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "29.5",
     "median_score": "30",
-    "score_formula": "3 Core + 2 Elective Subjects"
+    "score_formula": "3 Core + 2 Elective Subjects",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1.5",
+      "weight_maths": "1.5",
+      "weight_electives": "1",
+      "subjects_included": "3 core + 2 elective subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1111",
@@ -795,7 +1116,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "23",
     "median_score": "23",
-    "score_formula": "Best 4 Subjects (includes English Language) "
+    "score_formula": "Best 4 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 4 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1112",
@@ -814,7 +1143,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "24",
     "median_score": "24.5",
-    "score_formula": "Best 4 Subjects (includes English Language) "
+    "score_formula": "Best 4 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 4 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1113",
@@ -833,7 +1170,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "23",
     "median_score": "23",
-    "score_formula": "Best 4 Subjects (includes English Language) "
+    "score_formula": "Best 4 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 4 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1123",
@@ -852,7 +1197,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "23",
     "median_score": "24.5",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1200",
@@ -871,7 +1224,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "36.5",
     "median_score": "37",
-    "score_formula": "Best 4 Subjects"
+    "score_formula": "Best 4 Subjects",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2.5",
+      "weight_electives": "· Biology | · Chemistry | · Economics | · M1/M2 | · Physics | 1: Other elective subjects",
+      "subjects_included": "Best 4 subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1202",
@@ -890,7 +1251,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "27",
     "median_score": "27.5",
-    "score_formula": "Best 4 Subjects"
+    "score_formula": "Best 4 Subjects",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1.5",
+      "weight_electives": "2: Chemistry | 1: Other elective subjects",
+      "subjects_included": "Best 4 subjects"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1206",
@@ -909,7 +1278,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "36",
     "median_score": "37",
-    "score_formula": "Best 4 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 4 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2.5",
+      "weight_electives": "2: M1/M2 | 1.5: | · Biology | · Chemistry | · Physics | 1: Other elective subjects",
+      "subjects_included": "Best 4 subjects (include Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1208",
@@ -928,7 +1305,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "27",
     "median_score": "28",
-    "score_formula": "Best 4 Subjects (includes Mathematics (Compulsory Part)) "
+    "score_formula": "Best 4 Subjects (includes Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1.25",
+      "weight_electives": "2: Physics | 1.5: M1/M2 | 1: Other elective subjects",
+      "subjects_included": "Best 4 subjects (include Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1801",
@@ -947,7 +1332,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "32",
     "median_score": "33.5",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part), Biology, Chemistry) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part), Biology, Chemistry) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include English, Mathematics, Biology and Chemistry)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1040",
@@ -966,7 +1359,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "24.5",
     "median_score": "28",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1041",
@@ -985,7 +1386,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "25",
     "median_score": "25.5",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1042",
@@ -1004,7 +1413,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "27",
     "median_score": "27.5",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1043",
@@ -1023,7 +1440,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "25.5",
     "median_score": "26.5",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part)) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1.5",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include English and Mathematics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1044",
@@ -1042,7 +1467,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "24",
     "median_score": "24",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1050",
@@ -1061,7 +1494,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "36.5",
     "median_score": "38",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part) and one subject from Biology / Chemistry / Physics) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part) and one subject from Biology / Chemistry / Physics) ",
+    "subject_weights_2025": {
+      "weight_english": "2",
+      "weight_chinese": "1",
+      "weight_maths": "2.5",
+      "weight_electives": "1st Elective | 2.5: | · Biology | · Chemistry | · Physics | 2nd Elective | 1.5: | · Biology",
+      "subjects_included": "Best 5 subjects (include English, Mathematics and one subject from Biology, Chemistry or Physics)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1051",
@@ -1080,7 +1521,15 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "40",
     "median_score": "40.5",
-    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part) and one subject from Biology / Chemistry / Physics) "
+    "score_formula": "Best 5 Subjects (includes English Language, Mathematics (Compulsory Part) and one subject from Biology / Chemistry / Physics) ",
+    "subject_weights_2025": {
+      "weight_english": "",
+      "weight_chinese": "",
+      "weight_maths": "",
+      "weight_electives": "· Chemistry | · Geography | · M1/M2 | · Physics | 1: Other elective subjects | 1st Elective | 2.5: | · Biology | · Chemistry | · Physics",
+      "subjects_included": ""
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   },
   {
     "jupas_code": "JS1061",
@@ -1099,6 +1548,14 @@
     "score_year_label": "2025 Reference Score",
     "lower_score": "21.5",
     "median_score": "23",
-    "score_formula": "Best 5 Subjects (includes English Language) "
+    "score_formula": "Best 5 Subjects (includes English Language) ",
+    "subject_weights_2025": {
+      "weight_english": "1",
+      "weight_chinese": "1",
+      "weight_maths": "1",
+      "weight_electives": "1 | 1st Elective | 2.5: | · Biology | · Chemistry",
+      "subjects_included": "Best 5 subjects (include English)"
+    },
+    "weightings_2025_source": "2025_JUPAS_Main_Admission_Score_Calculation.pdf (Archives/2025 JUPAS 計分器/參考資料(2025)/CityU/)"
   }
 ]

@@ -65,7 +65,7 @@ Each school publishes data differently. Common formats: PDF, HTML table, or down
 
 Different schools / programmes use different formulas. Common patterns:
 
-- **Best 5** — Top 5 subject scores (with or without Chinese required)
+- **Best 5** — Top 5 subject scores (with or without Chinese/English/Maths required)
 - **3 Cores + 2 Electives** — Compulsory Chinese, English, Maths + best 2 electives
 - **3 Cores + 2 Electives (Science required)** — As above but one elective must be a science subject
 - **Weighted score** — Each subject multiplied by a programme-specific weighting factor
@@ -108,17 +108,19 @@ The current Excel-based approach uses complex cell references and formulas ("spa
 1. [x] Archive 2024 & 2025 files
 2. [x] Create `2026_scrap.py` and run → `2026 JUPAS Program Overview.xlsx` + `2026 JUPAS Offer Table.xlsx` (422 programmes)
 3. [ ] Collect per-school weighting & admission score data:
-   - [x] CUHK — 4 PDFs in `Reference(2026)/CUHK/`
+   - [x] CUHK — 8 PDFs + API scraper (`cuhk_scrap.py`) → `CUHK_2026_Data.json/xlsx` (85 programmes)
    - [x] CityU — API scraper (`cityu_scrap.py`) + 2 PDFs + 2 extractors in `Reference(2026)/CityU/`
-   - [ ] HKU — **next up**
-   - [ ] HKUST
-   - [ ] PolyU (prior `polyu.ps1` in Archives)
+   - [x] HKU — API scraper (`hku_scrap.py`) + PDF extractor → `HKU_2026_Data.json/xlsx` (57 programmes)
+   - [x] HKUST — JS scraper (`hkust_scrap.py`) → `HKUST_2026_Data.json/xlsx` (33 programmes)
+   - [x] PolyU — Playwright scraper (`polyu_scrap.py`) → `PolyU_2026_Data.json/xlsx` + `PolyU_2026_Weights.json` (46 programmes)
    - [ ] HKBU
    - [ ] LingU
    - [ ] EdUHK
    - [ ] HKMU
    - [ ] SSSDP
 4. [ ] Build automation scripts per school where possible
-5. [ ] Compile all data into the 2026 Excel (or web app)
+5. [x] Compile and unify all data into a master JSON:
+   - Run `~/miniconda3/envs/jupascal/bin/python unify_2026_data.py`
+   - Generates `JUPAS_2026_Unified_Data.json` with structured requirements and calculation constraints.
 6. [ ] Update `index.html` with new OneDrive embed link
 7. [ ] Commit and open Pull Request on GitHub

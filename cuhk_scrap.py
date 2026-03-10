@@ -1,0 +1,108 @@
+"""
+CUHK JUPAS Data Scraper
+Source: https://admission.cuhk.edu.hk/wp-content/uploads/data.json
+
+IMPORTANT — Year Labeling:
+- formula, weight, requirement fields: 2026 entry data (current year)
+- static_data_1 ("expected score"): CUHK's reference/expected score for 2026 entry.
+  This is NOT the same as 2025 actual admission scores.
+  Actual 2025 admission scores are in Admission-Grades-2025.pdf.
+
+For the 2026 calculator:
+  Use 2025 actual scores (from PDF) + 2025 weightings (from Admission-Grades-2025.pdf).
+  The 2026 formula/weights here are for reference / 2027 calculator.
+"""
+
+import json
+import requests
+import urllib3
+import pandas as pd
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+URL         = "https://admission.cuhk.edu.hk/wp-content/uploads/data.json"
+OUTPUT_JSON = "Reference(2026)/CUHK/CUHK_2026_Data.json"
+OUTPUT_EXCEL= "Reference(2026)/CUHK/CUHK_2026_Data.xlsx"
+
+
+def fetch_data():
+    resp = requests.get(URL, verify=False, timeout=30)
+    resp.raise_for_status()
+    return resp.json()
+
+
+def parse_requirement(req):
+    if not req:
+        return "", "", "", ""
+    chi    = req.get("CHI", "")
+    eng    = req.get("ENG", "")
+    math   = req.get("MATH", "")
+    elects = req.get("ELECT", [])
+    elect_str = "; ".join(
+        f"{e.get('subject','*')} >= {e.get('score','')}"
+        for e in elects
+    )
+    return chi, eng, math, elect_str
+
+
+raw = fetch_data()
+print(f"Fetched {len(raw)} programmes from CUHK API")
+
+results = []
+for prog in raw:
+    chi, eng, math, elect_str = parse_requirement(prog.get("requirement"))
+
+    results.append({
+        # Identifiers
+        "jupas_code":               prog.get("code", ""),
+        "name":                     prog.get("name", ""),
+        "faculty":                  prog.get("faculty", ""),
+
+        # Score calculation (2026 entry data)
+        "data_year_formula":        "2026",
+        "principle":                prog.get("principle", ""),
+        "formula":                  prog.get("formula", ""),
+        "weight":                   prog.get("weight", ""),
+        "weight_remarks":           prog.get("weight_remarks", ""),
+        "formula_remarks":          prog.get("formula_remarks", ""),
+
+        # Entry requirements (2026 entry data)
+        "req_chi":                  chi,
+        "req_eng":                  eng,
+        "req_math":                 math,
+        "req_electives":            elect_str,
+        "subject_1":                prog.get("subject_1", ""),
+        "subject_1_text":           prog.get("subject_1_text", ""),
+        "subject_1_note":           prog.get("subject_1_note", ""),
+        "subject_2":                prog.get("subject_2", ""),
+        "subject_2_text":           prog.get("subject_2_text", ""),
+        "subject_2_note":           prog.get("subject_2_note", ""),
+        "requirement_remarks":      prog.get("requirement_remarks", ""),
+        "remarks":                  prog.get("remarks", ""),
+
+        # Expected/reference score for 2026 entry
+        # NOTE: CUHK's projected reference score — NOT 2025 actual admission score.
+        # Actual 2025 scores: see Admission-Grades-2025.pdf
+        "data_year_expected_score": "2026",
+        "expected_score":           prog.get("static_data_1", ""),
+        "score_remark":             prog.get("score_remark", ""),
+    })
+
+print(f"Processed {len(results)} programmes")
+
+with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
+    json.dump(results, f, ensure_ascii=False, indent=2)
+
+df = pd.DataFrame(results)
+df.to_excel(OUTPUT_EXCEL, index=False)
+
+print(f"Saved JSON:  {OUTPUT_JSON}")
+print(f"Saved Excel: {OUTPUT_EXCEL}")
+
+print("\nSample:")
+for r in results[:4]:
+    print(f"  {r['jupas_code']} {r['name'][:30]} | formula={r['formula']} | expected={r['expected_score']}")
+
+print("\nUnique formulas:")
+for f in sorted(set(r['formula'] for r in results)):
+    print(f"  {f}")
