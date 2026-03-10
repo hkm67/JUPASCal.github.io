@@ -1,7 +1,7 @@
 import json
 
-UNIFIED_2026 = "JUPAS_2026_Unified_Data.json"
-LOGIC_2025 = "jupas_2025_logic.json"
+UNIFIED_2026 = "../../data/processed/JUPAS_2026_Unified_Data.json"
+LOGIC_2025 = "../../data/raw/jupas_2025_logic.json"
 
 def normalize_subject(name):
     if not name: return name

@@ -21,26 +21,27 @@ CORE LOGIC:
 
 # File paths for institution-specific JSONs (extracted via university scrapers)
 FILES = {
-    "CityU": "Reference(2026)/CityU/CityU_2026_Data.json",
-    "CUHK": "Reference(2026)/CUHK/CUHK_2026_Data.json",
-    "EdUHK": "Reference(2026)/EdUHK/EdUHK_2026_Data.json",
-    "HKBU": "Reference(2026)/HKBU/HKBU_2026_Data.json",
-    "HKMU": "Reference(2026)/HKMU/HKMU_2026_Data.json",
-    "HKU": "Reference(2026)/HKU/HKU_2026_Data.json",
-    "HKUST": "Reference(2026)/HKUST/HKUST_2026_Data.json",
-    "LingU": "Reference(2026)/LingU/LingU_2026_Data.json",
-    "PolyU": "Reference(2026)/PolyU/PolyU_2026_Data.json",
-    "SSSDP": "Reference(2026)/SSSDP/SSSDP_2026_Data.json"
+    "CityU": "../../Reference(2026)/CityU/CityU_2026_Data.json",
+    "CUHK": "../../Reference(2026)/CUHK/CUHK_2026_Data.json",
+    "EdUHK": "../../Reference(2026)/EdUHK/EdUHK_2026_Data.json",
+    "HKBU": "../../Reference(2026)/HKBU/HKBU_2026_Data.json",
+    "HKMU": "../../Reference(2026)/HKMU/HKMU_2026_Data.json",
+    "HKU": "../../Reference(2026)/HKU/HKU_2026_Data.json",
+    "HKUST": "../../Reference(2026)/HKUST/HKUST_2026_Data.json",
+    "LingU": "../../Reference(2026)/LingU/LingU_2026_Data.json",
+    "PolyU": "../../Reference(2026)/PolyU/PolyU_2026_Data.json",
+    "SSSDP": "../../Reference(2026)/SSSDP/SSSDP_2026_Data.json"
 }
 
 # Supplemental Data Files (PDF extractions or raw API caches)
-CUHK_2025_REQ = "Reference(2026)/CUHK/CUHK_PDF_2025_Requirements.json"
-CUHK_2026_REQ = "Reference(2026)/CUHK/CUHK_PDF_2026_Requirements.json"
-HKU_RAW_API = "Reference(2026)/HKU/hku_raw_api.json"
-POLYU_WEIGHTS_2026 = "Reference(2026)/PolyU/PolyU_2026_Weights.json"
+CUHK_2025_REQ = "../../Reference(2026)/CUHK/CUHK_PDF_2025_Requirements.json"
+CUHK_2026_REQ = "../../Reference(2026)/CUHK/CUHK_PDF_2026_Requirements.json"
+HKU_RAW_API = "../../Reference(2026)/HKU/hku_raw_api.json"
+POLYU_WEIGHTS_2026 = "../../Reference(2026)/PolyU/PolyU_2026_Weights.json"
 
-OVERVIEW_FILE = "2026 JUPAS Program Overview.xlsx"
-OUTPUT_FILE = "JUPAS_2026_Unified_Data.json"
+OVERVIEW_FILE = "../../data/raw/2026 JUPAS Program Overview.xlsx"
+OUTPUT_FILE = "../../data/processed/JUPAS_2026_Unified_Data.json"
+CUHK_GRADES_FILE = "../../Reference(2026)/CUHK/cuhk_grades_2025.json"
 
 def normalize_subject(name):
     """
@@ -375,8 +376,8 @@ def unify_data():
             cuhk_2026_reqs = {item['jupas_code']: item for item in json.load(f)}
 
     cuhk_2025_grades = {}
-    if os.path.exists("cuhk_grades_2025.json"):
-        with open("cuhk_grades_2025.json", encoding='utf-8') as f:
+    if os.path.exists(CUHK_GRADES_FILE):
+        with open(CUHK_GRADES_FILE, encoding='utf-8') as f:
             cuhk_2025_grades = json.load(f)
 
     # Load HKU Raw API for Min Reqs & Extra Info
