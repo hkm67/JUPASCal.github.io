@@ -9,6 +9,7 @@ const JUPAS_UI = {
     allProgrammes: [],
     selectedProgramme: null,
     
+    // Canonical subject list for input generation
     coreSubjects: [
         "Chinese Language",
         "English Language",
@@ -151,8 +152,38 @@ const JUPAS_UI = {
         const generateHistoricalLogicGrid = (gradeBreakdown, title) => {
             if (!gradeBreakdown || Object.keys(gradeBreakdown).length === 0) return "";
             
-            // Re-calculate the score for the historical breakdown using our logic
-            const histResult = JUPAS_CALCULATOR.calculateScore(gradeBreakdown, p, "2025");
+            // Map breakdown keys (CHIN, ENGL, MATH, Elective 1) to canonical subject names
+            // so JUPAS_CALCULATOR can apply weightings correctly.
+            const mappedBreakdown = {};
+            const weights = p.subject_weights_2025 || {};
+            
+            // Identify specific weighted electives for this programme
+            const core_names = ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", 
+                          "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)",
+                          "Citizenship and Social Development"];
+            const electiveMultipliers = Object.keys(weights)
+                .filter(k => !core_names.includes(k))
+                .map(k => ({name: k, w: weights[k]}))
+                .sort((a,b) => b.w - a.w);
+
+            for (let [key, grade] of Object.entries(gradeBreakdown)) {
+                if (key === "CHIN") mappedBreakdown["Chinese Language"] = grade;
+                else if (key === "ENGL") mappedBreakdown["English Language"] = grade;
+                else if (key === "MATH") mappedBreakdown["Mathematics (Compulsory Part)"] = grade;
+                else if (key === "M1/M2") mappedBreakdown["Mathematics Extended Part (Module 1)"] = grade;
+                else if (key === "CSD") mappedBreakdown["Citizenship and Social Development"] = grade;
+                else if (key.includes("Elective")) {
+                    // For electives in breakdown, assign the next best elective multiplier found in weights
+                    if (electiveMultipliers.length > 0) {
+                        const em = electiveMultipliers.shift();
+                        mappedBreakdown[em.name] = grade;
+                    } else {
+                        mappedBreakdown[key] = grade; // Fallback
+                    }
+                }
+            }
+
+            const histResult = JUPAS_CALCULATOR.calculateScore(mappedBreakdown, p, "2025");
             const subjects = histResult.allCandidates;
 
             return `
@@ -173,7 +204,7 @@ const JUPAS_UI = {
                                 ${subjects.map(s => `<td>${s.multiplier}</td>`).join('')}
                             </tr>
                             <tr class="points-row">
-                                <td class="row-label">Score</td>
+                                <td class="row-label">分數</td>
                                 ${subjects.map(s => `<td class="${s.used ? 'selected' : ''}">${s.weightedScore.toFixed(2)}</td>`).join('')}
                             </tr>
                         </table>
@@ -225,7 +256,6 @@ const JUPAS_UI = {
     },
 
     getShortName: function(fullName) {
-        // First check for known mappings
         const map = {
             "Chinese Language": "中文",
             "English Language": "英文",
@@ -234,11 +264,12 @@ const JUPAS_UI = {
             "Mathematics Extended Part (Module 1)": "M1",
             "Mathematics Extended Part (Module 2)": "M2",
             "Information and Communication Technology": "ICT",
-            "Business, Accounting and Financial Studies": "BAFS"
+            "Business, Accounting and Financial Studies": "BAFS",
+            "Biology": "Bio",
+            "Chemistry": "Chem",
+            "Physics": "Phys"
         };
         if (map[fullName]) return map[fullName];
-        
-        // Fallback for electives
         if (fullName.includes("Elective")) return fullName;
         return fullName.substring(0, 6);
     }
