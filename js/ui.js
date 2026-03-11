@@ -9,7 +9,40 @@ const JUPAS_UI = {
     allProgrammes: [],
     selectedProgramme: null,
     
-    // Canonical subject list for input generation
+    // Canonical mapping for normalization
+    subjectMap: {
+        "CHIN": "Chinese Language",
+        "ENGL": "English Language",
+        "MATH": "Mathematics (Compulsory Part)",
+        "CSD":  "Citizenship and Social Development",
+        "M1": "Mathematics Extended Part (Module 1)",
+        "M2": "Mathematics Extended Part (Module 2)",
+        "M1/M2": "Mathematics Extended Part (Module 1 or 2)",
+        "MAT1": "Mathematics Extended Part (Module 1)",
+        "MAT2": "Mathematics Extended Part (Module 2)",
+        "MTH1": "Mathematics Extended Part (Module 1)",
+        "MTH2": "Mathematics Extended Part (Module 2)",
+        "BIO":  "Biology",
+        "BIOL": "Biology",
+        "CHEM": "Chemistry",
+        "PHYS": "Physics",
+        "ECON": "Economics",
+        "GEOG": "Geography",
+        "HIST": "History",
+        "ICT":  "Information and Communication Technology",
+        "INCT": "Information and Communication Technology",
+        "BAFS": "Business, Accounting and Financial Studies",
+        "BBA":  "Business, Accounting and Financial Studies",
+        "VART": "Visual Arts",
+        "MUSC": "Music",
+        "HMSC": "Health Management and Social Care",
+        "DAT":  "Design and Applied Technology",
+        "PE":   "Physical Education",
+        "CLIT": "Chinese Literature",
+        "ELIT": "Literature in English",
+        "TLFS": "Technology and Living (Food Science and Technology)"
+    },
+
     coreSubjects: [
         "Chinese Language",
         "English Language",
@@ -152,12 +185,10 @@ const JUPAS_UI = {
         const generateHistoricalLogicGrid = (gradeBreakdown, title) => {
             if (!gradeBreakdown || Object.keys(gradeBreakdown).length === 0) return "";
             
-            // Map breakdown keys (CHIN, ENGL, MATH, Elective 1) to canonical subject names
-            // so JUPAS_CALCULATOR can apply weightings correctly.
             const mappedBreakdown = {};
             const weights = p.subject_weights_2025 || {};
             
-            // Identify specific weighted electives for this programme
+            // Identify elective multipliers for assignment to generic "Elective 1" slots
             const core_names = ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", 
                           "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)",
                           "Citizenship and Social Development"];
@@ -167,19 +198,20 @@ const JUPAS_UI = {
                 .sort((a,b) => b.w - a.w);
 
             for (let [key, grade] of Object.entries(gradeBreakdown)) {
-                if (key === "CHIN") mappedBreakdown["Chinese Language"] = grade;
-                else if (key === "ENGL") mappedBreakdown["English Language"] = grade;
-                else if (key === "MATH") mappedBreakdown["Mathematics (Compulsory Part)"] = grade;
-                else if (key === "M1/M2") mappedBreakdown["Mathematics Extended Part (Module 1)"] = grade;
-                else if (key === "CSD") mappedBreakdown["Citizenship and Social Development"] = grade;
-                else if (key.includes("Elective")) {
-                    // For electives in breakdown, assign the next best elective multiplier found in weights
+                const upperKey = key.toUpperCase();
+                // Map breakdown key to canonical subject name using subjectMap
+                if (this.subjectMap[upperKey]) {
+                    mappedBreakdown[this.subjectMap[upperKey]] = grade;
+                } else if (key.includes("Elective")) {
+                    // Pull the best remaining elective weight for this slot
                     if (electiveMultipliers.length > 0) {
                         const em = electiveMultipliers.shift();
                         mappedBreakdown[em.name] = grade;
                     } else {
-                        mappedBreakdown[key] = grade; // Fallback
+                        mappedBreakdown[key] = grade;
                     }
+                } else {
+                    mappedBreakdown[key] = grade;
                 }
             }
 
