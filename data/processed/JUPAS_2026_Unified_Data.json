@@ -106,9 +106,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 1.5,
@@ -210,9 +210,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 Core + 2 Elective Subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 1.5,
@@ -314,9 +314,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 1.5,
@@ -418,9 +418,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 Core + 2 Elective Subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 1.5,
@@ -522,7 +522,7 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects",
     "formula_2026_id": "best5",
     "subject_weights_2025": {},
@@ -605,7 +605,7 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects",
     "formula_2026_id": "best5",
     "subject_weights_2025": {
@@ -847,7 +847,7 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects",
     "formula_2026_id": "best5",
     "subject_weights_2025": {
@@ -1016,7 +1016,7 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects",
     "formula_2026_id": "best5",
     "subject_weights_2025": {},
@@ -1098,7 +1098,7 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects",
     "formula_2026_id": "best5",
     "subject_weights_2025": {},
@@ -1181,7 +1181,7 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects",
     "formula_2026_id": "best5",
     "subject_weights_2025": {},
@@ -1263,7 +1263,7 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects",
     "formula_2026_id": "best5",
     "subject_weights_2025": {},
@@ -1345,7 +1345,7 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects",
     "formula_2026_id": "best5",
     "subject_weights_2025": {},
@@ -1981,9 +1981,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -2061,9 +2061,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Mathematics (Compulsory Part)": 2.0,
       "English Language": 1.5
@@ -2141,9 +2141,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Mathematics (Compulsory Part)": 2.0,
       "English Language": 1.5
@@ -2221,9 +2221,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Mathematics (Compulsory Part)": 2.0,
       "English Language": 1.5
@@ -3273,9 +3273,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Chinese Language": 2.0,
       "English Language": 2.0,
@@ -3449,9 +3449,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "Best 4 subjects (include English)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 4 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Chinese Language": 1.25,
       "English Language": 1.25
@@ -3537,9 +3537,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5
     },
@@ -3615,9 +3615,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "3 core + 2 elective subjects",
-    "formula_2025_id": "3c2x",
+    "formula_2025_id": "best5",
     "formula_2026": "3 Core + 2 Elective Subjects",
-    "formula_2026_id": "3c2x",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Chinese Language": 1.5,
@@ -3697,9 +3697,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "Best 4 subjects (include English)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 4 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0
     },
@@ -3783,9 +3783,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "Best 4 subjects (include English)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 4 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0
     },
@@ -3869,9 +3869,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "Best 4 subjects (include English)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 4 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0
     },
@@ -4037,9 +4037,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "Best 4 subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 4 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0,
@@ -4139,9 +4139,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "Best 4 subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 4 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Chemistry": 2.0,
@@ -4223,9 +4223,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "Best 4 subjects (include Mathematics)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 4 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.5,
@@ -4333,9 +4333,9 @@
     "institution": "CityUHK",
     "faculty": null,
     "formula_2025": "Best 4 subjects (include Mathematics)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 4 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Physics": 2.0,
@@ -6012,10 +6012,10 @@
     "name_zh": "哲學",
     "institution": "CUHK",
     "faculty": "ART",
-    "formula_2025": "5 subjects",
-    "formula_2025_id": "custom",
+    "formula_2025": "AENGL+ACHIN+Best(3)",
+    "formula_2025_id": "best5",
     "formula_2026": "AENGL+ACHIN+Best(3)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -6044,7 +6044,16 @@
         "note": ""
       }
     },
-    "calculation_constraints": [],
+    "calculation_constraints": [
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "Chinese Language",
+          "English Language"
+        ],
+        "description": "Formula requires: Chinese Language, English Language"
+      }
+    ],
     "score_conversion_table": {
       "category_a": {
         "5**": 8.5,
@@ -7232,10 +7241,10 @@
     "name_zh": "環球經濟與金融跨學科主修課程",
     "institution": "CUHK",
     "faculty": "BA",
-    "formula_2025": "5 subjects",
-    "formula_2025_id": "custom",
+    "formula_2025": "AENGL+Best(4)",
+    "formula_2025_id": "best5",
     "formula_2026": "AENGL+Best(4)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -7264,7 +7273,15 @@
         "note": ""
       }
     },
-    "calculation_constraints": [],
+    "calculation_constraints": [
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "English Language"
+        ],
+        "description": "Formula requires: English Language"
+      }
+    ],
     "score_conversion_table": {
       "category_a": {
         "5**": 8.5,
@@ -7332,10 +7349,10 @@
     "name_zh": "工商管理學士（工商管理學士綜合課程）及法律博士雙學位課程",
     "institution": "CUHK",
     "faculty": "BA",
-    "formula_2025": "5 subjects",
-    "formula_2025_id": "custom",
+    "formula_2025": "AENGL+ACHIN+AMATH+Best(2)",
+    "formula_2025_id": "best5",
     "formula_2026": "AENGL+ACHIN+AMATH+Best(2)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0
     },
@@ -7368,7 +7385,17 @@
         "note": ""
       }
     },
-    "calculation_constraints": [],
+    "calculation_constraints": [
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "Chinese Language",
+          "English Language",
+          "Mathematics (Compulsory Part)"
+        ],
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
+      }
+    ],
     "score_conversion_table": {
       "category_a": {
         "5**": 8.5,
@@ -7573,8 +7600,28 @@
     "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
-    "best_of_weights_2025": [],
-    "best_of_weights_2026": [],
+    "best_of_weights_2025": [
+      {
+        "count": 2,
+        "subjects": [
+          "English Language",
+          "Biology",
+          "Chemistry"
+        ],
+        "weight": 1.5
+      }
+    ],
+    "best_of_weights_2026": [
+      {
+        "count": 2,
+        "subjects": [
+          "English Language",
+          "Biology",
+          "Chemistry"
+        ],
+        "weight": 1.5
+      }
+    ],
     "subject_weights_2025_raw": "--",
     "subject_weights_2026_raw": "",
     "min_requirements_2026": {
@@ -7600,7 +7647,17 @@
         "note": ""
       }
     },
-    "calculation_constraints": [],
+    "calculation_constraints": [
+      {
+        "type": "compulsory_subject_pool",
+        "count": 1,
+        "subjects": [
+          "Biology",
+          "Chemistry"
+        ],
+        "description": "Best of Biology/Chemistry must be included in the score calculation (i.e. Best of Bio/Chem + Best 4 subjects)"
+      }
+    ],
     "score_conversion_table": {
       "category_a": {
         "5**": 8.5,
@@ -8005,10 +8062,10 @@
     "name_zh": "文學士 (中國語文研究) 及教育學士 (中國語文教育)",
     "institution": "CUHK",
     "faculty": "EDU",
-    "formula_2025": "5 subjects",
-    "formula_2025_id": "custom",
+    "formula_2025": "ACHIN+Best(4)",
+    "formula_2025_id": "best5",
     "formula_2026": "ACHIN+Best(4)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Chinese Language": 2.0
     },
@@ -8041,7 +8098,15 @@
         "note": ""
       }
     },
-    "calculation_constraints": [],
+    "calculation_constraints": [
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "Chinese Language"
+        ],
+        "description": "Formula requires: Chinese Language"
+      }
+    ],
     "score_conversion_table": {
       "category_a": {
         "5**": 8.5,
@@ -8101,10 +8166,10 @@
     "name_zh": "文學士(英國語文研究)及教育學士(英國語文教育)",
     "institution": "CUHK",
     "faculty": "EDU",
-    "formula_2025": "5 subjects",
-    "formula_2025_id": "custom",
+    "formula_2025": "AENGL+Best(4)",
+    "formula_2025_id": "best5",
     "formula_2026": "AENGL+Best(4)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0
     },
@@ -8137,7 +8202,15 @@
         "note": ""
       }
     },
-    "calculation_constraints": [],
+    "calculation_constraints": [
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "English Language"
+        ],
+        "description": "Formula requires: English Language"
+      }
+    ],
     "score_conversion_table": {
       "category_a": {
         "5**": 8.5,
@@ -8204,7 +8277,7 @@
     "name_zh": "教育學士(數學及數學教育)",
     "institution": "CUHK",
     "faculty": "EDU",
-    "formula_2025": "5 subjects",
+    "formula_2025": "AMATH+Best(1,[AMTH1,AMTH2])+Best(3)",
     "formula_2025_id": "custom",
     "formula_2026": "AMATH+Best(1,[AMTH1,AMTH2])+Best(3)",
     "formula_2026_id": "custom",
@@ -8293,7 +8366,15 @@
         "note": ""
       }
     },
-    "calculation_constraints": [],
+    "calculation_constraints": [
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "Mathematics (Compulsory Part)"
+        ],
+        "description": "Formula requires: Mathematics (Compulsory Part)"
+      }
+    ],
     "score_conversion_table": {
       "category_a": {
         "5**": 8.5,
@@ -10289,9 +10370,9 @@
     "institution": "CUHK",
     "faculty": "LAW",
     "formula_2025": "AENGL+ACHIN+AMATH+Best(2)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "AENGL+ACHIN+AMATH+Best(2)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0
     },
@@ -10324,7 +10405,17 @@
         "note": ""
       }
     },
-    "calculation_constraints": [],
+    "calculation_constraints": [
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "Chinese Language",
+          "English Language",
+          "Mathematics (Compulsory Part)"
+        ],
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
+      }
+    ],
     "score_conversion_table": {
       "category_a": {
         "5**": 8.5,
@@ -10394,9 +10485,9 @@
     "institution": "CUHK",
     "faculty": "MED",
     "formula_2025": "AENGL+ACHIN+AMATH+Best(1,[ABIOL,ACHEM])+Best(2)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "AENGL+ACHIN+AMATH+Best(1,[ABIOL,ACHEM])+Best(2)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -10436,6 +10527,15 @@
       {
         "type": "medicine_conversion_scale",
         "description": "Special conversion scale: 5**=7, 5*=6, 5=5, 4=4, 3=3, 2=2, 1=1"
+      },
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "Chinese Language",
+          "English Language",
+          "Mathematics (Compulsory Part)"
+        ],
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
       }
     ],
     "score_conversion_table": {
@@ -10508,9 +10608,9 @@
     "institution": "CUHK",
     "faculty": "MED",
     "formula_2025": "AENGL+ACHIN+AMATH+Best(1,[ABIOL,ACHEM])+Best(2)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "AENGL+ACHIN+AMATH+Best(1,[ABIOL,ACHEM])+Best(2)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -10550,6 +10650,15 @@
       {
         "type": "medicine_conversion_scale",
         "description": "Special conversion scale: 5**=7, 5*=6, 5=5, 4=4, 3=3, 2=2, 1=1"
+      },
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "Chinese Language",
+          "English Language",
+          "Mathematics (Compulsory Part)"
+        ],
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
       }
     ],
     "score_conversion_table": {
@@ -11104,7 +11213,17 @@
       },
       "conditional_remarks": "Category A subjects only"
     },
-    "calculation_constraints": [],
+    "calculation_constraints": [
+      {
+        "type": "compulsory_subjects",
+        "subjects": [
+          "Chinese Language",
+          "English Language",
+          "Mathematics (Compulsory Part)"
+        ],
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
+      }
+    ],
     "score_conversion_table": {
       "category_a": {
         "5**": 8.5,
@@ -20017,9 +20136,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Arts",
     "formula_2025": "a 2 x Eng + Best 4 Subjects with WEIGHTING 1",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "2 x Eng + Best 4 Subjects# with Weighting1",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Chinese Language": 1.5,
       "English Language": 2.0
@@ -20111,9 +20230,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Education",
     "formula_2025": "a 1.5 x Eng + Best 4 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + Best 4 Subjects#",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5
     },
@@ -20291,9 +20410,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Education",
     "formula_2025": "a 1.5 x Chin + Best 4 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Chin + Best 4 Subjects#",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -20379,9 +20498,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Education",
     "formula_2025": "a 1.5 x Eng + Best 4 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + Best 4 Subjects#",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5
     },
@@ -20583,9 +20702,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Education",
     "formula_2025": "Eng + 1.5 x Math + 1.5 x Best b Sci Subject + Best 2 Subjects with WEIGHTING 4",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + 1.5 x Math + 1.5 x Best Sci Subject^ + Best 2 Subjects with Weighting1",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Biology": 1.5,
       "Chemistry": 1.5,
@@ -20771,9 +20890,9 @@
     "institution": "HKU",
     "faculty": "School of Computing and Data Science",
     "formula_2025": "–",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -20859,9 +20978,9 @@
     "institution": "HKU",
     "faculty": "School of Computing and Data Science",
     "formula_2025": "2 x Eng + 2 x Math + 2 x M1 / M2 + Best 2 Subjects with WEIGHTING 7",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -21035,9 +21154,9 @@
     "institution": "HKU",
     "faculty": "School of Computing and Data Science",
     "formula_2025": "c ENG + Math + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -21211,9 +21330,9 @@
     "institution": "HKU",
     "faculty": "School of Future Media",
     "formula_2025": "a 2 x Eng + Best 4 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "2 x Eng + Best 4 Subjects# with Weighting1",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Chinese Language": 1.5,
       "English Language": 2.0
@@ -21305,9 +21424,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Arts",
     "formula_2025": "a 2 x Eng + Best 4 Subjects with WEIGHTING 1",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "2 x Eng + Best 4 Subjects# with Weighting1",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Chinese Language": 1.5,
       "English Language": 2.0
@@ -21399,9 +21518,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Arts",
     "formula_2025": "2 x Eng + 1.5 x Math + Best 2 Subjects with WEIGHTING 2 + Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "2 x Eng + 1.5 x Math + Best 2 Subjects with weighting1 + Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Biology": 1.5,
       "Chemistry": 1.5,
@@ -21505,9 +21624,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Engineering",
     "formula_2025": "c Eng + Math + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects%",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -21593,9 +21712,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Engineering",
     "formula_2025": "c Eng + Math + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects%",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -21681,9 +21800,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Engineering",
     "formula_2025": "c Eng + Math + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects%",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -21769,9 +21888,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Engineering",
     "formula_2025": "c Eng + Math + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects%",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -21857,9 +21976,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Engineering",
     "formula_2025": "c Eng + Math + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects%",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -22077,6 +22196,10 @@
       {
         "type": "repeater_combined_results_policy",
         "description": "Best results in year 2024, 2025 and 2026"
+      },
+      {
+        "type": "bonus_6th_half",
+        "description": "0.5 x 6th Best subject included as bonus"
       }
     ],
     "score_conversion_table": {
@@ -22253,6 +22376,10 @@
       {
         "type": "repeater_combined_results_policy",
         "description": "Best results in year 2024, 2025 and 2026"
+      },
+      {
+        "type": "bonus_6th_half",
+        "description": "0.5 x 6th Best subject included as bonus"
       }
     ],
     "score_conversion_table": {
@@ -22341,6 +22468,10 @@
       {
         "type": "repeater_combined_results_policy",
         "description": "Best results in year 2024, 2025 and 2026"
+      },
+      {
+        "type": "bonus_6th_half",
+        "description": "0.5 x 6th Best subject included as bonus"
       }
     ],
     "score_conversion_table": {
@@ -22473,9 +22604,9 @@
     "institution": "HKU",
     "faculty": "School of Innovation",
     "formula_2025": "2 x Eng + 2 x Math + Best 4 Subjects with WEIGHTING 10",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "2 x Eng + 2 x Math + Best 3 Subjects with Weighting1",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Biology": 2.0,
       "Chemistry": 2.0,
@@ -22587,7 +22718,7 @@
     "institution": "HKU",
     "faculty": "Li Ka Shing Faculty of Medicine",
     "formula_2025": "–",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 6 Subjects",
     "formula_2026_id": "best6",
     "subject_weights_2025": {},
@@ -22675,9 +22806,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Science",
     "formula_2025": "Eng + Math + Best 2 from Biology / Chemistry / Physics / M1 / M2 + Best Subject with WEIGHTING 5",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + 1.3 x Math + 1.3 x Best 2 from Biology / Chemistry / M1 / M2 / Physics + Best Remaining Subject with Weighting1",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Biology": 1.3,
       "Chemistry": 1.3,
@@ -22949,9 +23080,9 @@
     "institution": "HKU",
     "faculty": "School of Computing and Data Science",
     "formula_2025": "1.2 x Eng + 1.2 x Math + 1.2 x M1 / M2 + Best 2 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.2 x Eng + 1.2 x Math + 1.2 x M1 / M2 + Best 2 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -23127,9 +23258,9 @@
     "institution": "HKU",
     "faculty": "HKU Business School",
     "formula_2025": "1.5 x Eng + 1.5 x Math + Best 3 Subjects + 0.2 x 6th Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + 1.5 x Math + Best 3 Subjects + 0.2 x 6th Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5,
       "Mathematics (Compulsory Part)": 1.5
@@ -23221,9 +23352,9 @@
     "institution": "HKU",
     "faculty": "HKU Business School",
     "formula_2025": "1.5 x Eng + 1.5 x Math + Best 3 Subjects + 0.2 x 6th Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + 1.5 x Math + Best 3 Subjects + 0.2 x 6th Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5,
       "Mathematics (Compulsory Part)": 1.5
@@ -23315,9 +23446,9 @@
     "institution": "HKU",
     "faculty": "School of Computing and Data Science",
     "formula_2025": "1.5 x Math + Best 4 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Math + Best 4 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Mathematics (Compulsory Part)": 1.5
     },
@@ -23403,9 +23534,9 @@
     "institution": "HKU",
     "faculty": "HKU Business School",
     "formula_2025": "1.5 x Eng + 1.5 x Math + Best 3 Subjects + 0.2 x 6th Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + 1.5 x Math + Best 3 Subjects + 0.2 x 6th Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5,
       "Mathematics (Compulsory Part)": 1.5
@@ -23497,9 +23628,9 @@
     "institution": "HKU",
     "faculty": "HKU Business School",
     "formula_2025": "1.5 x Eng + 1.5 x Math + Best 3 Subjects + 0.2 x 6th Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + 1.5 x Math + Best 3 Subjects + 0.2 x 6th Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5,
       "Mathematics (Compulsory Part)": 1.5
@@ -23591,9 +23722,9 @@
     "institution": "HKU",
     "faculty": "HKU Business School",
     "formula_2025": "1.5 x Eng + 1.5 x Math + Best 4 Subjects + 0.2 x 7th Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + 1.5 x Math + Best 4 Subjects + 0.2 x 7th Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5,
       "Mathematics (Compulsory Part)": 1.5
@@ -23773,9 +23904,9 @@
     "institution": "HKU",
     "faculty": "School of Future Media",
     "formula_2025": "a 1.5 x Eng + Best 4 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x English + Best 4 Subjects#",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5
     },
@@ -23865,9 +23996,9 @@
     "institution": "HKU",
     "faculty": "HKU Business School",
     "formula_2025": "d ss 1.5 x Eng + 1.5 x Math + Best 3, Subjects + 0.2 x 6th Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + 1.5 x Math + Best 3 Subjects + 0.2 x 6th Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5,
       "Mathematics (Compulsory Part)": 1.5
@@ -23959,9 +24090,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Science",
     "formula_2025": "2 x Eng + 2 x Math / M1 / M2 + 2 x b Best Sci Subject + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "2 x Eng + 2 x Math / M1 / M2 + 2 x Best Sci Subject^ + Best 3 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -24053,9 +24184,9 @@
     "institution": "HKU",
     "faculty": "HKU Business School",
     "formula_2025": "1.5 x Eng + 1.5 x Math + Best 4 Subjects + 0.2 x 7th Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + 1.5 x Math + Best 4 Subjects + 0.2 x 7th Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5,
       "Mathematics (Compulsory Part)": 1.5
@@ -24147,9 +24278,9 @@
     "institution": "HKU",
     "faculty": "HKU Business School",
     "formula_2025": "1.5 x Eng + 1.25 x Math + 1.25 x M1 / M2 + Best 3 Subjects + 0.2 x 7th Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + 1.25 x Math + 1.25 x M1 / M2 + Best 3 Subjects + 0.2 x 7th Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5
     },
@@ -24239,9 +24370,9 @@
     "institution": "HKU",
     "faculty": "HKU Business School",
     "formula_2025": "1.5 x Eng + 1.5 x Math + Best 4 Subjects + 0.2 x 7th Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + 1.5 x Math + Best 4 Subjects + 0.2 x 7th Best Subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.5,
       "Mathematics (Compulsory Part)": 1.5
@@ -24333,9 +24464,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Science",
     "formula_2025": "Eng + 1.5 x Math + 1.5 x Best Sci b Subject + Best 2 Subjects with WEIGHTING 6",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + 1.5 x Math + 1.5 x Best Sci Subject^ + Best 2 Subjects with Weighting1",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Biology": 1.5,
       "Chemistry": 1.5,
@@ -24433,9 +24564,9 @@
     "institution": "HKU",
     "faculty": "School of Biomedical Engineering",
     "formula_2025": "c Eng + Math + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects%",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -24521,9 +24652,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Engineering",
     "formula_2025": "c Eng + Math + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects%",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -24697,9 +24828,9 @@
     "institution": "HKU",
     "faculty": "Faculty of Engineering",
     "formula_2025": "c Eng + Math + Best 3 Subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects%",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -24785,9 +24916,9 @@
     "institution": "HKU",
     "faculty": "School of Computing and Data Science",
     "formula_2025": "Eng + 1.5 x Math + Best 2 Subjects with WEIGHTING 8 + Best Subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Eng + Math + Best 3 Subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {},
     "subject_weights_2026": {},
     "best_of_weights_2025": [],
@@ -24873,9 +25004,9 @@
     "institution": "HKUST",
     "faculty": "School of Science",
     "formula_2025": "English + Math + Best 2 from Biology / Chemistry / Physics / M1 / M2 + Best 1 other subject",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 2 from Biology / Chemistry / Physics / M1 / M2 + Best 1 other subject",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 1.0
     },
@@ -25475,9 +25606,9 @@
     "institution": "HKUST",
     "faculty": "School of Engineering",
     "formula_2025": "English x 2 + Math x 2 + Best from Biology / Chemistry / Physics / ICT * ◆+, Best 2 other subjects ~, *◆ Weighting: Biology / Chemistry / Physics (x2) / ICT (x1), ~ Weighting: M1 / M2 (x 1.5), other subjects (x 1), ◆ Combined Science can also be counted as a science subject which carries a weighting of x2., Notes: Subject requirements and weightings for specific departments might change after 2025 intake.",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Physics (x2), ICT (x1.5), Biology / Chemistry (x1)~ Weighting: M1 / M2 (x2), other subjects (x1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -25602,9 +25733,9 @@
     "institution": "HKUST",
     "faculty": "School of Engineering",
     "formula_2025": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Biology / Chemistry / Physics (x2), ICT (x1.5)~ Weighting: Biology / Chemistry / Physics / M1 / M2 (x2), ICT (x1.5), other subjects (x1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Biology / Chemistry / Physics (x2), ICT (x1.5)~ Weighting: Biology / Chemistry / Physics / M1 / M2 (x2), ICT (x1.5), other subjects (x1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0,
@@ -25730,9 +25861,9 @@
     "institution": "HKUST",
     "faculty": "School of Engineering",
     "formula_2025": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Chemistry / Physics (x2), ICT (x1.5), Biology (x1)~ Weighting: M1 / M2 (x2), other subjects (x1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Chemistry / Physics (x2), ICT (x1.5), Biology (x1)~ Weighting: M1 / M2 (x2), other subjects (x1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0,
@@ -25858,9 +25989,9 @@
     "institution": "HKUST",
     "faculty": "School of Engineering",
     "formula_2025": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Physics (x2), ICT (x1.5), Biology / Chemistry (x1)~ Weighting: M1 / M2 (x2), other subjects (x1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Physics (x2), ICT (x1.5), Biology / Chemistry (x1)~ Weighting: M1 / M2 (x2), other subjects (x1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0,
@@ -25986,9 +26117,9 @@
     "institution": "HKUST",
     "faculty": "School of Engineering",
     "formula_2025": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Physics (x2), ICT (x1.5), Biology / Chemistry (x1)~ Weighting: M1 / M2 (x2), other subjects (x1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Physics (x2), ICT (x1.5), Biology / Chemistry (x1)~ Weighting: M1 / M2 (x2), other subjects (x1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0,
@@ -26114,9 +26245,9 @@
     "institution": "HKUST",
     "faculty": "School of Engineering",
     "formula_2025": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Physics (x2), ICT (x1.5), Biology / Chemistry (x1)~ Weighting: M1 / M2 (x2), other subjects (x1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Physics (x2), ICT (x1.5), Biology / Chemistry (x1)~ Weighting: M1 / M2 (x2), other subjects (x1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0,
@@ -26242,9 +26373,9 @@
     "institution": "HKUST",
     "faculty": "School of Engineering",
     "formula_2025": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Biology / Chemistry / Physics (x2), ICT (x1)~ Weighting: M1 / M2 (x1.5), other subjects (x1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Biology / Chemistry / Physics (x2), ICT (x1)~ Weighting: M1 / M2 (x1.5), other subjects (x1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -26368,9 +26499,9 @@
     "institution": "HKUST",
     "faculty": "School of Engineering",
     "formula_2025": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Biology / Chemistry / Physics (x2), ICT (x1.5)~ Weighting: M1 / M2 (x1.5), other subjects (x1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / ICT* + Best 2 other subjects~* Weighting: Biology / Chemistry / Physics (x2), ICT (x1.5)~ Weighting: M1 / M2 (x1.5), other subjects (x1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0,
@@ -26496,9 +26627,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "English x 2 + Math x 2 + Best 3 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -26604,9 +26735,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "Best 3 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -26712,9 +26843,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "English x 2 + Math x 2 + Better of Best 3 other subjects OR, Best of Chemistry / Economics / Physics / M1 / M2 x 1.5 + Best 2 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Better of Best 3 other subjects ORBest of Chemistry / Economics / Physics / M1 / M2 x 1.5 + Best 2 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -26820,9 +26951,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "English x 2 + Math x 2 + Best 3 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -26928,9 +27059,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "Best 3 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -27036,9 +27167,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "Best 3 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -27144,9 +27275,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "Best 3 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -27252,9 +27383,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "Best 3 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -27360,9 +27491,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "Best 3 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -27468,9 +27599,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "English x 2 + Math x 2 + Better of Best 3 other subjects OR, Best of Chemistry / Economics / Physics / M1 / M2 x 1.5 + Best 2 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Better of Best 3 other subjects ORBest of Chemistry / Economics / Physics / M1 / M2 x 1.5 + Best 2 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -27576,9 +27707,9 @@
     "institution": "HKUST",
     "faculty": "School of Business and Management",
     "formula_2025": "Better of Best 3 other subjects ORBest of Chemistry / Economics / Physics / M1 / M2 x 1.5 + Best 2 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Better of Best 3 other subjects ORBest of Chemistry / Economics / Physics / M1 / M2 x 1.5 + Best 2 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -27684,9 +27815,9 @@
     "institution": "HKUST",
     "faculty": "School of Humanities and Social Science",
     "formula_2025": "English x 2 + Chinese x 1.5 + Best 3 other subjects ▲",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects ▲▲ Category C subjects may be used once in the score calculation.",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Chinese": 1.5
@@ -27792,9 +27923,9 @@
     "institution": "HKUST",
     "faculty": "School of Humanities and Social Science",
     "formula_2025": "English x 2 + Math x 2 + Best 3 other subjects *, * Weighting: M1 / M2 (x 1.5), other subjects (x 1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects^^ Weighting: M1 / M2 (x 1.5), other subjects (x 1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -27918,9 +28049,9 @@
     "institution": "HKUST",
     "faculty": "Academy of Interdisciplinary Studies",
     "formula_2025": "English x 2 + Math x 2 + Best from Biology / Chemistry / Physics / Combined Science / Design and, Applied Technology / ICT * + Best 2 other subjects ~, * Weighting: Biology / Chemistry / Physics / Combined Science / Design and Applied Technology (x 2), ICT (x 1), ~ Weighting: M1 / M2 (x 1.5), other subjects (x 1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / Design and Applied Technology / ICT# + Best 2 other subjects^# Weighting: Biology / Chemistry / Physics / Design and Applied Technology (x 2), ICT (x 1)^ Weighting: M1 / M2 (x 1.5), other subjects (x 1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -28044,9 +28175,9 @@
     "institution": "HKUST",
     "faculty": "Joint Programs",
     "formula_2025": "English x 2 + Math x 2 + Best of Biology / Chemistry x 1.5 + Best 2 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best of Biology / Chemistry x 1.5 + Best 2 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -28152,9 +28283,9 @@
     "institution": "HKUST",
     "faculty": "Academy of Interdisciplinary Studies",
     "formula_2025": "English x 2 + Math x 2 + Best 3 other subjects ▲, English x 2 + Math x 2 + Best from Biology / Chemistry / Physics / Combined Science / ICT * + Best 2",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects ▲▲ Category C subjects may be used once in the score calculation.",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -28260,9 +28391,9 @@
     "institution": "HKUST",
     "faculty": "Joint Programs",
     "formula_2025": "English x 2 + Math x 2 + Best from Biology / Chemistry / Physics / Economics / M1 / M2 * + Best 2 other, subjects, * Weighting: M1 / M2 (x 2), Biology / Chemistry / Physics / Economics (x 1.5), English x 2 + Math x 2 + Best 3 other subjects ~",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / Economics / M1 / M2# + Best 2 other subjects# Weighting: M1 / M2 (x 2), Biology / Chemistry / Physics / Economics (x 1.5)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -28386,9 +28517,9 @@
     "institution": "HKUST",
     "faculty": "Joint Programs",
     "formula_2025": "Best 3 other subjects^^ Weighting: M1 / M2 (x 1.5), other subjects (x 1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best 3 other subjects^^ Weighting: M1 / M2 (x 1.5), other subjects (x 1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -28512,9 +28643,9 @@
     "institution": "HKUST",
     "faculty": "Joint Programs",
     "formula_2025": "Better of Best 3 other subjectsORBest of Chemistry / Economics / Physics / M1 / M2 x 1.5 + Best 2 other subjects",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Better of Best 3 other subjectsORBest of Chemistry / Economics / Physics / M1 / M2 x 1.5 + Best 2 other subjects",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -28620,9 +28751,9 @@
     "institution": "HKUST",
     "faculty": "Academy of Interdisciplinary Studies",
     "formula_2025": "other subjects ~, * Weighting: Biology / Chemistry / Physics / Combined Science (x 2), ICT (x 1), ~ Weighting: M1 / M2 (x 1.5), other subjects (x 1)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Best from Biology / Chemistry / Physics / ICT# + Best 2 other subjects^# Weighting: Biology / Chemistry / Physics, ICT (x 1)^ Weighting: M1 / M2 (x 1.5), other subjects (x 1)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "English Language": 2.0,
       "Mathematics (Compulsory Part)": 2.0
@@ -35476,9 +35607,9 @@
     "institution": "PolyU",
     "faculty": "Humanities",
     "formula_2025": "Chinese & English Languages + Any Best 3 Subjects (plus an additional bonus score for the 6th subject with Level 3 or above)",
-    "formula_2025_id": "custom",
+    "formula_2025_id": "best5",
     "formula_2026": "Chinese & English Languages + Any Best 3 Subjects (plus an additional bonus score for the 6th subject with Level 3 or above)",
-    "formula_2026_id": "custom",
+    "formula_2026_id": "best5",
     "subject_weights_2025": {
       "Biology": 5.0,
       "Business, Accounting and Financial Studies": 7.0,

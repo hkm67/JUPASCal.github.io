@@ -66,4 +66,7 @@ We implemented an `apply_baselines` layer to guarantee every programme meets the
 5.  **Complex Constraints:**
     *   **Nested Parents:** When splitting strings containing parentheses (like CityU formulas), use regex that respects balanced parentheses to avoid breaking subject names.
     *   **Multiplier Caps:** Some universities (like CUHK Science) limit the number of subjects that can receive bonus weightings. The calculator must sort all subjects by multiplier and cap anything exceeding the limit (e.g., `max_weighted_subjects`).
+    *   **Compulsory Pools:** Some programmes (e.g., CUHK JS4725) require the *best* subject from a specific pool (like Biology or Chemistry) to be included in the total, even if it is not among the overall top scores.
+    *   **Dynamic Weighting Pools:** Logic like "Best 2 of English, Biology or Chemistry (x 1.5)" requires the engine to dynamically assign multipliers to the highest-scoring members of a pool before finalizing the "Best N" selection.
     *   **Category A Wildcards:** Requirements like "Category A subjects only" must be mapped to a wildcard pool (`*`) to allow subjects like M1/M2 to correctly satisfy eligibility.
+6.  **Deduplication:** Always use a `seen_codes` set during the unification process to ensure that each JUPAS code appears only once in the final dataset, even if multiple source JSONs accidentally overlap.

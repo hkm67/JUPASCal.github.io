@@ -234,16 +234,75 @@ def get_conversion_table(institution, is_medicine=False):
         
     return {"category_a": table, "category_c": cat_c}
 
+def extract_logic_from_formula(formula_text):
+    """
+    Parses complex formula strings (like CUHK or HKU variants) 
+    to extract compulsory subjects, intended 'Best N' count, and dynamic pools.
+    Returns: { "compulsory": list, "best_n": int, "bonus": list, "best_of": list }
+    """
+    if not formula_text: return {"compulsory": [], "best_n": 5, "bonus": [], "best_of": []}
+    f = str(formula_text).strip()
+    
+    compulsory = []
+    best_n = 5
+    bonus = []
+    best_of = []
+    
+    # 1. Detect CUHK style: AENGL+ACHIN+Best(3)
+    # Extract subjects starting with 'A' (e.g. AENGL, ACHIN)
+    parts = re.split(r'\+|\s', f)
+    for p in parts:
+        if p.startswith('A') and "(" not in p: # Avoid catching Best(N) here
+            clean_p = re.sub(r'[^A-Z0-9]', '', p[1:])
+            if clean_p and clean_p.upper() not in ["BEST"]:
+                compulsory.append(normalize_subject(clean_p))
+            
+    # Extract Best(N)
+    m_best = re.search(r'Best\((\d+)\)', f, re.IGNORECASE)
+    if m_best:
+        best_n = int(m_best.group(1)) + len(compulsory)
+        
+    # 2. Detect CUHK Dynamic Pools: Best(1, [AECON, AINCT]):1.5
+    for m in re.finditer(r'Best\((\d+)\s*,\s*\[(.*?)\]\)\s*:\s*([\d\.]+)', f):
+        count = int(m.group(1))
+        subjs = re.findall(r'A([A-Z0-9]+)', m.group(2))
+        norm_subjs = [normalize_subject(s) for s in subjs]
+        best_of.append({
+            "count": count,
+            "subjects": norm_subjs,
+            "weight": float(m.group(3))
+        })
+    
+    # 3. Detect HKU style: Best 5 Subjects + 0.5 x 6th
+    if "Best 5" in f or "Best(5)" in f: best_n = 5
+    if "Best 6" in f or "Best(6)" in f: best_n = 6
+    if "0.5 x 6th" in f:
+        bonus.append({"type": "bonus_6th_half", "description": "0.5 x 6th Best subject included as bonus"})
+
+    # 4. Detect PolyU style: English & Chinese + Best 3
+    if "Chinese & English Languages + Any Best 3" in f:
+        compulsory.extend(["Chinese Language", "English Language"])
+        best_n = 5
+
+    # 5. Standard 4C+2X / 3C+2X
+    if "4C+2X" in f.upper() or "4 CORE" in f.upper():
+        compulsory.extend(["Chinese Language", "English Language", "Mathematics (Compulsory Part)", "Citizenship and Social Development"])
+        best_n = 6
+    elif "3C+2X" in f.upper():
+        compulsory.extend(["Chinese Language", "English Language", "Mathematics (Compulsory Part)"])
+        best_n = 5
+
+    # Deduplicate compulsory
+    compulsory = list(set(compulsory))
+    
+    return {"compulsory": compulsory, "best_n": best_n, "bonus": bonus, "best_of": best_of}
+
 def map_formula_id(formula_text):
-    """Standardize formula descriptions into machine-readable IDs (best5, 4c2x, etc.)."""
+    """Standardize formula descriptions into machine-readable IDs."""
     if not formula_text: return "unknown"
-    f = str(formula_text).lower()
-    if "best 5" in f or "best(5)" in f: return "best5"
-    if "best 6" in f or "best(6)" in f: return "best6"
-    if "4 core + best 2" in f or "4c+2x" in f or "4c2x" in f or "4 core + 2 elective" in f: return "4c2x"
-    if "3 core + best 2" in f or "3c+2x" in f or "3c2x" in f or "3 core + 2 elective" in f: return "3c2x"
-    if "any best 5" in f: return "best5"
-    if "any best 6" in f: return "best6"
+    logic = extract_logic_from_formula(formula_text)
+    if logic["best_n"] == 5: return "best5"
+    if logic["best_n"] == 6: return "best6"
     return "custom"
 
 def clean_raw_string(text):
@@ -420,8 +479,7 @@ def unify_data():
                     hku_req_map[code] = parse_hku_min_reqs(h_html)
                     hku_extra_map[code] = parse_hku_extra_info(h_html)
 
-    unified = []
-    seen_codes = set()
+    unified_map = {}
 
     # 2. Iterate through institutions
     for school_key, path in FILES.items():
@@ -431,8 +489,30 @@ def unify_data():
         
         for entry in data:
             code = entry.get('jupas_code') or entry.get('code')
-            if not code or code in seen_codes: continue
-            seen_codes.add(code)
+            if not code: continue
+            
+            # Logic Pre-check: Does this entry have detailed formula info?
+            # Prefer the most detailed formula regardless of order
+            raw_f25 = str(entry.get('formula') or entry.get('score_formula') or entry.get('principle') or "")
+            logic_check = extract_logic_from_formula(raw_f25)
+            
+            if code in unified_map:
+                existing = unified_map[code]
+                existing_logic = extract_logic_from_formula(existing.get('formula_2025'))
+                
+                # Decision: Should we replace the existing entry with the new one?
+                # Case A: New entry has more compulsory subjects
+                if len(logic_check["compulsory"]) > len(existing_logic["compulsory"]):
+                    pass # Keep new
+                # Case B: New entry has dynamic pools and existing doesn't
+                elif logic_check["best_of"] and not existing_logic["best_of"]:
+                    pass # Keep new
+                # Case C: New formula string is longer and existing has no special logic
+                elif len(raw_f25) > len(str(existing.get('formula_2025', ''))) and not existing_logic["compulsory"] and not existing_logic["best_of"]:
+                    pass # Keep new
+                else:
+                    continue # Stick with existing
+            
             ov = overview_map.get(code, {})
             
             # Base Unified Object Structure
@@ -546,14 +626,23 @@ def unify_data():
                 req25 = cuhk_2025_reqs.get(code, {})
                 req26 = cuhk_2026_reqs.get(code, {})
                 
-                obj["formula_2026"] = entry.get('formula') or entry.get('principle')
-                obj["formula_2025"] = req25.get('principle')
+                # Formula Logic: Prefer the structured 'formula' string over 'principle'
+                f26 = entry.get('formula') if entry.get('formula') and "Best" in str(entry.get('formula')) else entry.get('principle')
+                obj["formula_2026"] = f26
                 
-                # Handle cases where the 2025 PDF parser captured weightings into the formula field
-                if obj["formula_2025"] and ("(x " in obj["formula_2025"] or "•" in obj["formula_2025"]):
-                    obj["formula_2025"] = obj["formula_2026"]
-                if not obj["formula_2025"]:
-                    obj["formula_2025"] = obj["formula_2026"]
+                # Check for descriptive formula in the main entry itself (sometimes raw API has it)
+                raw_f = entry.get('formula')
+                f25 = req25.get('principle')
+                
+                # Logic: If raw_f has A-codes (AENGL etc) and f25 doesn't, use raw_f
+                if raw_f and "A" in str(raw_f) and ("+" in str(raw_f) or "Best" in str(raw_f)):
+                    if not f25 or "A" not in str(f25):
+                        f25 = raw_f
+
+                # Handle fallback if f25 is missing or too vague
+                if not f25 or len(str(f25)) < 10 or "(x " in str(f25):
+                    f25 = f26
+                obj["formula_2025"] = f25
                 
                 # Use highly structured 2026 API weight strings for 2025 fallback where possible
                 flat_weights, best_of_weights = parse_cuhk_weights(entry.get('weight'))
@@ -565,6 +654,24 @@ def unify_data():
                 obj["subject_weights_2025_raw"] = req25.get('weight')
                 obj["subject_weights_2026_raw"] = entry.get('weight_remarks')
                 
+                # CUHK Manual Overrides for Special Logic (e.g. JS4725)
+                if code == "JS4725":
+                    # Logic: Best 2 of English, Biology or Chemistry (x 1.5)
+                    obj["best_of_weights_2025"].append({
+                        "count": 2,
+                        "subjects": ["English Language", "Biology", "Chemistry"],
+                        "weight": 1.5
+                    })
+                    obj["best_of_weights_2026"] = obj["best_of_weights_2025"].copy()
+                    
+                    # Logic: Best of Biology/Chemistry must be included
+                    obj["calculation_constraints"].append({
+                        "type": "compulsory_subject_pool",
+                        "count": 1,
+                        "subjects": ["Biology", "Chemistry"],
+                        "description": "Best of Biology/Chemistry must be included in the score calculation (i.e. Best of Bio/Chem + Best 4 subjects)"
+                    })
+
                 # Detect CUHK "Max Weighted" constraints
                 if "maximum of 3 subjects will be weighted heavier" in obj["remarks"]:
                     obj["calculation_constraints"].append({
@@ -970,10 +1077,37 @@ def unify_data():
                 try: obj["max_achievable_score"] = float(str(val).replace(",", ""))
                 except: obj["max_achievable_score"] = None
             
-            # Final ID generation and global remark merging
-            obj["formula_2025_id"] = map_formula_id(obj["formula_2025"])
-            obj["formula_2026_id"] = map_formula_id(obj["formula_2026"])
+            # Final ID generation and global logic extraction
+            logic_25 = extract_logic_from_formula(obj["formula_2025"])
+            logic_26 = extract_logic_from_formula(obj["formula_2026"])
             
+            obj["formula_2025_id"] = "best5" if logic_25["best_n"] == 5 else "best6" if logic_25["best_n"] == 6 else "custom"
+            obj["formula_2026_id"] = "best5" if logic_26["best_n"] == 5 else "best6" if logic_26["best_n"] == 6 else "custom"
+            
+            # Merge extracted compulsory subjects into constraints
+            if logic_25["compulsory"]:
+                existing_comp = next((c for c in obj["calculation_constraints"] if c["type"] == "compulsory_subjects"), None)
+                if existing_comp:
+                    existing_comp["subjects"] = list(set(existing_comp["subjects"] + logic_25["compulsory"]))
+                else:
+                    obj["calculation_constraints"].append({
+                        "type": "compulsory_subjects",
+                        "subjects": logic_25["compulsory"],
+                        "description": f"Formula requires: {', '.join(logic_25['compulsory'])}"
+                    })
+            
+            # Merge extracted dynamic pools (CUHK style)
+            for pool in logic_25["best_of"]:
+                obj["best_of_weights_2025"].append(pool)
+                # Sync to 2026 if not already overwritten
+                if not obj["best_of_weights_2026"]:
+                    obj["best_of_weights_2026"] = obj["best_of_weights_2025"].copy()
+            
+            # Merge extracted bonuses
+            for b in logic_25["bonus"]:
+                if b["type"] not in [x["type"] for x in obj["calculation_constraints"]]:
+                    obj["calculation_constraints"].append(b)
+
             if obj["remarks"] and obj["remarks"] not in ["", "--", "-"]:
                 if "conditional_remarks" not in obj["min_requirements_2026"]:
                     obj["min_requirements_2026"]["conditional_remarks"] = obj["remarks"]
@@ -1001,12 +1135,13 @@ def unify_data():
             obj["score_conversion_table"] = get_conversion_table(obj["institution"], is_medicine=is_med)
 
             obj = apply_baselines(obj)
-            unified.append(obj)
+            unified_map[code] = obj
 
     # 5. Export Unified Master File
+    final_unified = list(unified_map.values())
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-        json.dump(unified, f, ensure_ascii=False, indent=2)
-    print(f"Unified data for {len(unified)} programmes saved to {OUTPUT_FILE}")
+        json.dump(final_unified, f, ensure_ascii=False, indent=2)
+    print(f"Unified data for {len(final_unified)} programmes saved to {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     unify_data()

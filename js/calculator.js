@@ -77,6 +77,7 @@ const JUPAS_CALCULATOR = {
             });
         }
 
+        // --- Step 4: Identify Compulsory Subjects & Pools ---
         let compulsoryConstraint = constraints.find(c => c.type === "compulsory_subjects");
         if (compulsoryConstraint) {
             candidates.forEach(c => {
@@ -85,7 +86,10 @@ const JUPAS_CALCULATOR = {
                 }
             });
         }
+        
+        let compulsoryPools = constraints.filter(c => c.type === "compulsory_subject_pool");
 
+        // --- Step 5: Selection Logic (Best N) ---
         let selectedSubjects = [];
         let totalScore = 0;
         let targetCount = 5;
@@ -93,12 +97,27 @@ const JUPAS_CALCULATOR = {
             targetCount = 6;
         }
 
+        // A. Pick Compulsory individual subjects first
         candidates.filter(c => c.isCompulsory).forEach(c => {
             c.used = true;
             selectedSubjects.push(c);
             totalScore += c.weightedScore;
         });
 
+        // B. Pick best N from each Compulsory Pool
+        compulsoryPools.forEach(pool => {
+            let poolCandidates = candidates.filter(c => !c.used && pool.subjects.includes(c.subject));
+            poolCandidates.sort((a, b) => b.weightedScore - a.weightedScore);
+            for (let i = 0; i < Math.min(pool.count, poolCandidates.length); i++) {
+                if (selectedSubjects.length >= targetCount) break;
+                let c = poolCandidates[i];
+                c.used = true;
+                selectedSubjects.push(c);
+                totalScore += c.weightedScore;
+            }
+        });
+
+        // C. Pick Best of remaining
         let remainingPotentials = candidates.filter(c => !c.used);
         remainingPotentials.sort((a, b) => b.weightedScore - a.weightedScore);
 
@@ -114,12 +133,27 @@ const JUPAS_CALCULATOR = {
             totalScore += c.weightedScore;
         }
 
+        // --- Step 6: Post-Selection Bonuses ---
+        // A. PolyU style (0.1 x Score)
         let bonusConstraint = constraints.find(c => c.type === "additional_bonus_6th");
         if (bonusConstraint && selectedSubjects.length === 5) {
             let bonusSubject = candidates.filter(c => !c.used && parseInt(c.grade) >= 3)
                                          .sort((a, b) => b.basePoints - a.basePoints)[0];
             if (bonusSubject) {
                 let bonusPoints = bonusSubject.basePoints * 0.1; 
+                totalScore += bonusPoints;
+                bonusSubject.isBonus = true;
+                selectedSubjects.push(bonusSubject);
+            }
+        }
+
+        // B. HKU style (0.5 x Score)
+        let halfBonusConstraint = constraints.find(c => c.type === "bonus_6th_half");
+        if (halfBonusConstraint && selectedSubjects.length === 5) {
+            let bonusSubject = candidates.filter(c => !c.used)
+                                         .sort((a, b) => b.basePoints - a.basePoints)[0];
+            if (bonusSubject) {
+                let bonusPoints = bonusSubject.basePoints * 0.5;
                 totalScore += bonusPoints;
                 bonusSubject.isBonus = true;
                 selectedSubjects.push(bonusSubject);

@@ -57,22 +57,34 @@ def calculate_programme_score(student_grades, programme, year="2025"):
 
     # 4. Handle Compulsory Subjects
     compulsory = []
+    compulsory_pools = []
     for c in constraints:
         if c["type"] == "compulsory_subjects":
             compulsory = c["subjects"]
+        if c["type"] == "compulsory_subject_pool":
+            compulsory_pools.append(c)
 
     # 5. Selection Logic (Best N)
     selected_subjects = []
     target_count = 5 if "5" in str(programme.get(f"formula_{year}")) else 6
     if formula_id == "best6": target_count = 6
 
-    # A. Compulsory first
+    # A. Compulsory individual subjects first
     for s in subject_scores:
         if s["subject"] in compulsory:
             s["used"] = True
             selected_subjects.append(s)
+            
+    # B. Compulsory pools (Pick best N from pool)
+    for pool in compulsory_pools:
+        # Find unused subjects in this pool, sorted by weighted points
+        pool_cands = sorted([s for s in subject_scores if s["subject"] in pool["subjects"] and not s["used"]], key=lambda x: x["weighted_points"], reverse=True)
+        for i in range(min(pool["count"], len(pool_cands))):
+            cand = pool_cands[i]
+            cand["used"] = True
+            selected_subjects.append(cand)
     
-    # B. Fill remaining with best weighted scores
+    # C. Fill remaining with best weighted scores
     remaining = [s for s in subject_scores if not s["used"]]
     remaining.sort(key=lambda x: x["weighted_points"], reverse=True)
 
@@ -90,13 +102,22 @@ def calculate_programme_score(student_grades, programme, year="2025"):
             s["used"] = True
             selected_subjects.append(s)
 
-    # 6. Post-Selection Bonus (PolyU 6th subject)
+    # 6. Post-Selection Bonus
     for c in constraints:
+        # PolyU Style
         if c["type"] == "additional_bonus_6th" and len(selected_subjects) == 5:
             bonus_cand = sorted([s for s in subject_scores if not s["used"] and s["base_points"] >= 3], key=lambda x: x["base_points"], reverse=True)
             if bonus_cand:
                 bc = bonus_cand[0]
                 bc.update({"used": True, "is_bonus": True, "weighted_points": bc["base_points"] * 0.1})
+                selected_subjects.append(bc)
+        
+        # HKU Style (0.5 x 6th)
+        if c["type"] == "bonus_6th_half" and len(selected_subjects) == 5:
+            bonus_cand = sorted([s for s in subject_scores if not s["used"]], key=lambda x: x["base_points"], reverse=True)
+            if bonus_cand:
+                bc = bonus_cand[0]
+                bc.update({"used": True, "is_bonus": True, "weighted_points": bc["base_points"] * 0.5})
                 selected_subjects.append(bc)
 
     final_score = sum(s["weighted_points"] for s in selected_subjects)
