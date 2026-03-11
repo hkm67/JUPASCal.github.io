@@ -107,7 +107,6 @@ const JUPAS_UI = {
 
     /**
      * Encodes current grades into URL Hash Fragment.
-     * Format: #chi=5*&eng=5&math=4&csd=A&e1=Biology:5**
      */
     syncStateToHash: function() {
         let params = new URLSearchParams();
@@ -243,8 +242,19 @@ const JUPAS_UI = {
         const container = document.getElementById('result-display');
         const p = this.selectedProgramme;
 
+        // Helper: Format score comparison
+        const formatComp = (histScore) => {
+            if (!histScore || !result.totalScore) return "";
+            const diff = result.totalScore - histScore;
+            const pct = (result.totalScore / histScore * 100).toFixed(1);
+            const className = diff >= 0 ? "pos" : "neg";
+            return `<span class="comp ${className}">(${diff >= 0 ? '+' : ''}${diff.toFixed(2)} | ${pct}%)</span>`;
+        };
+
+        // Helper: Generate horizontal logic grid
         const generateHistoricalLogicGrid = (gradeBreakdown, title) => {
             if (!gradeBreakdown || Object.keys(gradeBreakdown).length === 0) return "";
+            
             const mappedBreakdown = {};
             const weights = p.subject_weights_2025 || {};
             const core_names = ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", 
@@ -271,25 +281,13 @@ const JUPAS_UI = {
 
             return `
                 <div class="logic-group historical">
-                    <h4>${title} Logic</h4>
+                    <h4>${title} Analysis</h4>
                     <div class="logic-table-wrapper">
                         <table class="logic-grid">
-                            <tr class="labels-row">
-                                <th class="row-label"></th>
-                                ${subjects.map(s => `<th>${this.getShortName(s.subject)}</th>`).join('')}
-                            </tr>
-                            <tr class="grades-row">
-                                <td class="row-label">Grade</td>
-                                ${subjects.map(s => `<td>${s.grade}</td>`).join('')}
-                            </tr>
-                            <tr class="weights-row">
-                                <td class="row-label">Weight</td>
-                                ${subjects.map(s => `<td>${s.multiplier}</td>`).join('')}
-                            </tr>
-                            <tr class="points-row">
-                                <td class="row-label">Score</td>
-                                ${subjects.map(s => `<td class="${s.used ? 'selected' : ''}">${s.weightedScore.toFixed(2)}</td>`).join('')}
-                            </tr>
+                            <tr class="labels-row"><th class="row-label"></th>${subjects.map(s => `<th>${this.getShortName(s.subject)}</th>`).join('')}</tr>
+                            <tr class="grades-row"><td class="row-label">Grade</td>${subjects.map(s => `<td>${s.grade}</td>`).join('')}</tr>
+                            <tr class="weights-row"><td class="row-label">Weight</td>${subjects.map(s => `<td>${s.multiplier}</td>`).join('')}</tr>
+                            <tr class="points-row"><td class="row-label">Score</td>${subjects.map(s => `<td class="${s.used ? 'selected' : ''}">${s.weightedScore.toFixed(2)}</td>`).join('')}</tr>
                         </table>
                     </div>
                 </div>`;
@@ -297,17 +295,34 @@ const JUPAS_UI = {
 
         let html = `<div class="result-card">
             <h2>[${p.jupas_code}] ${p.name_en}</h2>
+            
             <div class="eligibility ${eligibility.eligible ? 'pass' : 'fail'}">
                 ${eligibility.eligible ? '✓ ELIGIBLE' : '✗ NOT ELIGIBLE'}
                 ${!eligibility.eligible ? `<ul class="reasons"><li>${eligibility.reasons.join('</li><li>')}</li></ul>` : ''}
             </div>
+
             <div class="score-box">
                 <div class="score-label">Your Estimated Score</div>
                 <div class="score-value">${result.totalScore}</div>
                 <div class="score-note">Calculated using 2025 formula</div>
             </div>
 
-            <h3>Your Calculation Breakdown</h3>
+            <div class="historical-scores">
+                <h3>2025 Historical Comparison</h3>
+                <ul class="comp-list">
+                    <li><b>UQ:</b> ${p.scores_2025.uq || 'N/A'} ${formatComp(p.scores_2025.uq)}</li>
+                    <li><b>Median:</b> ${p.scores_2025.median || 'N/A'} ${formatComp(p.scores_2025.median)}</li>
+                    <li><b>LQ:</b> ${p.scores_2025.lq || 'N/A'} ${formatComp(p.scores_2025.lq)}</li>
+                    <li><b>Mean:</b> ${p.scores_2025.mean || 'N/A'} ${formatComp(p.scores_2025.mean)}</li>
+                </ul>
+                
+                ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
+                ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
+                
+                ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU Median/LQ are estimated from breakdowns.</p>` : ''}
+            </div>
+
+            <h3>Your Calculation Detail</h3>
             <table class="audit-table">
                 <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
                 <tbody>`;
@@ -320,16 +335,9 @@ const JUPAS_UI = {
             </tr>`;
         });
         html += `</tbody></table>
-
-            <div class="historical-scores">
-                <h3>2025 Historical Context</h3>
-                <p><b>UQ:</b> ${p.scores_2025.uq || 'N/A'} | <b>Median:</b> ${p.scores_2025.median || 'N/A'} | <b>LQ:</b> ${p.scores_2025.lq || 'N/A'} | <b>Mean:</b> ${p.scores_2025.mean || 'N/A'}</p>
-                ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
-                ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "Lower Quartile")}
-                ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU Median/LQ are estimated based on grade breakdowns.</p>` : ''}
-            </div>
             <p class="formula-text"><b>Formula Applied:</b> ${result.formula}</p>
         </div>`;
+
         container.innerHTML = html;
     },
 

@@ -146,6 +146,13 @@ header {
 .score-value { font-size: 3em; font-weight: bold; }
 .score-note { font-size: 0.8em; opacity: 0.8; margin-top: 5px; }
 
+.comp-list { list-style: none; padding: 0; margin-bottom: 20px; }
+.comp-list li { margin-bottom: 8px; font-size: 1.1em; }
+
+.comp { font-size: 0.85em; margin-left: 10px; font-weight: bold; }
+.comp.pos { color: var(--success-color); }
+.comp.neg { color: var(--error-color); }
+
 .audit-table {
     width: 100%;
     border-collapse: collapse;
