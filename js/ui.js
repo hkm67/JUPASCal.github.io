@@ -91,7 +91,15 @@ const JUPAS_UI = {
             
             this.renderSubjectInputs();
             this.setupEventListeners();
-            this.updateSearch(""); 
+            
+            // Restore state from LocalStorage
+            this.loadGrades();
+            const savedSearch = localStorage.getItem('jupas_search_query');
+            if (savedSearch) {
+                document.getElementById('search-input').value = savedSearch;
+            }
+            this.updateSearch(savedSearch || ""); 
+
             console.log("JUPAS UI Initialized.");
         } catch (error) {
             console.error("Initialization Error:", error);
@@ -128,12 +136,65 @@ const JUPAS_UI = {
 
     setupEventListeners: function() {
         const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', (e) => this.updateSearch(e.target.value));
+        searchInput.addEventListener('input', (e) => {
+            localStorage.setItem('jupas_search_query', e.target.value);
+            this.updateSearch(e.target.value);
+        });
+
+        const resetBtn = document.getElementById('reset-button');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => this.resetGrades());
+        }
+
         document.addEventListener('change', (e) => {
             if (e.target.classList.contains('grade-input') || e.target.classList.contains('subject-select')) {
+                this.saveGrades();
                 if (this.selectedProgramme) this.performCalculation();
             }
         });
+    },
+
+    saveGrades: function() {
+        const data = {
+            cores: {},
+            electives: []
+        };
+        document.querySelectorAll('select[data-subject]').forEach(el => {
+            data.cores[el.dataset.subject] = el.value;
+        });
+        for (let i = 1; i <= 4; i++) {
+            data.electives.push({
+                name: document.getElementById(`e${i}-name`).value,
+                grade: document.getElementById(`e${i}-grade`).value
+            });
+        }
+        localStorage.setItem('jupas_student_grades', JSON.stringify(data));
+    },
+
+    loadGrades: function() {
+        const saved = localStorage.getItem('jupas_student_grades');
+        if (!saved) return;
+        try {
+            const data = JSON.parse(saved);
+            // Restore Cores
+            document.querySelectorAll('select[data-subject]').forEach(el => {
+                if (data.cores[el.dataset.subject]) el.value = data.cores[el.dataset.subject];
+            });
+            // Restore Electives
+            data.electives.forEach((e, i) => {
+                const idx = i + 1;
+                const nameEl = document.getElementById(`e${idx}-name`);
+                const gradeEl = document.getElementById(`e${idx}-grade`);
+                if (nameEl && e.name) nameEl.value = e.name;
+                if (gradeEl && e.grade) gradeEl.value = e.grade;
+            });
+        } catch (e) { console.error("Failed to parse saved grades."); }
+    },
+
+    resetGrades: function() {
+        localStorage.removeItem('jupas_student_grades');
+        document.querySelectorAll('select.grade-input, select.subject-select').forEach(el => el.value = "");
+        if (this.selectedProgramme) this.performCalculation();
     },
 
     updateSearch: function(query) {
@@ -181,14 +242,10 @@ const JUPAS_UI = {
         const container = document.getElementById('result-display');
         const p = this.selectedProgramme;
 
-        // Helper to generate horizontal logic grid for historical breakdowns
         const generateHistoricalLogicGrid = (gradeBreakdown, title) => {
             if (!gradeBreakdown || Object.keys(gradeBreakdown).length === 0) return "";
-            
             const mappedBreakdown = {};
             const weights = p.subject_weights_2025 || {};
-            
-            // Identify elective multipliers for assignment to generic "Elective 1" slots
             const core_names = ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", 
                           "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)",
                           "Citizenship and Social Development"];
@@ -199,20 +256,13 @@ const JUPAS_UI = {
 
             for (let [key, grade] of Object.entries(gradeBreakdown)) {
                 const upperKey = key.toUpperCase();
-                // Map breakdown key to canonical subject name using subjectMap
-                if (this.subjectMap[upperKey]) {
-                    mappedBreakdown[this.subjectMap[upperKey]] = grade;
-                } else if (key.includes("Elective")) {
-                    // Pull the best remaining elective weight for this slot
+                if (this.subjectMap[upperKey]) mappedBreakdown[this.subjectMap[upperKey]] = grade;
+                else if (key.includes("Elective")) {
                     if (electiveMultipliers.length > 0) {
                         const em = electiveMultipliers.shift();
                         mappedBreakdown[em.name] = grade;
-                    } else {
-                        mappedBreakdown[key] = grade;
-                    }
-                } else {
-                    mappedBreakdown[key] = grade;
-                }
+                    } else mappedBreakdown[key] = grade;
+                } else mappedBreakdown[key] = grade;
             }
 
             const histResult = JUPAS_CALCULATOR.calculateScore(mappedBreakdown, p, "2025");
@@ -250,40 +300,20 @@ const JUPAS_UI = {
                 ${eligibility.eligible ? '✓ ELIGIBLE' : '✗ NOT ELIGIBLE'}
                 ${!eligibility.eligible ? `<ul class="reasons"><li>${eligibility.reasons.join('</li><li>')}</li></ul>` : ''}
             </div>
-
             <div class="score-box">
                 <div class="score-label">Your Estimated Score</div>
                 <div class="score-value">${result.totalScore}</div>
                 <div class="score-note">Calculated using 2025 formula</div>
             </div>
-
-            <h3>Your Calculation Breakdown</h3>
-            <table class="audit-table">
-                <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
-                <tbody>`;
-        
-        const sorted = [...result.allCandidates].sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1);
-        sorted.forEach(c => {
-            html += `<tr class="${c.used ? 'selected-subject' : 'unused'}">
-                <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
-                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
-            </tr>`;
-        });
-        html += `</tbody></table>
-
             <div class="historical-scores">
                 <h3>2025 Historical Context</h3>
                 <p><b>UQ:</b> ${p.scores_2025.uq || 'N/A'} | <b>Median:</b> ${p.scores_2025.median || 'N/A'} | <b>LQ:</b> ${p.scores_2025.lq || 'N/A'} | <b>Mean:</b> ${p.scores_2025.mean || 'N/A'}</p>
-                
                 ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
                 ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "Lower Quartile")}
-                
                 ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU Median/LQ are estimated based on grade breakdowns.</p>` : ''}
             </div>
-
             <p class="formula-text"><b>Formula Applied:</b> ${result.formula}</p>
         </div>`;
-
         container.innerHTML = html;
     },
 
