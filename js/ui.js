@@ -366,10 +366,10 @@ const JUPAS_UI = {
                     <table class="historical-table">
                         <thead><tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr></thead>
                         <tbody>
-                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${formatComp(p.scores_2025.uq)}</tr>
-                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${formatComp(p.scores_2025.median)}</tr>
-                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${formatComp(p.scores_2025.lq)}</tr>
-                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${formatComp(p.scores_2025.mean)}</tr>
+                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
+                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
+                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
+                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
                         </tbody>
                     </table>
                     ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "UQ")}
