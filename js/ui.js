@@ -147,22 +147,36 @@ const JUPAS_UI = {
 
     updateSearch: function(query) {
         const list = document.getElementById('programme-list');
-        const q = query.toLowerCase();
+        const q = (query || "").toLowerCase();
         
-        const filtered = this.allProgrammes.filter(p => 
-            p.jupas_code.toLowerCase().includes(q) || 
-            p.name_en.toLowerCase().includes(q) ||
-            p.name_zh.includes(q)
-        ).slice(0, 50); // Limit display for performance
+        const filtered = this.allProgrammes.filter(p => {
+            const code = (p.jupas_code || "").toLowerCase();
+            const name_en = (p.name_en || "").toLowerCase();
+            const name_zh = (p.name_zh || "").toLowerCase();
+            const inst = (p.institution || "").toLowerCase();
+            
+            return code.includes(q) || 
+                   name_en.includes(q) ||
+                   name_zh.includes(q) ||
+                   inst.includes(q);
+        });
+
+        // Limit results only if searching, otherwise show a reasonable initial list
+        const displayList = q ? filtered : filtered.slice(0, 100);
 
         let html = "";
-        filtered.forEach(p => {
-            html += `<div class="programme-item" onclick="JUPAS_UI.selectProgramme('${p.jupas_code}')">
-                <span class="code">${p.jupas_code}</span>
-                <span class="name">${p.name_en}</span>
-                <span class="inst">${p.institution}</span>
-            </div>`;
-        });
+        if (displayList.length === 0) {
+            html = "<div class='no-results'>No programmes found matching your search.</div>";
+        } else {
+            displayList.forEach(p => {
+                html += `<div class="programme-item ${this.selectedProgramme && this.selectedProgramme.jupas_code === p.jupas_code ? 'active' : ''}" 
+                             onclick="JUPAS_UI.selectProgramme('${p.jupas_code}')">
+                    <span class="code">${p.jupas_code}</span>
+                    <span class="name">${p.name_en}</span>
+                    <span class="inst">${p.institution}</span>
+                </div>`;
+            });
+        }
         list.innerHTML = html;
     },
 
