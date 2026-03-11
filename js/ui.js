@@ -9,7 +9,6 @@ const JUPAS_UI = {
     allProgrammes: [],
     selectedProgramme: null,
     
-    // Canonical subject list for input generation
     coreSubjects: [
         "Chinese Language",
         "English Language",
@@ -147,6 +146,38 @@ const JUPAS_UI = {
     renderResult: function(eligibility, result) {
         const container = document.getElementById('result-display');
         const p = this.selectedProgramme;
+
+        const cores = result.allCandidates.filter(c => this.coreSubjects.includes(c.subject));
+        const electives = result.allCandidates.filter(c => !this.coreSubjects.includes(c.subject));
+
+        const generateGridHtml = (subjects, title) => {
+            if (subjects.length === 0) return "";
+            return `
+                <div class="logic-group">
+                    <h4>${title}</h4>
+                    <div class="logic-table-wrapper">
+                        <table class="logic-grid">
+                            <tr class="labels-row">
+                                <th class="row-label"></th>
+                                ${subjects.map(s => `<th>${this.getShortName(s.subject)}</th>`).join('')}
+                            </tr>
+                            <tr class="grades-row">
+                                <td class="row-label">Grade</td>
+                                ${subjects.map(s => `<td>${s.grade}</td>`).join('')}
+                            </tr>
+                            <tr class="weights-row">
+                                <td class="row-label">比重</td>
+                                ${subjects.map(s => `<td>${s.multiplier}</td>`).join('')}
+                            </tr>
+                            <tr class="points-row">
+                                <td class="row-label">Score</td>
+                                ${subjects.map(s => `<td class="${s.used ? 'selected' : ''}">${s.weightedScore.toFixed(2)}</td>`).join('')}
+                            </tr>
+                        </table>
+                    </div>
+                </div>`;
+        };
+
         let html = `<div class="result-card">
             <h2>[${p.jupas_code}] ${p.name_en}</h2>
             <div class="eligibility ${eligibility.eligible ? 'pass' : 'fail'}">
@@ -161,28 +192,32 @@ const JUPAS_UI = {
             <div class="historical-scores">
                 <p><b>2025 Historical Scores:</b></p>
                 <ul>
-                    <li><b>UQ (Upper Quartile):</b> ${p.scores_2025.uq || 'N/A'}</li>
+                    <li><b>UQ:</b> ${p.scores_2025.uq || 'N/A'}</li>
                     <li><b>Median:</b> ${p.scores_2025.median || 'N/A'}</li>
-                    <li><b>LQ (Lower Quartile):</b> ${p.scores_2025.lq || 'N/A'}</li>
+                    <li><b>LQ:</b> ${p.scores_2025.lq || 'N/A'}</li>
                     <li><b>Mean:</b> ${p.scores_2025.mean || 'N/A'}</li>
                 </ul>
-                ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU Median/LQ are estimated based on subject grade breakdowns.</p>` : ''}
             </div>
-            <h3>Calculation Breakdown</h3>
-            <table class="audit-table">
-                <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
-                <tbody>`;
-        const sorted = [...result.allCandidates].sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1);
-        sorted.forEach(c => {
-            html += `<tr class="${c.used ? 'selected-subject' : 'unused'}">
-                <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
-                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
-            </tr>`;
-        });
-        html += `</tbody></table>
+            <h3>Calculation Logic</h3>
+            ${generateGridHtml(cores, "Core Subjects")}
+            ${generateGridHtml(electives, "Electives")}
             <p class="formula-text"><b>Formula:</b> ${result.formula}</p>
         </div>`;
         container.innerHTML = html;
+    },
+
+    getShortName: function(fullName) {
+        const map = {
+            "Chinese Language": "中文",
+            "English Language": "英文",
+            "Mathematics (Compulsory Part)": "數學",
+            "Citizenship and Social Development": "CSD",
+            "Mathematics Extended Part (Module 1)": "M1",
+            "Mathematics Extended Part (Module 2)": "M2",
+            "Information and Communication Technology": "ICT",
+            "Business, Accounting and Financial Studies": "BAFS"
+        };
+        return map[fullName] || fullName.substring(0, 6);
     }
 };
 
