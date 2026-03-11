@@ -368,6 +368,23 @@ const JUPAS_UI = {
 
                 ${weightInfo}
 
+                <details class="calculation-audit-dropdown">
+                    <summary>View Your Calculation Detail (Audit Trail)</summary>
+                    <div class="audit-content">
+                        <table class="audit-table">
+                            <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
+                            <tbody>
+                                ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => `
+                                    <tr class="${c.used ? 'selected-subject' : 'unused'}">
+                                        <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
+                                        <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
+
                 ${!isNewProgramme ? `
                 <div class="historical-scores">
                     <h3>2025 Historical Comparison</h3>
@@ -384,19 +401,6 @@ const JUPAS_UI = {
                     ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
                     ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
                 </div>` : '<div class="no-historical">No 2025 historical data available for this new programme.</div>'}
-
-                <h3>Calculation Detail</h3>
-                <table class="audit-table">
-                    <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
-                    <tbody>
-                        ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => `
-                            <tr class="${c.used ? 'selected-subject' : 'unused'}">
-                                <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
-                                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
             </div>`;
         container.innerHTML = html;
     },

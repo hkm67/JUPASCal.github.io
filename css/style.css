@@ -174,9 +174,14 @@ header p { margin: 5px 0 0 0; font-size: 0.9em; opacity: 0.8; }
     background: var(--accent-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;
 }
 
-/* Eligibility */
-.eligibility-dropdown { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 4px; }
-.eligibility-dropdown summary { padding: 12px; cursor: pointer; font-weight: bold; }
+/* Eligibility & Audit Dropdowns */
+.eligibility-dropdown, .calculation-audit-dropdown { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; }
+.eligibility-dropdown summary, .calculation-audit-dropdown summary { padding: 12px; cursor: pointer; font-weight: bold; outline: none; }
+
+.calculation-audit-dropdown { background: #f9f9f9; }
+.calculation-audit-dropdown summary { color: #666; font-size: 0.9em; }
+.audit-content { padding: 15px; background: white; border-top: 1px solid #ddd; }
+
 .eligibility-dropdown.pass summary { background: #d4edda; color: #155724; }
 .eligibility-dropdown.fail summary { background: #f8d7da; color: #721c24; }
 .elig-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
