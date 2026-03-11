@@ -45,7 +45,6 @@ const JUPAS_UI = {
             this.renderSubjectInputs();
             this.setupEventListeners();
             
-            // Restore state
             if (window.location.hash) {
                 this.loadStateFromHash();
             } else {
@@ -54,10 +53,8 @@ const JUPAS_UI = {
 
             const savedSearch = localStorage.getItem('jupas_search_query');
             if (savedSearch) document.getElementById('search-input').value = savedSearch;
-            
             this.updateSearch(savedSearch || ""); 
 
-            // Initial view: Open Grade Input, Collapse Programme Selection
             this.setAccordion('grade-accordion', true);
             this.setAccordion('prog-accordion', false);
 
@@ -68,9 +65,6 @@ const JUPAS_UI = {
         }
     },
 
-    /**
-     * Accordion Logic
-     */
     toggleAccordion: function(id) {
         const el = document.getElementById(id);
         el.classList.toggle('collapsed');
@@ -197,7 +191,6 @@ const JUPAS_UI = {
     },
 
     applyGradesToUI: function(data) {
-        // Handle both old structured format and new flat format if needed
         const cores = data.cores || data; 
         document.querySelectorAll('select[data-subject]').forEach(el => {
             if (cores[el.dataset.subject]) el.value = cores[el.dataset.subject];
@@ -246,8 +239,6 @@ const JUPAS_UI = {
         this.selectedProgramme = this.allProgrammes.find(p => p.jupas_code === code);
         this.performCalculation();
         this.updateSearch(document.getElementById('search-input').value);
-        
-        // Collapse Programme Selection and Grade Input after selection
         this.setAccordion('prog-accordion', false);
         this.setAccordion('grade-accordion', false);
     },
@@ -255,9 +246,18 @@ const JUPAS_UI = {
     performCalculation: function() {
         if (!this.selectedProgramme) return;
         const grades = this.getGradesFromUI_Flattened();
+        
+        // Detect if it is a new programme (no historical scores)
+        const isNew = !this.selectedProgramme.scores_2025.median && 
+                      !this.selectedProgramme.scores_2025.lq && 
+                      !this.selectedProgramme.scores_2025.mean;
+        
+        const calcYear = isNew ? "2026" : "2025";
+        
         const eligibility = JUPAS_CALCULATOR.checkEligibility(grades, this.selectedProgramme.min_requirements_2026);
-        const result = JUPAS_CALCULATOR.calculateScore(grades, this.selectedProgramme, "2025");
-        this.renderResult(eligibility, result);
+        const result = JUPAS_CALCULATOR.calculateScore(grades, this.selectedProgramme, calcYear);
+        
+        this.renderResult(eligibility, result, isNew);
     },
 
     getGradesFromUI_Flattened: function() {
@@ -271,11 +271,11 @@ const JUPAS_UI = {
         return grades;
     },
 
-    renderResult: function(eligibility, result) {
+    renderResult: function(eligibility, result, isNewProgramme) {
         const container = document.getElementById('result-display');
         const p = this.selectedProgramme;
 
-        const formatComp = (histScore) => {
+        const getCompCells = (histScore) => {
             if (!histScore || !result.totalScore) return "<td>-</td><td>-</td>";
             const diff = result.totalScore - histScore;
             const pctChange = ((result.totalScore - histScore) / histScore * 100).toFixed(1);
@@ -323,17 +323,19 @@ const JUPAS_UI = {
                 </div>`;
         };
 
-        const w25 = p.subject_weights_2025;
+        const calcYear = isNewProgramme ? "2026" : "2025";
+        const wInfo = p[`subject_weights_${calcYear}`];
         let weightInfo = `<div class="weighting-reference">
-            <h4>Formula & Weights</h4>
-            <p class="formula-main"><b>Formula:</b> ${p.formula_2025}</p>
+            <h4>Formula & Weights (${calcYear} Cycle)</h4>
+            <p class="formula-main"><b>Formula:</b> ${p[`formula_${calcYear}`]}</p>
             <div class="weights-list">
-                ${Object.entries(w25).map(([name, w]) => `<span><b>${this.getShortName(name)}</b>: x${w}</span>`).join('')}
+                ${Object.entries(wInfo).map(([name, w]) => `<span><b>${this.getShortName(name)}</b>: x${w}</span>`).join('')}
             </div>
         </div>`;
 
         let html = `
             <div class="result-card">
+                ${isNewProgramme ? '<div class="new-badge">NEW PROGRAMME (2026 ENTRY)</div>' : ''}
                 <div class="card-header">
                     <h2>[${p.jupas_code}] ${p.name_en}</h2>
                     <button class="btn-share" onclick="JUPAS_UI.shareLink()">Share Result</button>
@@ -361,28 +363,29 @@ const JUPAS_UI = {
                 <div class="score-box">
                     <div class="score-label">Your Estimated Score</div>
                     <div class="score-value">${result.totalScore}</div>
-                    <div class="score-note">Based on 2025 scoring logic</div>
+                    <div class="score-note">Based on ${calcYear} scoring logic</div>
                 </div>
 
                 ${weightInfo}
 
+                ${!isNewProgramme ? `
                 <div class="historical-scores">
                     <h3>2025 Historical Comparison</h3>
                     <table class="historical-table">
                         <thead><tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr></thead>
                         <tbody>
-                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${formatComp(p.scores_2025.uq)}</tr>
-                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${formatComp(p.scores_2025.median)}</tr>
-                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${formatComp(p.scores_2025.lq)}</tr>
-                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${formatComp(p.scores_2025.mean)}</tr>
+                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
+                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
+                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
+                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
                         </tbody>
                     </table>
                     ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "UQ")}
                     ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
                     ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
-                </div>
+                </div>` : '<div class="no-historical">No 2025 historical data available for this new programme.</div>'}
 
-                <h3>Your Calculation Detail</h3>
+                <h3>Calculation Detail</h3>
                 <table class="audit-table">
                     <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
                     <tbody>
