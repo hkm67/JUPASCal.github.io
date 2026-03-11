@@ -45,11 +45,9 @@ const JUPAS_UI = {
             this.renderSubjectInputs();
             this.setupEventListeners();
             
-            // 1. Priority: Load from URL Hash (for link sharing)
             if (window.location.hash) {
                 this.loadStateFromHash();
             } else {
-                // 2. Secondary: Load from LocalStorage ONLY if previously explicitly saved
                 this.loadGradesFromStorage();
             }
 
@@ -63,10 +61,21 @@ const JUPAS_UI = {
 
     renderSubjectInputs: function() {
         const container = document.getElementById('subject-inputs');
-        let html = "<h3>Input Your DSE Grades</h3>";
-        this.coreSubjects.forEach(s => html += this.createSubjectRow(s, s === "Citizenship and Social Development"));
+        let html = `
+            <div class="sidebar-header">
+                <h3>Input Your DSE Grades</h3>
+                <button class="toggle-btn mobile-only" onclick="JUPAS_UI.toggleSidebar()">Hide</button>
+            </div>
+            <div id="inputs-content">`;
+
+        this.coreSubjects.forEach(s => {
+            html += this.createSubjectRow(s, s === "Citizenship and Social Development");
+        });
+
         html += "<h4 style='margin-top:20px;'>Electives</h4>";
         for (let i = 1; i <= 4; i++) html += this.createElectiveSlot(i);
+        
+        html += `</div>`;
         container.innerHTML = html;
     },
 
@@ -90,39 +99,45 @@ const JUPAS_UI = {
 
     setupEventListeners: function() {
         const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', (e) => {
-            localStorage.setItem('jupas_search_query', e.target.value);
-            this.updateSearch(e.target.value);
-        });
+        searchInput.addEventListener('input', (e) => this.updateSearch(e.target.value));
 
         const resetBtn = document.getElementById('reset-button');
-        if (resetBtn) resetBtn.addEventListener('click', () => this.resetGrades());
+        if (resetBtn) resetBtn.addEventListener('click', () => {
+            if (confirm("Reset all grades? This cannot be undone.")) {
+                this.resetGrades();
+            }
+        });
 
         const saveBtn = document.getElementById('save-button');
         if (saveBtn) saveBtn.addEventListener('click', () => this.saveGradesToStorage());
 
         document.addEventListener('change', (e) => {
             if (e.target.classList.contains('grade-input') || e.target.classList.contains('subject-select')) {
-                this.syncStateToHash(); // Update URL instantly
+                this.syncStateToHash(); 
                 if (this.selectedProgramme) this.performCalculation();
+                // Collapse sidebar on mobile after grade selection
+                if (window.innerWidth <= 1024 && e.target.classList.contains('grade-input') && e.target.value !== "") {
+                    // (Optional: auto-collapse)
+                }
             }
         });
+    },
+
+    toggleSidebar: function() {
+        document.getElementById('subject-inputs-container').classList.toggle('collapsed');
     },
 
     syncStateToHash: function() {
         let params = new URLSearchParams();
         const coreShort = {"Chinese Language": "chi", "English Language": "eng", "Mathematics (Compulsory Part)": "math", "Citizenship and Social Development": "csd"};
-        
         document.querySelectorAll('select[data-subject]').forEach(el => {
             if (el.value) params.set(coreShort[el.dataset.subject], el.value);
         });
-
         for (let i = 1; i <= 4; i++) {
             const name = document.getElementById(`e${i}-name`).value;
             const grade = document.getElementById(`e${i}-grade`).value;
             if (name && grade) params.set(`e${i}`, `${name}:${grade}`);
         }
-
         const newHash = params.toString();
         history.replaceState(null, null, newHash ? "#" + newHash : " ");
     },
@@ -132,7 +147,6 @@ const JUPAS_UI = {
         if (!hash) return;
         const params = new URLSearchParams(hash);
         const coreLong = {"chi": "Chinese Language", "eng": "English Language", "math": "Mathematics (Compulsory Part)", "csd": "Citizenship and Social Development"};
-
         Object.keys(coreLong).forEach(short => {
             const val = params.get(short);
             if (val) {
@@ -140,7 +154,6 @@ const JUPAS_UI = {
                 if (el) el.value = val;
             }
         });
-
         for (let i = 1; i <= 4; i++) {
             const val = params.get(`e${i}`);
             if (val && val.includes(':')) {
@@ -156,7 +169,7 @@ const JUPAS_UI = {
     saveGradesToStorage: function() {
         const grades = this.getGradesFromUI();
         localStorage.setItem('jupas_student_grades_explicit', JSON.stringify(grades));
-        alert("Grades saved to browser memory.");
+        this.showToast("Grades successfully saved to browser!");
     },
 
     loadGradesFromStorage: function() {
@@ -223,10 +236,21 @@ const JUPAS_UI = {
         this.selectedProgramme = this.allProgrammes.find(p => p.jupas_code === code);
         this.performCalculation();
         this.updateSearch(document.getElementById('search-input').value);
+        // Collapse programme explorer on mobile after selection
+        if (window.innerWidth <= 1024) {
+            document.querySelector('.programme-explorer').classList.add('collapsed');
+        }
     },
 
     performCalculation: function() {
         if (!this.selectedProgramme) return;
+        const grades = this.getGradesFromUI_Flattened();
+        const eligibility = JUPAS_CALCULATOR.checkEligibility(grades, this.selectedProgramme.min_requirements_2026);
+        const result = JUPAS_CALCULATOR.calculateScore(grades, this.selectedProgramme, "2025");
+        this.renderResult(eligibility, result);
+    },
+
+    getGradesFromUI_Flattened: function() {
         const grades = {};
         document.querySelectorAll('select[data-subject]').forEach(el => { if (el.value) grades[el.dataset.subject] = el.value; });
         for (let i = 1; i <= 4; i++) {
@@ -234,30 +258,23 @@ const JUPAS_UI = {
             const grade = document.getElementById(`e${i}-grade`).value;
             if (name && grade) grades[name] = grade;
         }
-        const eligibility = JUPAS_CALCULATOR.checkEligibility(grades, this.selectedProgramme.min_requirements_2026);
-        const result = JUPAS_CALCULATOR.calculateScore(grades, this.selectedProgramme, "2025");
-        this.renderResult(eligibility, result);
+        return grades;
     },
 
     renderResult: function(eligibility, result) {
         const container = document.getElementById('result-display');
         const p = this.selectedProgramme;
 
-        // Helper: Format score comparison into two columns
-        const getCompCells = (histScore) => {
+        const formatComp = (histScore) => {
             if (!histScore || !result.totalScore) return "<td>-</td><td>-</td>";
             const diff = result.totalScore - histScore;
             const pct = (result.totalScore / histScore * 100).toFixed(1);
             const className = diff >= 0 ? "pos" : "neg";
-            return `
-                <td class="comp ${className}">${diff >= 0 ? '+' : ''}${diff.toFixed(2)}</td>
-                <td class="comp ${className}">${pct}%</td>`;
+            return `<td class="comp ${className}">${diff >= 0 ? '+' : ''}${diff.toFixed(2)}</td><td class="comp ${className}">${pct}%</td>`;
         };
 
-        // Helper: Generate horizontal logic grid
         const generateHistoricalLogicGrid = (gradeBreakdown, title) => {
             if (!gradeBreakdown || Object.keys(gradeBreakdown).length === 0) return "";
-            
             const mappedBreakdown = {};
             const weights = p.subject_weights_2025 || {};
             const core_names = ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", 
@@ -296,72 +313,94 @@ const JUPAS_UI = {
                 </div>`;
         };
 
-        // Build weight cross-check info
-        let weightInfo = "";
         const w25 = p.subject_weights_2025;
-        if (Object.keys(w25).length > 0) {
-            weightInfo = `<div class="weighting-reference">
-                <h4>Calculation Formula & Weights (2025 Cycle)</h4>
-                <p class="formula-main"><b>Formula:</b> ${p.formula_2025}</p>
-                <div class="weights-list">
-                    ${Object.entries(w25).map(([name, w]) => `<span><b>${this.getShortName(name)}</b>: x${w}</span>`).join('')}
-                </div>
-            </div>`;
-        }
-
-        let html = `<div class="result-card">
-            <h2>[${p.jupas_code}] ${p.name_en}</h2>
-            
-            <div class="eligibility ${eligibility.eligible ? 'pass' : 'fail'}">
-                ${eligibility.eligible ? '✓ ELIGIBLE' : '✗ NOT ELIGIBLE'}
-                ${!eligibility.eligible ? `<ul class="reasons"><li>${eligibility.reasons.join('</li><li>')}</li></ul>` : ''}
+        let weightInfo = `<div class="weighting-reference">
+            <h4>Formula & Weights</h4>
+            <p class="formula-main"><b>Formula:</b> ${p.formula_2025}</p>
+            <div class="weights-list">
+                ${Object.entries(w25).map(([name, w]) => `<span><b>${this.getShortName(name)}</b>: x${w}</span>`).join('')}
             </div>
-
-            <div class="score-box">
-                <div class="score-label">Your Estimated Score</div>
-                <div class="score-value">${result.totalScore}</div>
-                <div class="score-note">Based on 2025 scoring logic</div>
-            </div>
-
-            ${weightInfo}
-
-            <div class="historical-scores">
-                <h3>2025 Historical Comparison</h3>
-                <table class="historical-table">
-                    <thead>
-                        <tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Upper Quartile (UQ)</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
-                        <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
-                        <tr><td>Lower Quartile (LQ)</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
-                        <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
-                    </tbody>
-                </table>
-                
-                ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "Upper Quartile")}
-                ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
-                ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "Lower Quartile")}
-                
-                ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU benchmarks are estimated from grade breakdowns.</p>` : ''}
-            </div>
-
-            <h3>Calculation Detail</h3>
-            <table class="audit-table">
-                <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
-                <tbody>`;
-        
-        const sorted = [...result.allCandidates].sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1);
-        sorted.forEach(c => {
-            html += `<tr class="${c.used ? 'selected-subject' : 'unused'}">
-                <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
-                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
-            </tr>`;
-        });
-        html += `</tbody></table>
         </div>`;
 
+        let html = `
+            <div class="result-card">
+                <div class="card-header">
+                    <h2>[${p.jupas_code}] ${p.name_en}</h2>
+                    <button class="btn-share" onclick="JUPAS_UI.shareLink()">Share Result</button>
+                </div>
+                
+                <details class="eligibility-dropdown ${eligibility.eligible ? 'pass' : 'fail'}">
+                    <summary>${eligibility.eligible ? '✓ ELIGIBLE' : '✗ NOT ELIGIBLE'} (View Details)</summary>
+                    <div class="eligibility-content">
+                        <table class="elig-table">
+                            <thead><tr><th>Requirement</th><th>Required</th><th>Your Grade</th><th>Status</th></tr></thead>
+                            <tbody>
+                                ${eligibility.details.map(d => `
+                                    <tr>
+                                        <td>${d.label} ${d.note ? `<br><small>${d.note}</small>` : ''}</td>
+                                        <td>${d.need}</td>
+                                        <td>${d.got}</td>
+                                        <td class="${d.pass ? 'pass-text' : 'fail-text'}">${d.pass ? 'OK' : 'FAIL'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
+
+                <div class="score-box">
+                    <div class="score-label">Your Estimated Score</div>
+                    <div class="score-value">${result.totalScore}</div>
+                    <div class="score-note">Based on 2025 scoring logic</div>
+                </div>
+
+                ${weightInfo}
+
+                <div class="historical-scores">
+                    <h3>2025 Historical Comparison</h3>
+                    <table class="historical-table">
+                        <thead><tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr></thead>
+                        <tbody>
+                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${formatComp(p.scores_2025.uq)}</tr>
+                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${formatComp(p.scores_2025.median)}</tr>
+                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${formatComp(p.scores_2025.lq)}</tr>
+                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${formatComp(p.scores_2025.mean)}</tr>
+                        </tbody>
+                    </table>
+                    ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "UQ")}
+                    ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
+                    ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
+                </div>
+
+                <h3>Calculation Detail</h3>
+                <table class="audit-table">
+                    <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
+                    <tbody>
+                        ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => `
+                            <tr class="${c.used ? 'selected-subject' : 'unused'}">
+                                <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
+                                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>`;
         container.innerHTML = html;
+    },
+
+    shareLink: function() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            this.showToast("Link with your grades copied to clipboard!");
+        });
+    },
+
+    showToast: function(msg) {
+        let toast = document.createElement("div");
+        toast.className = "toast-msg";
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     },
 
     getShortName: function(fullName) {
@@ -378,3 +417,4 @@ const JUPAS_UI = {
 };
 
 window.addEventListener('DOMContentLoaded', () => JUPAS_UI.init());
+window.JUPAS_UI = JUPAS_UI; // Export for global access

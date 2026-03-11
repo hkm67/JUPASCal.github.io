@@ -20,7 +20,6 @@ const JUPAS_CALCULATOR = {
         const convTable = (programme.score_conversion_table && programme.score_conversion_table.category_a) || {};
         const catCTable = (programme.score_conversion_table && programme.score_conversion_table.category_c) || {};
 
-        // --- Step 1: Pre-process all student subjects into a list of potentials ---
         let candidates = [];
         
         for (let [subj, grade] of Object.entries(studentGrades)) {
@@ -48,7 +47,6 @@ const JUPAS_CALCULATOR = {
             });
         }
 
-        // --- Step 2: Handle Best-Of Pool Constraints (e.g. M1 or M2 x 2.0) ---
         bestOfPools.forEach(pool => {
             let poolCandidates = candidates.filter(c => pool.subjects.includes(c.subject));
             poolCandidates.sort((a, b) => b.weightedScore - a.weightedScore);
@@ -62,11 +60,8 @@ const JUPAS_CALCULATOR = {
             }
         });
 
-        // --- Step 3: Handle Max Weighted Subjects Constraint (e.g. CUHK Science) ---
         const maxWeightedConstraint = constraints.find(c => c.type === "max_weighted_subjects");
         if (maxWeightedConstraint) {
-            // Rule: Only the top N subjects with multipliers > 1.0 retain their weights.
-            // Sort ALL candidates by multiplier descending
             candidates.sort((a, b) => b.multiplier - a.multiplier);
             let weightedCount = 0;
             candidates.forEach(c => {
@@ -74,7 +69,6 @@ const JUPAS_CALCULATOR = {
                     if (weightedCount < maxWeightedConstraint.limit) {
                         weightedCount++;
                     } else {
-                        // Cap at 1.0 if we exceeded the university limit for bonus weights
                         c.multiplier = 1.0;
                         c.weightedScore = c.basePoints * c.multiplier;
                         c.isBestOfPool = false;
@@ -83,7 +77,6 @@ const JUPAS_CALCULATOR = {
             });
         }
 
-        // --- Step 4: Identify Compulsory Subjects ---
         let compulsoryConstraint = constraints.find(c => c.type === "compulsory_subjects");
         if (compulsoryConstraint) {
             candidates.forEach(c => {
@@ -93,7 +86,6 @@ const JUPAS_CALCULATOR = {
             });
         }
 
-        // --- Step 5: Selection Logic (Best N) ---
         let selectedSubjects = [];
         let totalScore = 0;
         let targetCount = 5;
@@ -101,14 +93,12 @@ const JUPAS_CALCULATOR = {
             targetCount = 6;
         }
 
-        // A. Pick Compulsory
         candidates.filter(c => c.isCompulsory).forEach(c => {
             c.used = true;
             selectedSubjects.push(c);
             totalScore += c.weightedScore;
         });
 
-        // B. Pick Best of remaining
         let remainingPotentials = candidates.filter(c => !c.used);
         remainingPotentials.sort((a, b) => b.weightedScore - a.weightedScore);
 
@@ -124,7 +114,6 @@ const JUPAS_CALCULATOR = {
             totalScore += c.weightedScore;
         }
 
-        // --- Step 6: Post-Selection Bonuses ---
         let bonusConstraint = constraints.find(c => c.type === "additional_bonus_6th");
         if (bonusConstraint && selectedSubjects.length === 5) {
             let bonusSubject = candidates.filter(c => !c.used && parseInt(c.grade) >= 3)
@@ -146,62 +135,86 @@ const JUPAS_CALCULATOR = {
         };
     },
 
+    /**
+     * Checks if a student meets the minimum entry requirements.
+     * Returns detailed breakdown for ALL checks.
+     */
     checkEligibility: function(studentGrades, reqs) {
-        let reasons = [];
+        let details = [];
+        let eligible = true;
+        
+        // 1. Core Check
         const cores = ["chi", "eng", "math", "csd"];
         cores.forEach(key => {
             let studentGrade = studentGrades[this.mapReqKeyToSubject(key)];
             let reqGrade = reqs[key];
-            if (!this.compareGrades(studentGrade, reqGrade)) {
-                reasons.push(`Minimum ${key.toUpperCase()} not met (Got ${studentGrade || 'N/A'}, Need ${reqGrade})`);
-            }
+            let pass = this.compareGrades(studentGrade, reqGrade);
+            if (!pass) eligible = false;
+            
+            details.push({
+                label: key.toUpperCase(),
+                pass: pass,
+                got: studentGrade || 'N/A',
+                need: reqGrade
+            });
         });
 
+        // 2. Electives Check (Structured Objects)
         const checkElective = (poolObj, usedSubjects) => {
-            if (!poolObj) return { pass: true };
+            if (!poolObj) return { pass: true, got: 'N/A', need: 'N/A' };
             let matches = [];
             for (let [subj, grade] of Object.entries(studentGrades)) {
                 if (usedSubjects.has(subj)) continue;
                 
                 let isMatch = false;
-                // Wildcard match
                 if (poolObj.subjects.includes("Any") || poolObj.subjects.includes("*") || poolObj.subjects.includes(subj)) {
                     isMatch = true;
                 }
                 
-                // Fallback for "Category A" strings or Module 1/2
-                if (!isMatch && poolObj.note && poolObj.note.includes("Category A")) {
+                if (!isMatch && (poolObj.note && poolObj.note.includes("Category A"))) {
                     if (subj.includes("Module 1") || subj.includes("Module 2")) isMatch = true;
                 }
 
                 if (isMatch) {
                     if (this.compareGrades(grade, poolObj.grade)) {
-                        matches.push(subj);
+                        matches.push({ subj, grade });
                     }
                 }
             }
             if (matches.length >= poolObj.count) {
-                return { pass: true, matched: matches[0] };
+                return { pass: true, matched: matches[0].subj, got: matches[0].grade, need: poolObj.grade };
             }
-            return { pass: false };
+            return { pass: false, got: 'None', need: poolObj.grade };
         };
 
         let used = new Set(["Chinese Language", "English Language", "Mathematics (Compulsory Part)"]);
+        
+        // E1
         let e1 = checkElective(reqs.elect1, used);
-        if (!e1.pass) {
-            reasons.push(`Elective 1 requirement not met: ${reqs.elect1.note || reqs.elect1.subjects.join('/')} at Level ${reqs.elect1.grade}`);
-        } else if (e1.matched) {
-            used.add(e1.matched);
-        }
+        details.push({
+            label: "Elective 1",
+            pass: e1.pass,
+            got: e1.got,
+            need: e1.need,
+            note: reqs.elect1 ? (reqs.elect1.note || reqs.elect1.subjects.join('/')) : ""
+        });
+        if (!e1.pass) eligible = false;
+        else if (e1.matched) used.add(e1.matched);
 
+        // E2
         let e2 = checkElective(reqs.elect2, used);
-        if (!e2.pass) {
-            reasons.push(`Elective 2 requirement not met: ${reqs.elect2.note || reqs.elect2.subjects.join('/')} at Level ${reqs.elect2.grade}`);
-        }
+        details.push({
+            label: "Elective 2",
+            pass: e2.pass,
+            got: e2.got,
+            need: e2.need,
+            note: reqs.elect2 ? (reqs.elect2.note || reqs.elect2.subjects.join('/')) : ""
+        });
+        if (!e2.pass) eligible = false;
 
         return {
-            eligible: reasons.length === 0,
-            reasons: reasons
+            eligible: eligible,
+            details: details
         };
     },
 
