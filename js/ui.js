@@ -325,12 +325,17 @@ const JUPAS_UI = {
 
             <div class="historical-scores">
                 <h3>2025 Historical Comparison</h3>
-                <ul class="comp-list">
-                    <li><b>UQ:</b> ${p.scores_2025.uq || 'N/A'} ${formatComp(p.scores_2025.uq)}</li>
-                    <li><b>Median:</b> ${p.scores_2025.median || 'N/A'} ${formatComp(p.scores_2025.median)}</li>
-                    <li><b>LQ:</b> ${p.scores_2025.lq || 'N/A'} ${formatComp(p.scores_2025.lq)}</li>
-                    <li><b>Mean:</b> ${p.scores_2025.mean || 'N/A'} ${formatComp(p.scores_2025.mean)}</li>
-                </ul>
+                <table class="historical-table">
+                    <thead>
+                        <tr><th>Position</th><th>2025 Score</th><th>Comparison (Diff | %)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Upper Quartile (UQ)</td><td>${p.scores_2025.uq || 'N/A'}</td><td>${formatComp(p.scores_2025.uq)}</td></tr>
+                        <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td><td>${formatComp(p.scores_2025.median)}</td></tr>
+                        <tr><td>Lower Quartile (LQ)</td><td>${p.scores_2025.lq || 'N/A'}</td><td>${formatComp(p.scores_2025.lq)}</td></tr>
+                        <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td><td>${formatComp(p.scores_2025.mean)}</td></tr>
+                    </tbody>
+                </table>
                 
                 ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "Upper Quartile")}
                 ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}

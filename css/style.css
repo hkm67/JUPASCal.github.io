@@ -159,10 +159,23 @@ header {
 .weights-list { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.85em; }
 .weights-list span { background: #eee; padding: 4px 8px; border-radius: 3px; }
 
-.comp-list { list-style: none; padding: 0; margin-bottom: 20px; }
-.comp-list li { margin-bottom: 8px; font-size: 1.1em; }
+/* Historical Table */
+.historical-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    font-size: 0.95em;
+    border: 1px solid var(--border-color);
+}
+.historical-table th, .historical-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+.historical-table th { background-color: #f8f9fa; }
+.historical-table tr:last-child td { border-bottom: none; }
 
-.comp { font-size: 0.85em; margin-left: 10px; font-weight: bold; }
+.comp { font-size: 0.9em; font-weight: bold; }
 .comp.pos { color: var(--success-color); }
 .comp.neg { color: var(--error-color); }
 
