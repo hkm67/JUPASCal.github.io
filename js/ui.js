@@ -263,14 +263,16 @@ const JUPAS_UI = {
 
     renderResult: function(eligibility, result) {
         const container = document.getElementById('result-display');
-        const p = this.selectedProgramme;
-
-        const formatComp = (histScore) => {
+        // Helper: Format score comparison into two columns
+        const getCompCells = (histScore) => {
             if (!histScore || !result.totalScore) return "<td>-</td><td>-</td>";
             const diff = result.totalScore - histScore;
-            const pct = (result.totalScore / histScore * 100).toFixed(1);
+            // Calculate relative percentage change: (New - Old) / Old * 100
+            const pctChange = ((result.totalScore - histScore) / histScore * 100).toFixed(1);
             const className = diff >= 0 ? "pos" : "neg";
-            return `<td class="comp ${className}">${diff >= 0 ? '+' : ''}${diff.toFixed(2)}</td><td class="comp ${className}">${pct}%</td>`;
+            return `
+                <td class="comp-cell ${className}">${diff >= 0 ? '+' : ''}${diff.toFixed(2)}</td>
+                <td class="comp-cell ${className}">${diff >= 0 ? '+' : ''}${pctChange}%</td>`;
         };
 
         const generateHistoricalLogicGrid = (gradeBreakdown, title) => {
