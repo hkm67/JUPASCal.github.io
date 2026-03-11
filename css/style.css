@@ -53,20 +53,24 @@ header {
 .input-row label { font-size: 0.9em; font-weight: 600; }
 .input-row select { padding: 5px; width: 120px; }
 
-.btn-reset {
-    width: 100%;
+.btn-reset, .btn-save {
+    flex: 1;
     padding: 10px;
     margin-top: 20px;
-    background-color: var(--error-color);
-    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
     transition: opacity 0.2s;
+    font-size: 0.85em;
 }
 
-.btn-reset:hover { opacity: 0.8; }
+.btn-reset { background-color: var(--error-color); color: white; margin-left: 5px; }
+.btn-save { background-color: var(--accent-color); color: white; margin-right: 5px; }
+
+.sidebar-actions { display: flex; }
+
+.btn-reset:hover, .btn-save:hover { opacity: 0.8; }
 
 .elective-row select.subject-select { width: 180px; }
 .elective-row select.grade-input { width: 60px; }

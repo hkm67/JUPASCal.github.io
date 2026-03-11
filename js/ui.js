@@ -2,7 +2,7 @@
  * JUPAS 2026 UI Controller
  * ------------------------
  * Manages data fetching, DOM generation, search filtering,
- * and presenting calculation results.
+ * state persistence via Hash Fragment (#), and results presentation.
  */
 
 const JUPAS_UI = {
@@ -11,71 +11,23 @@ const JUPAS_UI = {
     
     // Canonical mapping for normalization
     subjectMap: {
-        "CHIN": "Chinese Language",
-        "ENGL": "English Language",
-        "MATH": "Mathematics (Compulsory Part)",
-        "CSD":  "Citizenship and Social Development",
-        "M1": "Mathematics Extended Part (Module 1)",
-        "M2": "Mathematics Extended Part (Module 2)",
-        "M1/M2": "Mathematics Extended Part (Module 1 or 2)",
-        "MAT1": "Mathematics Extended Part (Module 1)",
-        "MAT2": "Mathematics Extended Part (Module 2)",
-        "MTH1": "Mathematics Extended Part (Module 1)",
-        "MTH2": "Mathematics Extended Part (Module 2)",
-        "BIO":  "Biology",
-        "BIOL": "Biology",
-        "CHEM": "Chemistry",
-        "PHYS": "Physics",
-        "ECON": "Economics",
-        "GEOG": "Geography",
-        "HIST": "History",
-        "ICT":  "Information and Communication Technology",
-        "INCT": "Information and Communication Technology",
-        "BAFS": "Business, Accounting and Financial Studies",
-        "BBA":  "Business, Accounting and Financial Studies",
-        "VART": "Visual Arts",
-        "MUSC": "Music",
-        "HMSC": "Health Management and Social Care",
-        "DAT":  "Design and Applied Technology",
-        "PE":   "Physical Education",
-        "CLIT": "Chinese Literature",
-        "ELIT": "Literature in English",
-        "TLFS": "Technology and Living (Food Science and Technology)"
+        "CHIN": "Chinese Language", "ENGL": "English Language", "MATH": "Mathematics (Compulsory Part)",
+        "CSD":  "Citizenship and Social Development", "M1": "Mathematics Extended Part (Module 1)",
+        "M2": "Mathematics Extended Part (Module 2)", "M1/M2": "Mathematics Extended Part (Module 1 or 2)",
+        "BIO": "Biology", "BIOL": "Biology", "CHEM": "Chemistry", "PHYS": "Physics", "ECON": "Economics",
+        "GEOG": "Geography", "HIST": "History", "ICT": "Information and Communication Technology",
+        "BAFS": "Business, Accounting and Financial Studies", "VART": "Visual Arts", "MUSC": "Music",
+        "PE": "Physical Education", "TLFS": "Technology and Living (Food Science and Technology)"
     },
 
-    coreSubjects: [
-        "Chinese Language",
-        "English Language",
-        "Mathematics (Compulsory Part)",
-        "Citizenship and Social Development"
-    ],
+    coreSubjects: ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", "Citizenship and Social Development"],
     
     electivePool: [
-        "Mathematics Extended Part (Module 1)",
-        "Mathematics Extended Part (Module 2)",
-        "Biology",
-        "Chemistry",
-        "Physics",
-        "Economics",
-        "Geography",
-        "History",
-        "Chinese History",
-        "Information and Communication Technology",
-        "Business, Accounting and Financial Studies",
-        "Design and Applied Technology",
-        "Health Management and Social Care",
-        "Technology and Living",
-        "Tourism and Hospitality Studies",
-        "Visual Arts",
-        "Music",
-        "Physical Education",
-        "Combined Science (Biology + Chemistry)",
-        "Combined Science (Biology + Physics)",
-        "Combined Science (Chemistry + Physics)",
-        "Integrated Science",
-        "Chinese Literature",
-        "Literature in English",
-        "Ethics and Religious Studies"
+        "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)", "Biology", "Chemistry", 
+        "Physics", "Economics", "Geography", "History", "Chinese History", "Information and Communication Technology",
+        "Business, Accounting and Financial Studies", "Design and Applied Technology", "Health Management and Social Care",
+        "Tourism and Hospitality Studies", "Visual Arts", "Music", "Physical Education", "Chinese Literature", 
+        "Literature in English", "Ethics and Religious Studies"
     ],
 
     gradesOptions: ["5**", "5*", "5", "4", "3", "2", "1", "U"],
@@ -92,14 +44,15 @@ const JUPAS_UI = {
             this.renderSubjectInputs();
             this.setupEventListeners();
             
-            // Restore state from LocalStorage
-            this.loadGrades();
-            const savedSearch = localStorage.getItem('jupas_search_query');
-            if (savedSearch) {
-                document.getElementById('search-input').value = savedSearch;
+            // 1. Priority: Load from URL Hash (for link sharing)
+            if (window.location.hash) {
+                this.loadStateFromHash();
+            } else {
+                // 2. Secondary: Load from LocalStorage ONLY if previously explicitly saved
+                this.loadGradesFromStorage();
             }
-            this.updateSearch(savedSearch || ""); 
 
+            this.updateSearch(""); 
             console.log("JUPAS UI Initialized.");
         } catch (error) {
             console.error("Initialization Error:", error);
@@ -136,64 +89,112 @@ const JUPAS_UI = {
 
     setupEventListeners: function() {
         const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', (e) => {
-            localStorage.setItem('jupas_search_query', e.target.value);
-            this.updateSearch(e.target.value);
-        });
+        searchInput.addEventListener('input', (e) => this.updateSearch(e.target.value));
 
         const resetBtn = document.getElementById('reset-button');
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => this.resetGrades());
-        }
+        if (resetBtn) resetBtn.addEventListener('click', () => this.resetGrades());
+
+        const saveBtn = document.getElementById('save-button');
+        if (saveBtn) saveBtn.addEventListener('click', () => this.saveGradesToStorage());
 
         document.addEventListener('change', (e) => {
             if (e.target.classList.contains('grade-input') || e.target.classList.contains('subject-select')) {
-                this.saveGrades();
+                this.syncStateToHash(); // Update URL instantly
                 if (this.selectedProgramme) this.performCalculation();
             }
         });
     },
 
-    saveGrades: function() {
-        const data = {
-            cores: {},
-            electives: []
-        };
+    /**
+     * Encodes current grades into URL Hash Fragment.
+     * Format: #chi=5*&eng=5&math=4&csd=A&e1=Biology:5**
+     */
+    syncStateToHash: function() {
+        let params = new URLSearchParams();
+        const coreShort = {"Chinese Language": "chi", "English Language": "eng", "Mathematics (Compulsory Part)": "math", "Citizenship and Social Development": "csd"};
+        
         document.querySelectorAll('select[data-subject]').forEach(el => {
-            data.cores[el.dataset.subject] = el.value;
+            if (el.value) params.set(coreShort[el.dataset.subject], el.value);
         });
+
+        for (let i = 1; i <= 4; i++) {
+            const name = document.getElementById(`e${i}-name`).value;
+            const grade = document.getElementById(`e${i}-grade`).value;
+            if (name && grade) params.set(`e${i}`, `${name}:${grade}`);
+        }
+
+        const newHash = params.toString();
+        history.replaceState(null, null, newHash ? "#" + newHash : " ");
+    },
+
+    loadStateFromHash: function() {
+        const hash = window.location.hash.substring(1);
+        if (!hash) return;
+        const params = new URLSearchParams(hash);
+        const coreLong = {"chi": "Chinese Language", "eng": "English Language", "math": "Mathematics (Compulsory Part)", "csd": "Citizenship and Social Development"};
+
+        Object.keys(coreLong).forEach(short => {
+            const val = params.get(short);
+            if (val) {
+                const el = document.querySelector(`select[data-subject="${coreLong[short]}"]`);
+                if (el) el.value = val;
+            }
+        });
+
+        for (let i = 1; i <= 4; i++) {
+            const val = params.get(`e${i}`);
+            if (val && val.includes(':')) {
+                const [name, grade] = val.split(':');
+                const nameEl = document.getElementById(`e${i}-name`);
+                const gradeEl = document.getElementById(`e${i}-grade`);
+                if (nameEl) nameEl.value = name;
+                if (gradeEl) gradeEl.value = grade;
+            }
+        }
+    },
+
+    saveGradesToStorage: function() {
+        const grades = this.getGradesFromUI();
+        localStorage.setItem('jupas_student_grades_explicit', JSON.stringify(grades));
+        alert("Grades saved to browser memory.");
+    },
+
+    loadGradesFromStorage: function() {
+        const saved = localStorage.getItem('jupas_student_grades_explicit');
+        if (!saved) return;
+        const data = JSON.parse(saved);
+        this.applyGradesToUI(data);
+    },
+
+    getGradesFromUI: function() {
+        const data = { cores: {}, electives: [] };
+        document.querySelectorAll('select[data-subject]').forEach(el => { data.cores[el.dataset.subject] = el.value; });
         for (let i = 1; i <= 4; i++) {
             data.electives.push({
                 name: document.getElementById(`e${i}-name`).value,
                 grade: document.getElementById(`e${i}-grade`).value
             });
         }
-        localStorage.setItem('jupas_student_grades', JSON.stringify(data));
+        return data;
     },
 
-    loadGrades: function() {
-        const saved = localStorage.getItem('jupas_student_grades');
-        if (!saved) return;
-        try {
-            const data = JSON.parse(saved);
-            // Restore Cores
-            document.querySelectorAll('select[data-subject]').forEach(el => {
-                if (data.cores[el.dataset.subject]) el.value = data.cores[el.dataset.subject];
-            });
-            // Restore Electives
-            data.electives.forEach((e, i) => {
-                const idx = i + 1;
-                const nameEl = document.getElementById(`e${idx}-name`);
-                const gradeEl = document.getElementById(`e${idx}-grade`);
-                if (nameEl && e.name) nameEl.value = e.name;
-                if (gradeEl && e.grade) gradeEl.value = e.grade;
-            });
-        } catch (e) { console.error("Failed to parse saved grades."); }
+    applyGradesToUI: function(data) {
+        document.querySelectorAll('select[data-subject]').forEach(el => {
+            if (data.cores[el.dataset.subject]) el.value = data.cores[el.dataset.subject];
+        });
+        data.electives.forEach((e, i) => {
+            const idx = i + 1;
+            const nameEl = document.getElementById(`e${idx}-name`);
+            const gradeEl = document.getElementById(`e${idx}-grade`);
+            if (nameEl && e.name) nameEl.value = e.name;
+            if (gradeEl && e.grade) gradeEl.value = e.grade;
+        });
     },
 
     resetGrades: function() {
-        localStorage.removeItem('jupas_student_grades');
+        localStorage.removeItem('jupas_student_grades_explicit');
         document.querySelectorAll('select.grade-input, select.subject-select').forEach(el => el.value = "");
+        history.replaceState(null, null, " ");
         if (this.selectedProgramme) this.performCalculation();
     },
 
@@ -319,17 +320,10 @@ const JUPAS_UI = {
 
     getShortName: function(fullName) {
         const map = {
-            "Chinese Language": "CHI",
-            "English Language": "ENG",
-            "Mathematics (Compulsory Part)": "MATH",
-            "Citizenship and Social Development": "CSD",
-            "Mathematics Extended Part (Module 1)": "M1",
-            "Mathematics Extended Part (Module 2)": "M2",
-            "Information and Communication Technology": "ICT",
-            "Business, Accounting and Financial Studies": "BAFS",
-            "Biology": "Bio",
-            "Chemistry": "Chem",
-            "Physics": "Phys"
+            "Chinese Language": "CHI", "English Language": "ENG", "Mathematics (Compulsory Part)": "MATH",
+            "Citizenship and Social Development": "CSD", "Mathematics Extended Part (Module 1)": "M1",
+            "Mathematics Extended Part (Module 2)": "M2", "Information and Communication Technology": "ICT",
+            "Business, Accounting and Financial Studies": "BAFS", "Biology": "Bio", "Chemistry": "Chem", "Physics": "Phys"
         };
         if (map[fullName]) return map[fullName];
         if (fullName.includes("Elective")) return fullName;
