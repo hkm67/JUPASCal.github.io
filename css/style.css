@@ -175,12 +175,12 @@ header p { margin: 5px 0 0 0; font-size: 0.9em; opacity: 0.8; }
 }
 
 /* Eligibility & Audit Dropdowns */
-.eligibility-dropdown, .historical-audit-dropdown { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; }
-.eligibility-dropdown summary, .historical-audit-dropdown summary { padding: 12px; cursor: pointer; font-weight: bold; outline: none; }
+.eligibility-dropdown, .analysis-audit-dropdown { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; }
+.eligibility-dropdown summary, .analysis-audit-dropdown summary { padding: 12px; cursor: pointer; font-weight: bold; outline: none; }
 
-.historical-audit-dropdown { background: #f9f9f9; }
-.historical-audit-dropdown summary { color: #666; font-size: 0.9em; }
-.historical-scores { padding: 15px; background: white; border-top: 1px solid #ddd; }
+.analysis-audit-dropdown { background: #f9f9f9; }
+.analysis-audit-dropdown summary { color: #666; font-size: 0.9em; }
+.analysis-content { padding: 15px; background: white; border-top: 1px solid #ddd; }
 
 .eligibility-dropdown.pass summary { background: #d4edda; color: #155724; }
 .eligibility-dropdown.fail summary { background: #f8d7da; color: #721c24; }

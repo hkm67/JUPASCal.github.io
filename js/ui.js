@@ -246,17 +246,10 @@ const JUPAS_UI = {
     performCalculation: function() {
         if (!this.selectedProgramme) return;
         const grades = this.getGradesFromUI_Flattened();
-        
-        // Detect if it is a new programme (no historical scores)
-        const isNew = !this.selectedProgramme.scores_2025.median && 
-                      !this.selectedProgramme.scores_2025.lq && 
-                      !this.selectedProgramme.scores_2025.mean;
-        
+        const isNew = !this.selectedProgramme.scores_2025.median && !this.selectedProgramme.scores_2025.lq && !this.selectedProgramme.scores_2025.mean;
         const calcYear = isNew ? "2026" : "2025";
-        
         const eligibility = JUPAS_CALCULATOR.checkEligibility(grades, this.selectedProgramme.min_requirements_2026);
         const result = JUPAS_CALCULATOR.calculateScore(grades, this.selectedProgramme, calcYear);
-        
         this.renderResult(eligibility, result, isNew);
     },
 
@@ -290,10 +283,7 @@ const JUPAS_UI = {
             const core_names = ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", 
                           "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)",
                           "Citizenship and Social Development"];
-            const electiveMultipliers = Object.keys(weights)
-                .filter(k => !core_names.includes(k))
-                .map(k => ({name: k, w: weights[k]}))
-                .sort((a,b) => b.w - a.w);
+            const electiveMultipliers = Object.keys(weights).filter(k => !core_names.includes(k)).map(k => ({name: k, w: weights[k]})).sort((a,b) => b.w - a.w);
 
             for (let [key, grade] of Object.entries(gradeBreakdown)) {
                 const upperKey = key.toUpperCase();
@@ -311,7 +301,7 @@ const JUPAS_UI = {
 
             return `
                 <div class="logic-group historical">
-                    <h4>${title} Analysis</h4>
+                    <h4>${title} Logic Breakdown</h4>
                     <div class="logic-table-wrapper">
                         <table class="logic-grid">
                             <tr class="labels-row"><th class="row-label"></th>${subjects.map(s => `<th>${this.getShortName(s.subject)}</th>`).join('')}</tr>
@@ -382,25 +372,28 @@ const JUPAS_UI = {
                 </table>
 
                 ${!isNewProgramme ? `
-                <details class="historical-audit-dropdown">
-                    <summary>View 2025 Historical Comparison & Benchmarks</summary>
-                    <div class="historical-scores">
-                        <h3>2025 Historical Comparison</h3>
-                        <table class="historical-table">
-                            <thead><tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr></thead>
-                            <tbody>
-                                <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
-                                <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
-                                <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
-                                <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
-                            </tbody>
-                        </table>
-                        ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "UQ")}
-                        ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
-                        ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
-                        ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU benchmarks are estimated from grade breakdowns.</p>` : ''}
-                    </div>
-                </details>` : '<div class="no-historical">No 2025 historical data available for this new programme.</div>'}
+                <div class="historical-section">
+                    <h3>2025 Historical Comparison</h3>
+                    <table class="historical-table">
+                        <thead><tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr></thead>
+                        <tbody>
+                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
+                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
+                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
+                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
+                        </tbody>
+                    </table>
+                    
+                    <details class="analysis-audit-dropdown">
+                        <summary>View Benchmarking Breakdown (UQ/Median/LQ Analysis)</summary>
+                        <div class="analysis-content">
+                            ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "UQ")}
+                            ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
+                            ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
+                            ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU benchmarks are estimated from grade breakdowns.</p>` : ''}
+                        </div>
+                    </details>
+                </div>` : '<div class="no-historical">No 2025 historical data available.</div>'}
             </div>`;
         container.innerHTML = html;
     },
@@ -408,7 +401,7 @@ const JUPAS_UI = {
     shareLink: function() {
         const url = window.location.href;
         navigator.clipboard.writeText(url).then(() => {
-            this.showToast("Link with your grades copied to clipboard!");
+            this.showToast("Link copied to clipboard!");
         });
     },
 
