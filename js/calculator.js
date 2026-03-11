@@ -160,6 +160,21 @@ const JUPAS_CALCULATOR = {
             }
         }
 
+        // C. HKUST style (% of total score)
+        let ustBonusConstraint = constraints.find(c => c.type === "hkust_weighted_best");
+        if (ustBonusConstraint && selectedSubjects.length === ustBonusConstraint.subject_count) {
+            let bonusSubject = candidates.filter(c => !c.used)
+                                         .sort((a, b) => b.basePoints - a.basePoints)[0];
+            if (bonusSubject && ustBonusConstraint.bonus_scale[bonusSubject.grade]) {
+                let bonusPercent = ustBonusConstraint.bonus_scale[bonusSubject.grade];
+                let bonusPoints = totalScore * bonusPercent;
+                totalScore += bonusPoints;
+                bonusSubject.isBonus = true;
+                bonusSubject.bonusValue = `+${(bonusPercent * 100).toFixed(2)}%`;
+                selectedSubjects.push(bonusSubject);
+            }
+        }
+
         return {
             totalScore: parseFloat(totalScore.toFixed(3)),
             formula: programme[`formula_${year}`],

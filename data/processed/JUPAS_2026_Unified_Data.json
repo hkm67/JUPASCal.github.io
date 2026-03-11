@@ -22261,10 +22261,11 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, or Chemistry."
       },
       "elect2": {
         "count": 1,
@@ -25044,28 +25045,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 5,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -25168,28 +25156,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -25292,28 +25267,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -25416,28 +25378,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -25540,28 +25489,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -25667,28 +25603,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 9,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 9 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -25795,28 +25718,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 10,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 10 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -25923,28 +25833,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 9,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 9 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -26051,28 +25948,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 9,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 9 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -26179,28 +26063,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 9,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 9 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -26307,28 +26178,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 9,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 9 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -26433,28 +26291,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 8.5,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 8.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -26561,28 +26406,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 8.5,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 8.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -26669,28 +26501,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -26777,28 +26596,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -26885,28 +26691,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -26993,28 +26786,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -27101,28 +26881,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -27209,28 +26976,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -27317,28 +27071,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -27425,28 +27166,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -27533,28 +27261,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -27641,28 +27356,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -27749,28 +27451,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -27857,28 +27546,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 6.5,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 6.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -27983,28 +27659,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -28109,28 +27772,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 8.5,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 8.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -28217,28 +27867,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -28325,28 +27962,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -28451,28 +28075,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 8,
-        "bonus_categories": "Core,Category A,Category B,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category B,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 8 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -28577,28 +28188,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -28685,28 +28283,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 7.5,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 7.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {
@@ -28811,28 +28396,15 @@
         "type": "hkust_weighted_best",
         "subject_count": 5,
         "max_weighting_cap": 8.5,
-        "bonus_categories": "Core,Category A,Category C",
+        "extra_subject_bonus_category": "Core,Category A,Category C",
         "bonus_scale": {
-          "Category A": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category B": {
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          },
-          "Category C": {
-            "8.5": 0.05,
-            "7.0": 0.0412,
-            "5.5": 0.0324,
-            "4.0": 0.0235,
-            "3.0": 0.0176
-          }
+          "5**": 0.05,
+          "5*": 0.0412,
+          "5": 0.0324,
+          "4": 0.0235,
+          "3": 0.0176
         },
-        "description": "Weighted Best 5 subjects with max weighting cap of 8.5 and 6th subject bonus."
+        "description": "Weighted Best 5 subjects with bonus for the 6th best subject (max 5%)."
       }
     ],
     "score_conversion_table": {

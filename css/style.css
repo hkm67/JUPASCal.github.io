@@ -225,6 +225,7 @@ header p { margin: 5px 0 0 0; font-size: 0.9em; opacity: 0.8; }
 .audit-table th { background: #f8f9fa; text-align: left; padding: 12px; }
 .audit-table td { padding: 12px; border-bottom: 1px solid #eee; }
 .selected-subject { background-color: #e8f5e9 !important; font-weight: 600; }
+.bonus-label { color: #8e44ad; font-weight: bold; }
 .unused { color: #999; text-decoration: line-through; opacity: 0.6; }
 
 /* Toast & Mobile */

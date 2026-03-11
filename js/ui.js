@@ -386,12 +386,26 @@ const JUPAS_UI = {
                 <table class="audit-table">
                     <thead><tr><th>Subject</th><th>Grade</th><th>Pts</th><th>W</th><th>Final</th></tr></thead>
                     <tbody>
-                        ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => `
-                            <tr class="${c.used ? 'selected-subject' : 'unused'}">
-                                <td>${this.getShortName(c.subject)} ${c.isCompulsory ? '<small>(C)</small>' : ''}</td>
-                                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
-                            </tr>
-                        `).join('')}
+                        ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => {
+                            let label = this.getShortName(c.subject);
+                            if (c.isCompulsory) label += ' <small>(C)</small>';
+                            if (c.isBonus) label += ` <small class="bonus-label">(${c.bonusValue || 'Bonus'})</small>`;
+                            
+                            // For bonus subjects, show the actual bonus points in the final column
+                            let finalPoints = c.weightedScore;
+                            if (c.isBonus && !c.bonusValue) {
+                                // HKU/PolyU style: already calculated in weightedScore
+                            } else if (c.isBonus && c.bonusValue) {
+                                // HKUST style: weightedScore is the final points added
+                            }
+
+                            return `
+                                <tr class="${c.used ? 'selected-subject' : 'unused'}">
+                                    <td>${label}</td>
+                                    <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${finalPoints.toFixed(2)}</td>
+                                </tr>
+                            `;
+                        }).join('')}
                     </tbody>
                 </table>
             </div>`;

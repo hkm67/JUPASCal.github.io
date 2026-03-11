@@ -796,6 +796,14 @@ def unify_data():
                     "elect1": build_generic_elective(hku_reqs_raw.get("elect1")),
                     "elect2": build_generic_elective(hku_reqs_raw.get("elect2"))
                 }
+                
+                if code == "JS6456":
+                    obj["min_requirements_2026"]["elect1"] = {
+                        "count": 1,
+                        "subjects": ["Biology", "Chemistry"],
+                        "grade": "3",
+                        "note": "Level 3 or above in one of the following subjects: Biology, or Chemistry."
+                    }
 
             elif school_key == "HKUST":
                 formula_text_2025 = entry.get('formula_text_2025')
@@ -835,13 +843,11 @@ def unify_data():
                     "type": "hkust_weighted_best",
                     "subject_count": entry.get('subjectNum', 5),
                     "max_weighting_cap": entry.get('max_attainable_weighting'),
-                    "bonus_categories": entry.get('extra_subject_bonus_category'),
+                    "extra_subject_bonus_category": entry.get('extra_subject_bonus_category'),
                     "bonus_scale": {
-                        "Category A": {"8.5": 0.05, "7.0": 0.0412, "5.5": 0.0324, "4.0": 0.0235, "3.0": 0.0176},
-                        "Category B": {"4.0": 0.0235, "3.0": 0.0176},
-                        "Category C": {"8.5": 0.05, "7.0": 0.0412, "5.5": 0.0324, "4.0": 0.0235, "3.0": 0.0176}
+                        "5**": 0.05, "5*": 0.0412, "5": 0.0324, "4": 0.0235, "3": 0.0176
                     },
-                    "description": f"Weighted Best {entry.get('subjectNum', 5)} subjects with max weighting cap of {entry.get('max_attainable_weighting')} and 6th subject bonus."
+                    "description": f"Weighted Best {entry.get('subjectNum', 5)} subjects with bonus for the 6th best subject (max 5%)."
                 })
 
                 # Structured Requirements 2026

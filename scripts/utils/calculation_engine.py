@@ -120,6 +120,17 @@ def calculate_programme_score(student_grades, programme, year="2025"):
                 bc.update({"used": True, "is_bonus": True, "weighted_points": bc["base_points"] * 0.5})
                 selected_subjects.append(bc)
 
+        # HKUST Style (% of total)
+        if c["type"] == "hkust_weighted_best" and len(selected_subjects) == c["subject_count"]:
+            bonus_cand = sorted([s for s in subject_scores if not s["used"]], key=lambda x: x["base_points"], reverse=True)
+            if bonus_cand:
+                bc = bonus_cand[0]
+                current_total = sum(s["weighted_points"] for s in selected_subjects)
+                bonus_pct = c["bonus_scale"].get(str(bc["grade"]), 0)
+                if bonus_pct > 0:
+                    bc.update({"used": True, "is_bonus": True, "weighted_points": current_total * bonus_pct})
+                    selected_subjects.append(bc)
+
     final_score = sum(s["weighted_points"] for s in selected_subjects)
     
     return {
