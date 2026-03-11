@@ -147,14 +147,17 @@ const JUPAS_UI = {
         const container = document.getElementById('result-display');
         const p = this.selectedProgramme;
 
-        const cores = result.allCandidates.filter(c => this.coreSubjects.includes(c.subject));
-        const electives = result.allCandidates.filter(c => !this.coreSubjects.includes(c.subject));
+        // Helper to generate horizontal logic grid for historical breakdowns
+        const generateHistoricalLogicGrid = (gradeBreakdown, title) => {
+            if (!gradeBreakdown || Object.keys(gradeBreakdown).length === 0) return "";
+            
+            // Re-calculate the score for the historical breakdown using our logic
+            const histResult = JUPAS_CALCULATOR.calculateScore(gradeBreakdown, p, "2025");
+            const subjects = histResult.allCandidates;
 
-        const generateGridHtml = (subjects, title) => {
-            if (subjects.length === 0) return "";
             return `
-                <div class="logic-group">
-                    <h4>${title}</h4>
+                <div class="logic-group historical">
+                    <h4>${title} Logic</h4>
                     <div class="logic-table-wrapper">
                         <table class="logic-grid">
                             <tr class="labels-row">
@@ -184,29 +187,45 @@ const JUPAS_UI = {
                 ${eligibility.eligible ? '✓ ELIGIBLE' : '✗ NOT ELIGIBLE'}
                 ${!eligibility.eligible ? `<ul class="reasons"><li>${eligibility.reasons.join('</li><li>')}</li></ul>` : ''}
             </div>
+
             <div class="score-box">
                 <div class="score-label">Your Estimated Score</div>
                 <div class="score-value">${result.totalScore}</div>
                 <div class="score-note">Calculated using 2025 formula</div>
             </div>
+
+            <h3>Your Calculation Breakdown</h3>
+            <table class="audit-table">
+                <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
+                <tbody>`;
+        
+        const sorted = [...result.allCandidates].sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1);
+        sorted.forEach(c => {
+            html += `<tr class="${c.used ? 'selected-subject' : 'unused'}">
+                <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
+                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
+            </tr>`;
+        });
+        html += `</tbody></table>
+
             <div class="historical-scores">
-                <p><b>2025 Historical Scores:</b></p>
-                <ul>
-                    <li><b>UQ:</b> ${p.scores_2025.uq || 'N/A'}</li>
-                    <li><b>Median:</b> ${p.scores_2025.median || 'N/A'}</li>
-                    <li><b>LQ:</b> ${p.scores_2025.lq || 'N/A'}</li>
-                    <li><b>Mean:</b> ${p.scores_2025.mean || 'N/A'}</li>
-                </ul>
+                <h3>2025 Historical Context</h3>
+                <p><b>UQ:</b> ${p.scores_2025.uq || 'N/A'} | <b>Median:</b> ${p.scores_2025.median || 'N/A'} | <b>LQ:</b> ${p.scores_2025.lq || 'N/A'} | <b>Mean:</b> ${p.scores_2025.mean || 'N/A'}</p>
+                
+                ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
+                ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "Lower Quartile")}
+                
+                ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU Median/LQ are estimated based on grade breakdowns.</p>` : ''}
             </div>
-            <h3>Calculation Logic</h3>
-            ${generateGridHtml(cores, "Core Subjects")}
-            ${generateGridHtml(electives, "Electives")}
-            <p class="formula-text"><b>Formula:</b> ${result.formula}</p>
+
+            <p class="formula-text"><b>Formula Applied:</b> ${result.formula}</p>
         </div>`;
+
         container.innerHTML = html;
     },
 
     getShortName: function(fullName) {
+        // First check for known mappings
         const map = {
             "Chinese Language": "中文",
             "English Language": "英文",
@@ -217,7 +236,11 @@ const JUPAS_UI = {
             "Information and Communication Technology": "ICT",
             "Business, Accounting and Financial Studies": "BAFS"
         };
-        return map[fullName] || fullName.substring(0, 6);
+        if (map[fullName]) return map[fullName];
+        
+        // Fallback for electives
+        if (fullName.includes("Elective")) return fullName;
+        return fullName.substring(0, 6);
     }
 };
 
