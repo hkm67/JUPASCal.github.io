@@ -146,6 +146,26 @@ header {
 .score-value { font-size: 3em; font-weight: bold; }
 .score-note { font-size: 0.8em; opacity: 0.8; margin-top: 5px; }
 
+.audit-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    margin-bottom: 25px;
+}
+.audit-table th, .audit-table td {
+    padding: 10px 8px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.selected-subject {
+    background-color: #e8f5e9 !important;
+    font-weight: 600;
+}
+.selected-subject td:first-child { border-left: 4px solid var(--success-color); }
+
+.unused { color: #999; text-decoration: line-through; }
+
 /* --- Horizontal Logic Table --- */
 .logic-group {
     margin-bottom: 25px;

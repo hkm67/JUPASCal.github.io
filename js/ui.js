@@ -306,6 +306,21 @@ const JUPAS_UI = {
                 <div class="score-value">${result.totalScore}</div>
                 <div class="score-note">Calculated using 2025 formula</div>
             </div>
+
+            <h3>Your Calculation Breakdown</h3>
+            <table class="audit-table">
+                <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
+                <tbody>`;
+        
+        const sorted = [...result.allCandidates].sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1);
+        sorted.forEach(c => {
+            html += `<tr class="${c.used ? 'selected-subject' : 'unused'}">
+                <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
+                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
+            </tr>`;
+        });
+        html += `</tbody></table>
+
             <div class="historical-scores">
                 <h3>2025 Historical Context</h3>
                 <p><b>UQ:</b> ${p.scores_2025.uq || 'N/A'} | <b>Median:</b> ${p.scores_2025.median || 'N/A'} | <b>LQ:</b> ${p.scores_2025.lq || 'N/A'} | <b>Mean:</b> ${p.scores_2025.mean || 'N/A'}</p>
