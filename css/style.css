@@ -233,6 +233,17 @@ header p { margin: 5px 0 0 0; font-size: 0.9em; opacity: 0.8; }
 @media (max-width: 1024px) {
     .main-container { flex-direction: column; overflow-y: auto; }
     .accordion-sidebar { width: 100%; height: auto; border-right: none; overflow-y: visible; }
-    .content-area { width: 100%; border-left: none; }
+    .content-area { width: 100%; border-left: none; padding: 15px; }
     #programme-list { max-height: 300px; }
+    
+    /* Mobile Table Compactness */
+    .audit-table, .historical-table { font-size: 0.8em; }
+    .audit-table td, .historical-table td, .audit-table th, .historical-table th { padding: 8px 4px; }
+}
+
+@media (max-width: 480px) {
+    .score-value { font-size: 2.5em; }
+    .audit-table { font-size: 0.75em; }
+    .audit-table td, .audit-table th { padding: 6px 2px; }
+    .row-label { width: 50px; font-size: 0.8em; }
 }

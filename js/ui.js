@@ -358,19 +358,6 @@ const JUPAS_UI = {
 
                 ${weightInfo}
 
-                <h3>Your Calculation Detail</h3>
-                <table class="audit-table">
-                    <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
-                    <tbody>
-                        ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => `
-                            <tr class="${c.used ? 'selected-subject' : 'unused'}">
-                                <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
-                                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-
                 ${!isNewProgramme ? `
                 <div class="historical-section">
                     <h3>2025 Historical Comparison</h3>
@@ -394,6 +381,19 @@ const JUPAS_UI = {
                         </div>
                     </details>
                 </div>` : '<div class="no-historical">No 2025 historical data available.</div>'}
+
+                <h3>Your Calculation Detail</h3>
+                <table class="audit-table">
+                    <thead><tr><th>Subject</th><th>Grade</th><th>Pts</th><th>W</th><th>Final</th></tr></thead>
+                    <tbody>
+                        ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => `
+                            <tr class="${c.used ? 'selected-subject' : 'unused'}">
+                                <td>${this.getShortName(c.subject)} ${c.isCompulsory ? '<small>(C)</small>' : ''}</td>
+                                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             </div>`;
         container.innerHTML = html;
     },
