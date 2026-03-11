@@ -146,6 +146,19 @@ header {
 .score-value { font-size: 3em; font-weight: bold; }
 .score-note { font-size: 0.8em; opacity: 0.8; margin-top: 5px; }
 
+/* Weighting Reference */
+.weighting-reference {
+    background: #fdfdfd;
+    padding: 15px;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 25px;
+}
+.weighting-reference h4 { margin-top: 0; margin-bottom: 10px; font-size: 0.9em; text-transform: uppercase; color: #666; }
+.formula-main { font-size: 1em; margin-bottom: 10px; color: var(--primary-color); }
+.weights-list { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.85em; }
+.weights-list span { background: #eee; padding: 4px 8px; border-radius: 3px; }
+
 .comp-list { list-style: none; padding: 0; margin-bottom: 20px; }
 .comp-list li { margin-bottom: 8px; font-size: 1.1em; }
 

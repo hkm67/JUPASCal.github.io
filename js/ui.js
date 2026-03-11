@@ -16,8 +16,9 @@ const JUPAS_UI = {
         "M2": "Mathematics Extended Part (Module 2)", "M1/M2": "Mathematics Extended Part (Module 1 or 2)",
         "BIO": "Biology", "BIOL": "Biology", "CHEM": "Chemistry", "PHYS": "Physics", "ECON": "Economics",
         "GEOG": "Geography", "HIST": "History", "ICT": "Information and Communication Technology",
-        "BAFS": "Business, Accounting and Financial Studies", "VART": "Visual Arts", "MUSC": "Music",
-        "PE": "Physical Education", "TLFS": "Technology and Living (Food Science and Technology)"
+        "BAFS": "Business, Accounting and Financial Studies", "BBA":  "Business, Accounting and Financial Studies",
+        "VART": "Visual Arts", "MUSC": "Music", "PE": "Physical Education", 
+        "TLFS": "Technology and Living (Food Science and Technology)"
     },
 
     coreSubjects: ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", "Citizenship and Social Development"],
@@ -89,7 +90,10 @@ const JUPAS_UI = {
 
     setupEventListeners: function() {
         const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', (e) => this.updateSearch(e.target.value));
+        searchInput.addEventListener('input', (e) => {
+            localStorage.setItem('jupas_search_query', e.target.value);
+            this.updateSearch(e.target.value);
+        });
 
         const resetBtn = document.getElementById('reset-button');
         if (resetBtn) resetBtn.addEventListener('click', () => this.resetGrades());
@@ -105,9 +109,6 @@ const JUPAS_UI = {
         });
     },
 
-    /**
-     * Encodes current grades into URL Hash Fragment.
-     */
     syncStateToHash: function() {
         let params = new URLSearchParams();
         const coreShort = {"Chinese Language": "chi", "English Language": "eng", "Mathematics (Compulsory Part)": "math", "Citizenship and Social Development": "csd"};
@@ -293,6 +294,19 @@ const JUPAS_UI = {
                 </div>`;
         };
 
+        // Build weight cross-check info
+        let weightInfo = "";
+        const w25 = p.subject_weights_2025;
+        if (Object.keys(w25).length > 0) {
+            weightInfo = `<div class="weighting-reference">
+                <h4>Calculation Formula & Weights (2025 Cycle)</h4>
+                <p class="formula-main"><b>Formula:</b> ${p.formula_2025}</p>
+                <div class="weights-list">
+                    ${Object.entries(w25).map(([name, w]) => `<span><b>${this.getShortName(name)}</b>: x${w}</span>`).join('')}
+                </div>
+            </div>`;
+        }
+
         let html = `<div class="result-card">
             <h2>[${p.jupas_code}] ${p.name_en}</h2>
             
@@ -304,8 +318,10 @@ const JUPAS_UI = {
             <div class="score-box">
                 <div class="score-label">Your Estimated Score</div>
                 <div class="score-value">${result.totalScore}</div>
-                <div class="score-note">Calculated using 2025 formula</div>
+                <div class="score-note">Based on 2025 scoring logic</div>
             </div>
+
+            ${weightInfo}
 
             <div class="historical-scores">
                 <h3>2025 Historical Comparison</h3>
@@ -316,13 +332,14 @@ const JUPAS_UI = {
                     <li><b>Mean:</b> ${p.scores_2025.mean || 'N/A'} ${formatComp(p.scores_2025.mean)}</li>
                 </ul>
                 
+                ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "Upper Quartile")}
                 ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
-                ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
+                ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "Lower Quartile")}
                 
-                ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU Median/LQ are estimated from breakdowns.</p>` : ''}
+                ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU benchmarks are estimated from grade breakdowns.</p>` : ''}
             </div>
 
-            <h3>Your Calculation Detail</h3>
+            <h3>Calculation Detail</h3>
             <table class="audit-table">
                 <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
                 <tbody>`;
@@ -335,7 +352,6 @@ const JUPAS_UI = {
             </tr>`;
         });
         html += `</tbody></table>
-            <p class="formula-text"><b>Formula Applied:</b> ${result.formula}</p>
         </div>`;
 
         container.innerHTML = html;
