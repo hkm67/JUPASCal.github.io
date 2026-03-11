@@ -17,7 +17,20 @@ Transition from a legacy Excel-based calculator to a high-performance, maintaina
 - **No Backend:** All data is fetched as static JSON. All calculations occur in the user's browser.
 - **State Management:** User inputs (grades) are collected via DOM selectors and passed to the calculation engine on every change.
 
-## 3. Transparency & UI Features
+## 3. Year Labeling Rule (Critical)
+
+Per `CLAUDE.md`, the 2026 calculator uses a deliberate split:
+
+| Data Used | Field | Purpose |
+|---|---|---|
+| **2025 weights & formula** | `subject_weights_2025`, `formula_2025_id`, `best_of_weights_2025` | **Score calculation** — must match the same-year admission scores |
+| **2025 admission scores** | `scores_2025` (median, LQ, UQ) | **Comparison benchmark** |
+| **2026 requirements** | `min_requirements_2026` | **Eligibility check only** |
+| **2026 weights** | `subject_weights_2026`, `formula_2026` | **Reference display only** — not used in scoring |
+
+The reason: if we calculated scores using 2026 weights but compared against 2025 admission scores, the comparison would be unfair whenever a school changes its formula.
+
+## 4. Transparency & UI Features
 - **Audit Trail:** Every calculation result includes a detailed breakdown table showing raw converted points, applied multipliers, and final weighted scores.
 - **Green Highlights:** Selected subjects used in the "Best N" total are highlighted in green, mirroring the original Excel logic.
 - **Eligibility Badges:** Real-time feedback on whether the student meets the 2026 minimum university and programme-specific requirements.

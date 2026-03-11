@@ -56,16 +56,29 @@ def normalize_subject(name):
     """
     if not name: return name
     # Clean string: remove bullets, trailing punctuation, and extra whitespace
-    name = str(name).strip().replace("•", "").strip(" .)")
+    # We strip trailing periods and spaces, but NOT parentheses here to avoid breaking core names
+    name = str(name).strip().replace("•", "").strip(" .")
     
     # Authoritative Mapping (case-insensitive lookup using external JSON)
-    name_clean = name.upper()
+    # We strip trailing parenthesis for the lookup key only
+    name_clean = name.upper().strip(")")
     if name_clean in SUBJECT_MAP:
         return SUBJECT_MAP[name_clean]
     
-    # Secondary check: institution-specific prefix cleaning (CUHK "A" prefix)
+    # Handle common abbreviations and prefix 'A' in CUHK
     if name_clean.startswith("A") and name_clean[1:] in SUBJECT_MAP:
         return SUBJECT_MAP[name_clean[1:]]
+
+    # Special case: Category A wildcard string from API
+    if "CATEGORY A" in name_clean:
+        return "*"
+
+    # Handle mangled internal parentheses
+    if "(" in name:
+        name_upper = name.upper()
+        if "MODULE 1" in name_upper or "M1" in name_upper: return "Mathematics Extended Part (Module 1)"
+        if "MODULE 2" in name_upper or "M2" in name_upper: return "Mathematics Extended Part (Module 2)"
+        if "COMPULSORY" in name_upper: return "Mathematics (Compulsory Part)"
         
     return name
 def parse_hku_min_reqs(html):
@@ -266,6 +279,12 @@ def build_cuhk_elective(note, text, req_str):
     subjs_raw = re.split(r',(?![^\(]*\))', text)
     subjs = [normalize_subject(s.strip()) for s in subjs_raw if s.strip()]
     
+    # Check for wildcards in subjects (e.g. Category A subjects only)
+    is_cat_a_wildcard = any("Category A" in str(s) for s in subjs)
+    if is_cat_a_wildcard:
+        subjs = ["*"]
+        note_clean = "Category A Subjects Only"
+
     abbr = {
         "Mathematics (Module 1 or 2)": "M1/M2",
         "Information and Communication Technology": "ICT",
@@ -279,6 +298,12 @@ def build_cuhk_elective(note, text, req_str):
     elif "Three" in note_clean: count = 3
 
     note_clean = note_clean.replace(":", "").strip()
+
+    # Check for wildcards in subjects (e.g. Category A subjects only)
+    is_cat_a_wildcard = any("Category A" in str(s) or s == "*" for s in subjs)
+    if is_cat_a_wildcard:
+        subjs = ["*"]
+        note_clean = "Category A Subjects Only"
 
     return {
         "count": count,

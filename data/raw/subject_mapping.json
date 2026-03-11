@@ -17,6 +17,7 @@
     "MATHEMATICS (COMPULSORY PART": "Mathematics (Compulsory Part)",
     "MATHEMATICS": "Mathematics (Compulsory Part)",
     "MATH COMP": "Mathematics (Compulsory Part)",
+    "MA": "Mathematics (Compulsory Part)",
     "M1": "Mathematics Extended Part (Module 1)",
     "M2": "Mathematics Extended Part (Module 2)",
     "M1/M2": "Mathematics Extended Part (Module 1 or 2)",
@@ -29,6 +30,7 @@
     "M1 (CALCULUS AND STATISTICS": "Mathematics Extended Part (Module 1)",
     "M2 (ALGEBRA AND CALCULUS": "Mathematics Extended Part (Module 2)",
     "BIO":  "Biology",
+    "BIOL": "Biology",
     "CHEM": "Chemistry",
     "PHYS": "Physics",
     "ECON": "Economics",
@@ -54,5 +56,6 @@
     "ERS":  "Ethics and Religious Studies",
     "ER":   "Ethics and Religious Studies",
     "IS":   "Integrated Science",
+    "TLFS": "Technology and Living (Food Science and Technology)",
     "APL":  "Applied Learning"
 }
