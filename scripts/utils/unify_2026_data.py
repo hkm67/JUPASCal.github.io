@@ -313,6 +313,12 @@ def clean_raw_string(text):
     text = text.replace("<br>", ", ")
     text = text.replace("\n", ", ")
     text = text.replace("•", "")
+    
+    # Strip stray "a " prefixes (often seen in HKU formula scrapes)
+    text = re.sub(r'^a\s+', '', text)
+    text = text.replace(" Best", " Best") # keep space normalization
+    text = re.sub(r'\s+a\s+Subject', ' Subject', text)
+    
     text = re.sub(r'\s+', ' ', text)
     text = re.sub(r',\s*,', ',', text)
     text = text.replace(" ,", ",")

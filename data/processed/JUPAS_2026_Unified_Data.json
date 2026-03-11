@@ -6048,10 +6048,10 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Chinese Language",
-          "English Language"
+          "English Language",
+          "Chinese Language"
         ],
-        "description": "Formula requires: Chinese Language, English Language"
+        "description": "Formula requires: English Language, Chinese Language"
       }
     ],
     "score_conversion_table": {
@@ -7389,11 +7389,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Chinese Language",
+          "Mathematics (Compulsory Part)",
           "English Language",
-          "Mathematics (Compulsory Part)"
+          "Chinese Language"
         ],
-        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
+        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
       }
     ],
     "score_conversion_table": {
@@ -10409,11 +10409,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Chinese Language",
+          "Mathematics (Compulsory Part)",
           "English Language",
-          "Mathematics (Compulsory Part)"
+          "Chinese Language"
         ],
-        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
+        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
       }
     ],
     "score_conversion_table": {
@@ -10531,11 +10531,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Chinese Language",
+          "Mathematics (Compulsory Part)",
           "English Language",
-          "Mathematics (Compulsory Part)"
+          "Chinese Language"
         ],
-        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
+        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
       }
     ],
     "score_conversion_table": {
@@ -10654,11 +10654,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Chinese Language",
+          "Mathematics (Compulsory Part)",
           "English Language",
-          "Mathematics (Compulsory Part)"
+          "Chinese Language"
         ],
-        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
+        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
       }
     ],
     "score_conversion_table": {
@@ -11217,11 +11217,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Chinese Language",
+          "Mathematics (Compulsory Part)",
           "English Language",
-          "Mathematics (Compulsory Part)"
+          "Chinese Language"
         ],
-        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
+        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
       }
     ],
     "score_conversion_table": {
@@ -19783,7 +19783,7 @@
     "name_zh": "建築學文學士",
     "institution": "HKU",
     "faculty": "Faculty of Architecture",
-    "formula_2025": "a Best 5 Subjects",
+    "formula_2025": "Best 5 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects#",
     "formula_2026_id": "best5",
@@ -19871,7 +19871,7 @@
     "name_zh": "理學士(測量學)",
     "institution": "HKU",
     "faculty": "Faculty of Architecture",
-    "formula_2025": "a Best 5 Subjects",
+    "formula_2025": "Best 5 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects#",
     "formula_2026_id": "best5",
@@ -19959,7 +19959,7 @@
     "name_zh": "園境學文學士",
     "institution": "HKU",
     "faculty": "Faculty of Architecture",
-    "formula_2025": "a Best 5 Subjects",
+    "formula_2025": "Best 5 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects#",
     "formula_2026_id": "best5",
@@ -20047,7 +20047,7 @@
     "name_zh": "文學士(城市研究)",
     "institution": "HKU",
     "faculty": "Faculty of Architecture",
-    "formula_2025": "a Best 5 Subjects",
+    "formula_2025": "Best 5 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects#",
     "formula_2026_id": "best5",
@@ -20135,7 +20135,7 @@
     "name_zh": "文學士",
     "institution": "HKU",
     "faculty": "Faculty of Arts",
-    "formula_2025": "a 2 x Eng + Best 4 Subjects with WEIGHTING 1",
+    "formula_2025": "2 x Eng + Best 4 Subjects with WEIGHTING 1",
     "formula_2025_id": "best5",
     "formula_2026": "2 x Eng + Best 4 Subjects# with Weighting1",
     "formula_2026_id": "best5",
@@ -20229,7 +20229,7 @@
     "name_zh": "文學士及教育學士(語文教育) - 英文教育",
     "institution": "HKU",
     "faculty": "Faculty of Education",
-    "formula_2025": "a 1.5 x Eng + Best 4 Subjects",
+    "formula_2025": "1.5 x Eng + Best 4 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + Best 4 Subjects#",
     "formula_2026_id": "best5",
@@ -20409,7 +20409,7 @@
     "name_zh": "文學士及教育學士(語文教育) - 中文教育",
     "institution": "HKU",
     "faculty": "Faculty of Education",
-    "formula_2025": "a 1.5 x Chin + Best 4 Subjects",
+    "formula_2025": "1.5 x Chin + Best 4 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "1.5 x Chin + Best 4 Subjects#",
     "formula_2026_id": "best5",
@@ -20497,7 +20497,7 @@
     "name_zh": "教育學士(幼兒教育及特殊教育)",
     "institution": "HKU",
     "faculty": "Faculty of Education",
-    "formula_2025": "a 1.5 x Eng + Best 4 Subjects",
+    "formula_2025": "1.5 x Eng + Best 4 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "1.5 x Eng + Best 4 Subjects#",
     "formula_2026_id": "best5",
@@ -21065,7 +21065,7 @@
     "name_zh": "文理學士(設計＋)",
     "institution": "HKU",
     "faculty": "Faculty of Architecture",
-    "formula_2025": "a Best 5 Subjects",
+    "formula_2025": "Best 5 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects#",
     "formula_2026_id": "best5",
@@ -21241,7 +21241,7 @@
     "name_zh": "文理學士(環球衞生及發展)",
     "institution": "HKU",
     "faculty": "Li Ka Shing Faculty of Medicine",
-    "formula_2025": "a Best 5 Subjects",
+    "formula_2025": "Best 5 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects#",
     "formula_2026_id": "best5",
@@ -21329,7 +21329,7 @@
     "name_zh": "文學士（全球創意產業）",
     "institution": "HKU",
     "faculty": "School of Future Media",
-    "formula_2025": "a 2 x Eng + Best 4 Subjects",
+    "formula_2025": "2 x Eng + Best 4 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "2 x Eng + Best 4 Subjects# with Weighting1",
     "formula_2026_id": "best5",
@@ -21423,7 +21423,7 @@
     "name_zh": "文學士(人文及數碼科技)",
     "institution": "HKU",
     "faculty": "Faculty of Arts",
-    "formula_2025": "a 2 x Eng + Best 4 Subjects with WEIGHTING 1",
+    "formula_2025": "2 x Eng + Best 4 Subjects with WEIGHTING 1",
     "formula_2025_id": "best5",
     "formula_2026": "2 x Eng + Best 4 Subjects# with Weighting1",
     "formula_2026_id": "best5",
@@ -22151,7 +22151,7 @@
     "name_zh": "護理學學士菁英領袖培育專修組別",
     "institution": "HKU",
     "faculty": "Li Ka Shing Faculty of Medicine",
-    "formula_2025": "a Best 5 Subjects + 0.5 x 6th Best a Subject",
+    "formula_2025": "Best 5 Subjects + 0.5 x 6th Best Subject",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects# + 0.5 x 6th Best Subject#",
     "formula_2026_id": "best5",
@@ -22331,7 +22331,7 @@
     "name_zh": "護理學學士",
     "institution": "HKU",
     "faculty": "Li Ka Shing Faculty of Medicine",
-    "formula_2025": "a Best 5 Subjects + 0.5 x 6th Best a Subject",
+    "formula_2025": "Best 5 Subjects + 0.5 x 6th Best Subject",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects# + 0.5 x 6th Best Subject#",
     "formula_2026_id": "best5",
@@ -22423,7 +22423,7 @@
     "name_zh": "中醫全科學士",
     "institution": "HKU",
     "faculty": "Li Ka Shing Faculty of Medicine",
-    "formula_2025": "a Best 5 Subjects + 0.5 x 6th Best a Subject",
+    "formula_2025": "Best 5 Subjects + 0.5 x 6th Best Subject",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects# + 0.5 x 6th Best Subject#",
     "formula_2026_id": "best5",
@@ -22903,7 +22903,7 @@
     "name_zh": "心理學學士",
     "institution": "HKU",
     "faculty": "Faculty of Social Sciences",
-    "formula_2025": "a Best 5 Subjects",
+    "formula_2025": "Best 5 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects#",
     "formula_2026_id": "best5",
@@ -22991,7 +22991,7 @@
     "name_zh": "社會科學學士",
     "institution": "HKU",
     "faculty": "Faculty of Social Sciences",
-    "formula_2025": "a Best 5 Subjects",
+    "formula_2025": "Best 5 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects#",
     "formula_2026_id": "best5",
@@ -23169,7 +23169,7 @@
     "name_zh": "社會工作學學士",
     "institution": "HKU",
     "faculty": "Faculty of Social Sciences",
-    "formula_2025": "a Best 5 Subjects",
+    "formula_2025": "Best 5 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "Best 5 Subjects#",
     "formula_2026_id": "best5",
@@ -23903,7 +23903,7 @@
     "name_zh": "新聞媒體及人工智能學士",
     "institution": "HKU",
     "faculty": "School of Future Media",
-    "formula_2025": "a 1.5 x Eng + Best 4 Subjects",
+    "formula_2025": "1.5 x Eng + Best 4 Subjects",
     "formula_2025_id": "best5",
     "formula_2026": "1.5 x English + Best 4 Subjects#",
     "formula_2026_id": "best5",
@@ -35763,8 +35763,8 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Chinese Language",
-          "English Language"
+          "English Language",
+          "Chinese Language"
         ],
         "description": "Formula includes: Chinese Language, English Language"
       }
