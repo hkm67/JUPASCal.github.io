@@ -106,21 +106,21 @@ The current Excel-based approach uses complex cell references and formulas ("spa
 ## Workflow for 2026 Update
 
 1. [x] Archive 2024 & 2025 files
-2. [x] Create `2026_scrap.py` and run → `2026 JUPAS Program Overview.xlsx` + `2026 JUPAS Offer Table.xlsx` (422 programmes)
-3. [ ] Collect per-school weighting & admission score data:
-   - [x] CUHK — 8 PDFs + API scraper (`cuhk_scrap.py`) → `CUHK_2026_Data.json/xlsx` (85 programmes)
-   - [x] CityU — API scraper (`cityu_scrap.py`) + 2 PDFs + 2 extractors in `Reference(2026)/CityU/`
-   - [x] HKU — API scraper (`hku_scrap.py`) + PDF extractor → `HKU_2026_Data.json/xlsx` (57 programmes)
-   - [x] HKUST — JS scraper (`hkust_scrap.py`) → `HKUST_2026_Data.json/xlsx` (33 programmes)
-   - [x] PolyU — Playwright scraper (`polyu_scrap.py`) → `PolyU_2026_Data.json/xlsx` + `PolyU_2026_Weights.json` (46 programmes)
-   - [ ] HKBU
-   - [ ] LingU
-   - [ ] EdUHK
-   - [ ] HKMU
-   - [ ] SSSDP
-4. [ ] Build automation scripts per school where possible
+2. [x] Create `scripts/extraction/2026_scrap.py` and run → `data/raw/2026 JUPAS Program Overview.xlsx` + `data/raw/2026 JUPAS Offer Table.xlsx` (422 programmes)
+3. [x] Collect per-school weighting & admission score data:
+   - [x] CUHK — 8 PDFs + API scraper (`scripts/extraction/cuhk_scrap.py`) → `Reference(2026)/CUHK/CUHK_2026_Data.json/xlsx`
+   - [x] CityU — API scraper (`scripts/extraction/cityu_scrap.py`) + 2 PDFs + extractors
+   - [x] HKU — API scraper (`scripts/extraction/hku_scrap.py`) + PDF extractor → `Reference(2026)/HKU/HKU_2026_Data.json/xlsx`
+   - [x] HKUST — JS scraper (`scripts/extraction/hkust_scrap.py`) → `Reference(2026)/HKUST/HKUST_2026_Data.json/xlsx`
+   - [x] PolyU — Playwright scraper (`scripts/extraction/polyu_scrap.py`) → `Reference(2026)/PolyU/PolyU_2026_Data.json/xlsx` + `PolyU_2026_Weights.json`
+   - [x] HKBU — PDF extractors → `Reference(2026)/HKBU/HKBU_2026_Data.json/xlsx`
+   - [x] LingU — PDF extractors → `Reference(2026)/LingU/LingU_2026_Data.json/xlsx`
+   - [x] EdUHK — PDF extractor → `Reference(2026)/EdUHK/EdUHK_2026_Data.json/xlsx`
+   - [x] HKMU — PDF extractor → `Reference(2026)/HKMU/HKMU_2026_Data.json/xlsx`
+   - [x] SSSDP — PDF extractor → `Reference(2026)/SSSDP/SSSDP_2026_Data.json/xlsx`
+4. [x] Build automation scripts per school where possible
 5. [x] Compile and unify all data into a master JSON:
-   - Run `~/miniconda3/envs/jupascal/bin/python unify_2026_data.py`
-   - Generates `JUPAS_2026_Unified_Data.json` with structured requirements and calculation constraints.
-6. [ ] Update `index.html` with new OneDrive embed link
+   - Run `~/miniconda3/envs/jupascal/bin/python scripts/utils/unify_2026_data.py`
+   - Generates `data/processed/JUPAS_2026_Unified_Data.json` with structured requirements and calculation constraints.
+6. [ ] Update `index.html` with new OneDrive embed link (or Web App UI)
 7. [ ] Commit and open Pull Request on GitHub
