@@ -263,6 +263,9 @@ const JUPAS_UI = {
 
     renderResult: function(eligibility, result) {
         const container = document.getElementById('result-display');
+        const p = this.selectedProgramme;
+        if (!p) return;
+
         // Helper: Format score comparison into two columns
         const getCompCells = (histScore) => {
             if (!histScore || !result.totalScore) return "<td>-</td><td>-</td>";
