@@ -60,6 +60,10 @@ We implemented an `apply_baselines` layer to guarantee every programme meets the
 ## 5. Key Takeaways for Future Maintenance
 1.  **API > PDF:** Structured API strings are always more reliable than PDF tables.
 2.  **Subject Normalization:** Use a centralized `normalize_subject` map to handle institutional variations (e.g., `CHI LANG` vs `Chinese Language`).
+    *   *Mangled Parentheses:* Some API sources truncate names (e.g., `Math (Compulsory Part`). A robust normalizer must proactively fix these before matching.
 3.  **Data Cleaning:** Universally strip bullet points (`•`) and HTML tags (`<br />`) from text fields to keep the dataset clean.
 4.  **Raw String Fallback:** If a raw weight string is missing from the source, generate one from the structured dictionary to ensure the data is always auditable.
-5.  **Nested Parents:** When splitting strings containing parentheses (like CityU formulas), use regex that respects balanced parentheses to avoid breaking subject names.
+5.  **Complex Constraints:**
+    *   **Nested Parents:** When splitting strings containing parentheses (like CityU formulas), use regex that respects balanced parentheses to avoid breaking subject names.
+    *   **Multiplier Caps:** Some universities (like CUHK Science) limit the number of subjects that can receive bonus weightings. The calculator must sort all subjects by multiplier and cap anything exceeding the limit (e.g., `max_weighted_subjects`).
+    *   **Category A Wildcards:** Requirements like "Category A subjects only" must be mapped to a wildcard pool (`*`) to allow subjects like M1/M2 to correctly satisfy eligibility.

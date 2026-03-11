@@ -159,7 +159,14 @@ const JUPAS_UI = {
                 <div class="score-note">Calculated using 2025 formula</div>
             </div>
             <div class="historical-scores">
-                <p><b>Median:</b> ${p.scores_2025.median || 'N/A'} | <b>LQ:</b> ${p.scores_2025.lq || 'N/A'}</p>
+                <p><b>2025 Historical Scores:</b></p>
+                <ul>
+                    <li><b>UQ (Upper Quartile):</b> ${p.scores_2025.uq || 'N/A'}</li>
+                    <li><b>Median:</b> ${p.scores_2025.median || 'N/A'}</li>
+                    <li><b>LQ (Lower Quartile):</b> ${p.scores_2025.lq || 'N/A'}</li>
+                    <li><b>Mean:</b> ${p.scores_2025.mean || 'N/A'}</li>
+                </ul>
+                ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU Median/LQ are estimated based on subject grade breakdowns.</p>` : ''}
             </div>
             <h3>Calculation Breakdown</h3>
             <table class="audit-table">

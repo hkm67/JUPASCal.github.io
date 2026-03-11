@@ -17149,11 +17149,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 23.5,
+      "lq": 22.5,
       "uq": null,
       "mean": 21.95,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -17238,11 +17239,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 21.5,
+      "lq": 20.0,
       "uq": null,
       "mean": 21.0,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -17332,11 +17334,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 26.5,
+      "lq": 24.5,
       "uq": null,
       "mean": 24.88,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -17421,11 +17424,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 23.0,
+      "lq": 20.5,
       "uq": null,
       "mean": 21.3,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -17517,11 +17521,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 26.299999999999997,
+      "lq": 26.450000000000003,
       "uq": null,
       "mean": 25.5,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -17617,11 +17622,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 30.5,
+      "lq": 30.75,
       "uq": null,
       "mean": 25.54,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -17707,11 +17713,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 20.0,
+      "lq": 19.0,
       "uq": null,
       "mean": 18.9,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -17801,11 +17808,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 22.5,
+      "lq": 22.5,
       "uq": null,
       "mean": 22.15,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -17893,11 +17901,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 22.0,
+      "lq": 22.5,
       "uq": null,
       "mean": 22.07,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -17983,11 +17992,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 20.5,
+      "lq": 20.0,
       "uq": null,
       "mean": 20.46,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18084,11 +18094,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 39.0,
+      "lq": 36.75,
       "uq": null,
       "mean": 32.27,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18184,11 +18195,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 30.75,
+      "lq": 27.0,
       "uq": null,
       "mean": 27.04,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18278,11 +18290,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 23.5,
+      "lq": 22.625,
       "uq": null,
       "mean": 22.99,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18376,11 +18389,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 22.325,
+      "lq": 23.199999999999996,
       "uq": null,
       "mean": 21.85,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18465,11 +18479,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 21.0,
+      "lq": 19.5,
       "uq": null,
       "mean": 20.68,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18560,11 +18575,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 22.0,
+      "lq": 21.25,
       "uq": null,
       "mean": 21.83,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18658,11 +18674,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 21.4,
+      "lq": 19.9,
       "uq": null,
       "mean": 18.55,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18746,11 +18763,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 20.5,
+      "lq": 18.0,
       "uq": null,
       "mean": 19.34,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18839,11 +18857,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 18.8,
+      "lq": 18.6,
       "uq": null,
       "mean": 18.7,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -18928,11 +18947,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 20.0,
+      "lq": 19.0,
       "uq": null,
       "mean": 19.5,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -19018,11 +19038,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 20.5,
+      "lq": 20.5,
       "uq": null,
       "mean": 20.15,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
@@ -19112,11 +19133,12 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": null,
-      "lq": null,
+      "median": 18.75,
+      "lq": 20.25,
       "uq": null,
       "mean": 19.73,
-      "expected_score": null
+      "expected_score": null,
+      "score_type": "estimated"
     },
     "score_grades_2025": {
       "median": {
