@@ -6048,10 +6048,10 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "English Language",
-          "Chinese Language"
+          "Chinese Language",
+          "English Language"
         ],
-        "description": "Formula requires: English Language, Chinese Language"
+        "description": "Formula requires: Chinese Language, English Language"
       }
     ],
     "score_conversion_table": {
@@ -7389,11 +7389,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Mathematics (Compulsory Part)",
+          "Chinese Language",
           "English Language",
-          "Chinese Language"
+          "Mathematics (Compulsory Part)"
         ],
-        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
       }
     ],
     "score_conversion_table": {
@@ -10409,11 +10409,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Mathematics (Compulsory Part)",
+          "Chinese Language",
           "English Language",
-          "Chinese Language"
+          "Mathematics (Compulsory Part)"
         ],
-        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
       }
     ],
     "score_conversion_table": {
@@ -10531,11 +10531,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Mathematics (Compulsory Part)",
+          "Chinese Language",
           "English Language",
-          "Chinese Language"
+          "Mathematics (Compulsory Part)"
         ],
-        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
       }
     ],
     "score_conversion_table": {
@@ -10654,11 +10654,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Mathematics (Compulsory Part)",
+          "Chinese Language",
           "English Language",
-          "Chinese Language"
+          "Mathematics (Compulsory Part)"
         ],
-        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
       }
     ],
     "score_conversion_table": {
@@ -11217,11 +11217,11 @@
       {
         "type": "compulsory_subjects",
         "subjects": [
-          "Mathematics (Compulsory Part)",
+          "Chinese Language",
           "English Language",
-          "Chinese Language"
+          "Mathematics (Compulsory Part)"
         ],
-        "description": "Formula requires: Mathematics (Compulsory Part), English Language, Chinese Language"
+        "description": "Formula requires: Chinese Language, English Language, Mathematics (Compulsory Part)"
       }
     ],
     "score_conversion_table": {
@@ -20631,10 +20631,11 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, or Chemistry."
       },
       "elect2": {
         "count": 1,
@@ -20731,10 +20732,12 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -20907,10 +20910,15 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Economics",
+          "Information",
+          "Communication Technology",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Economics, Information and Communication Technology, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -21553,10 +21561,15 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Economics",
+          "Information",
+          "Communication Technology",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Economics, Information and Communication Technology, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -21641,10 +21654,13 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Combined Science",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Combined Science, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -21729,10 +21745,13 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Combined Science",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Combined Science, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -21817,10 +21836,13 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Combined Science",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Combined Science, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -21905,10 +21927,13 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Combined Science",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Combined Science, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -21993,10 +22018,13 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Combined Science",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Combined Science, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -22198,7 +22226,8 @@
         "description": "Best results in year 2024, 2025 and 2026"
       },
       {
-        "type": "bonus_6th_half",
+        "type": "bonus_6th",
+        "multiplier": 0.5,
         "description": "0.5 x 6th Best subject included as bonus"
       }
     ],
@@ -22265,7 +22294,7 @@
           "Chemistry"
         ],
         "grade": "3",
-        "note": "Level 3 or above in one of the following subjects: Biology, or Chemistry."
+        "note": "Level 3 or above in one of the following subjects: Biology, or Chemistry"
       },
       "elect2": {
         "count": 1,
@@ -22379,7 +22408,8 @@
         "description": "Best results in year 2024, 2025 and 2026"
       },
       {
-        "type": "bonus_6th_half",
+        "type": "bonus_6th",
+        "multiplier": 0.5,
         "description": "0.5 x 6th Best subject included as bonus"
       }
     ],
@@ -22442,10 +22472,12 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -22471,7 +22503,8 @@
         "description": "Best results in year 2024, 2025 and 2026"
       },
       {
-        "type": "bonus_6th_half",
+        "type": "bonus_6th",
+        "multiplier": 0.5,
         "description": "0.5 x 6th Best subject included as bonus"
       }
     ],
@@ -22534,10 +22567,10 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Chemistry"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in Chemistry"
       },
       "elect2": {
         "count": 1,
@@ -22648,10 +22681,20 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Combined Science",
+          "Design",
+          "Applied Technology",
+          "Information",
+          "Communication Technology",
+          "Integrated Science",
+          "Physics",
+          "Technology",
+          "Living"
         ],
         "grade": "4",
-        "note": ""
+        "note": "Level 4 or above in one of the following subjects: Biology, Chemistry, Combined Science, Design and Applied Technology, Information and Communication Technology, Integrated Science, Physics, or Technology and Living."
       },
       "elect2": {
         "count": 1,
@@ -22736,10 +22779,11 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, or Chemistry"
       },
       "elect2": {
         "count": 1,
@@ -22834,18 +22878,26 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Mathematics Extended Part (Module 1)",
+          "2)",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in two of the following subjects: Biology, Chemistry, Mathematics Extended Part (Module 1 or 2), or Physics."
       },
       "elect2": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Mathematics Extended Part (Module 1)",
+          "2)",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in two of the following subjects: Biology, Chemistry, Mathematics Extended Part (Module 1 or 2), or Physics."
       },
       "conditional_remarks": "Level 3 or above in two of the following subjects: Biology, Chemistry, Mathematics Extended Part (Module 1 or 2), or Physics."
     },
@@ -23104,10 +23156,11 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Mathematics Extended Part (Module 1)",
+          "Mathematics Extended Part (Module 2)"
         ],
-        "grade": "3",
-        "note": ""
+        "grade": "4",
+        "note": "Level 4 or above in Mathematics Extended Part (Module 1 or 2)."
       },
       "elect2": {
         "count": 1,
@@ -23309,6 +23362,11 @@
       {
         "type": "repeater_combined_results_policy",
         "description": "Best results in year 2024 and 2026, or, 2025 and 2026"
+      },
+      {
+        "type": "bonus_6th",
+        "multiplier": 0.2,
+        "description": "0.2 x 6th Best subject included as bonus"
       }
     ],
     "score_conversion_table": {
@@ -23403,6 +23461,11 @@
       {
         "type": "repeater_combined_results_policy",
         "description": "Best results in year 2024 and 2026, or, 2025 and 2026"
+      },
+      {
+        "type": "bonus_6th",
+        "multiplier": 0.2,
+        "description": "0.2 x 6th Best subject included as bonus"
       }
     ],
     "score_conversion_table": {
@@ -23585,6 +23648,11 @@
       {
         "type": "repeater_combined_results_policy",
         "description": "Best results in year 2024 and 2026, or, 2025 and 2026"
+      },
+      {
+        "type": "bonus_6th",
+        "multiplier": 0.2,
+        "description": "0.2 x 6th Best subject included as bonus"
       }
     ],
     "score_conversion_table": {
@@ -23652,10 +23720,14 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Information",
+          "Communication Technology",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Information and Communication Technology, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -23679,6 +23751,11 @@
       {
         "type": "repeater_combined_results_policy",
         "description": "Best results in year 2024 and 2026, or, 2025 and 2026"
+      },
+      {
+        "type": "bonus_6th",
+        "multiplier": 0.2,
+        "description": "0.2 x 6th Best subject included as bonus"
       }
     ],
     "score_conversion_table": {
@@ -24020,10 +24097,21 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Business",
+          "Accounting",
+          "Financial Studies (Accounting)",
+          "Business",
+          "Accounting",
+          "Financial Studies (Business Management)",
+          "Chemistry",
+          "Economics",
+          "Information",
+          "Communication Technology",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Business, Accounting and Financial Studies (Accounting), Business, Accounting and Financial Studies (Business Management), Chemistry, Economics, Information and Communication Technology, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -24047,6 +24135,11 @@
       {
         "type": "repeater_combined_results_policy",
         "description": "Best results in year 2024 and 2026, or, 2025 and 2026"
+      },
+      {
+        "type": "bonus_6th",
+        "multiplier": 0.2,
+        "description": "0.2 x 6th Best subject included as bonus"
       }
     ],
     "score_conversion_table": {
@@ -24114,10 +24207,12 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -24300,10 +24395,11 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Mathematics Extended Part (Module 1)",
+          "Mathematics Extended Part (Module 2)"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in Mathematics Extended Part (Module 1 or 2)."
       },
       "elect2": {
         "count": 1,
@@ -24494,10 +24590,12 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -24582,10 +24680,13 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Combined Science",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Combined Science, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -24670,10 +24771,12 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -24758,10 +24861,11 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, or Chemistry"
       },
       "elect2": {
         "count": 1,
@@ -24846,10 +24950,13 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Combined Science",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Combined Science, or Physics."
       },
       "elect2": {
         "count": 1,
@@ -24934,10 +25041,15 @@
       "elect1": {
         "count": 1,
         "subjects": [
-          "Any"
+          "Biology",
+          "Chemistry",
+          "Economics",
+          "Information",
+          "Communication Technology",
+          "Physics"
         ],
         "grade": "3",
-        "note": ""
+        "note": "Level 3 or above in one of the following subjects: Biology, Chemistry, Economics, Information and Communication Technology, or Physics."
       },
       "elect2": {
         "count": 1,

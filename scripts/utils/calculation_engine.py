@@ -27,7 +27,9 @@ def calculate_programme_score(student_grades, programme, year="2025"):
             "weight": weight,
             "weighted_points": base_points * weight,
             "used": False,
-            "is_best_of": False
+            "is_best_of": False,
+            "is_bonus": False,
+            "bonus_value": ""
         })
 
     # 2. Handle Best-Of Pools (e.g. M1 or M2 x 2.0)
@@ -77,7 +79,6 @@ def calculate_programme_score(student_grades, programme, year="2025"):
             
     # B. Compulsory pools (Pick best N from pool)
     for pool in compulsory_pools:
-        # Find unused subjects in this pool, sorted by weighted points
         pool_cands = sorted([s for s in subject_scores if s["subject"] in pool["subjects"] and not s["used"]], key=lambda x: x["weighted_points"], reverse=True)
         for i in range(min(pool["count"], len(pool_cands))):
             cand = pool_cands[i]
@@ -104,31 +105,27 @@ def calculate_programme_score(student_grades, programme, year="2025"):
 
     # 6. Post-Selection Bonus
     for c in constraints:
-        # PolyU Style
-        if c["type"] == "additional_bonus_6th" and len(selected_subjects) == 5:
-            bonus_cand = sorted([s for s in subject_scores if not s["used"] and s["base_points"] >= 3], key=lambda x: x["base_points"], reverse=True)
-            if bonus_cand:
-                bc = bonus_cand[0]
-                bc.update({"used": True, "is_bonus": True, "weighted_points": bc["base_points"] * 0.1})
-                selected_subjects.append(bc)
-        
-        # HKU Style (0.5 x 6th)
-        if c["type"] == "bonus_6th_half" and len(selected_subjects) == 5:
+        # Generic Multiplier-based (HKU/PolyU)
+        if c["type"] == "bonus_6th" and len(selected_subjects) == 5:
             bonus_cand = sorted([s for s in subject_scores if not s["used"]], key=lambda x: x["base_points"], reverse=True)
             if bonus_cand:
                 bc = bonus_cand[0]
-                bc.update({"used": True, "is_bonus": True, "weighted_points": bc["base_points"] * 0.5})
+                # If PolyU, check for Level 3+
+                if c.get("polyu_style") and bc["base_points"] < 3:
+                    continue
+                bc.update({"used": True, "is_bonus": True, "weighted_points": bc["weighted_points"] * c["multiplier"], "bonus_value": f"+{c['multiplier']}x"})
                 selected_subjects.append(bc)
-
-        # HKUST Style (% of total)
+        
+        # HKUST Style (% of Highest Attainable)
         if c["type"] == "hkust_weighted_best" and len(selected_subjects) == c["subject_count"]:
             bonus_cand = sorted([s for s in subject_scores if not s["used"]], key=lambda x: x["base_points"], reverse=True)
             if bonus_cand:
                 bc = bonus_cand[0]
-                current_total = sum(s["weighted_points"] for s in selected_subjects)
                 bonus_pct = c["bonus_scale"].get(str(bc["grade"]), 0)
                 if bonus_pct > 0:
-                    bc.update({"used": True, "is_bonus": True, "weighted_points": current_total * bonus_pct})
+                    current_total = sum(s["weighted_points"] for s in selected_subjects)
+                    ha_score = programme.get("max_achievable_score") or current_total
+                    bc.update({"used": True, "is_bonus": True, "weighted_points": ha_score * bonus_pct, "bonus_value": f"+{bonus_pct*100}%"})
                     selected_subjects.append(bc)
 
     final_score = sum(s["weighted_points"] for s in selected_subjects)
@@ -143,18 +140,11 @@ if __name__ == "__main__":
     with open("data/processed/JUPAS_2026_Unified_Data.json") as f:
         data = json.load(f)
     
-    # Test JS4601 (CUHK Science)
-    js4601 = [x for x in data if x["jupas_code"] == "JS4601"][0]
-    grades = {
-        "Chinese Language": "5**", 
-        "English Language": "5*", 
-        "Mathematics (Compulsory Part)": "5*", 
-        "Mathematics Extended Part (Module 1)": "3", 
-        "Biology": "5*",
-        "Citizenship and Social Development": "A"
-    }
+    # Test JS6468 (HKU Nursing)
+    js6468 = [x for x in data if x["jupas_code"] == "JS6468"][0]
+    grades = {"Chinese Language": "5*", "English Language": "5", "Mathematics (Compulsory Part)": "4", "Geography": "5", "History": "5", "Biology": "4", "Citizenship and Social Development": "A"}
     
-    result = calculate_programme_score(grades, js4601)
-    print(f"JS4601 Score: {result['final_score']}")
-    for s in result['selected']:
-        print(f"  {s['subject']}: {s['grade']} ({s['base_points']}) x {s['weight']} = {s['weighted_points']}")
+    result = calculate_programme_score(grades, js6468)
+    print("JS6468 Score: " + str(result["final_score"]))
+    for s in result["selected"]:
+        print("  " + s["subject"] + ": " + str(s["grade"]) + " (" + str(s["base_points"]) + ") x " + str(s.get("weight", 1.0)) + " bonus=" + s.get("bonus_value", "") + " = " + str(s["weighted_points"]))

@@ -82,22 +82,30 @@ def normalize_subject(name):
         
     return name
 def parse_hku_min_reqs(html):
-    """Extract ENG/CHI/MATH/CSD/E1/E2 levels from HKU API HTML tables."""
+    """Extract ENG/CHI/MATH/CSD/E1/E2 levels and specific constraints from HKU API HTML."""
     if not html: return {}
     soup = BeautifulSoup(html, 'html.parser')
+    
+    # 1. Basic Table
     table = soup.find('table', class_='section-Minimum-Level-Requirement')
-    if not table: return {}
-    
-    rows = table.find_all('tr')
-    if len(rows) < 3: return {}
-    
-    cells = rows[2].find_all('td')
     reqs = {}
-    labels = ["eng", "chi", "math", "csd", "elect1", "elect2"]
-    for i, label in enumerate(labels):
-        if i < len(cells):
-            val = cells[i].get_text(strip=True).replace("Level ", "")
-            reqs[label] = val
+    if table:
+        rows = table.find_all('tr')
+        if len(rows) >= 3:
+            cells = rows[2].find_all('td')
+            labels = ["eng", "chi", "math", "csd", "elect1", "elect2"]
+            for i, label in enumerate(labels):
+                if i < len(cells):
+                    val = cells[i].get_text(strip=True).replace("Level ", "")
+                    reqs[label] = val
+    
+    # 2. Specific Electives Table
+    spec_table = soup.find('table', class_='section-Specific-Elective-Subject-Requirement')
+    if spec_table:
+        td = spec_table.find('td')
+        if td:
+            reqs["specific_elective_desc"] = td.get_text(strip=True)
+            
     return reqs
 
 def parse_hku_extra_info(html):
@@ -273,11 +281,19 @@ def extract_logic_from_formula(formula_text):
             "weight": float(m.group(3))
         })
     
-    # 3. Detect HKU style: Best 5 Subjects + 0.5 x 6th
+    # 3. Detect HKU style: Best 5 Subjects + 0.5 x 6th / 0.2 x 6th
     if "Best 5" in f or "Best(5)" in f: best_n = 5
     if "Best 6" in f or "Best(6)" in f: best_n = 6
-    if "0.5 x 6th" in f:
-        bonus.append({"type": "bonus_6th_half", "description": "0.5 x 6th Best subject included as bonus"})
+    
+    # regex for N.N x 6th
+    m_bonus = re.search(r'([\d.]+)\s*x\s*6th', f, re.IGNORECASE)
+    if m_bonus:
+        multiplier = float(m_bonus.group(1))
+        bonus.append({
+            "type": "bonus_6th", 
+            "multiplier": multiplier,
+            "description": f"{multiplier} x 6th Best subject included as bonus"
+        })
 
     # 4. Detect PolyU style: English & Chinese + Best 3
     if "Chinese & English Languages + Any Best 3" in f:
@@ -375,6 +391,41 @@ def build_cuhk_elective(note, text, req_str):
         "subjects": subjs,
         "grade": grade,
         "note": note_clean
+    }
+
+def build_hku_elective_pool(desc, fallback_grade):
+    """
+    Parses HKU specific requirement strings like:
+    'Level 3 or above in one of the following subjects: Biology, or Chemistry'
+    """
+    if not desc: return None
+    
+    # Extract grade
+    m_grade = re.search(r'Level (\d)', desc)
+    grade = m_grade.group(1) if m_grade else fallback_grade
+    
+    # Extract count (one vs two)
+    count = 1
+    if "two of the following" in desc.lower():
+        count = 2
+        
+    # Extract subjects
+    subjects = ["Any"]
+    if ":" in desc:
+        subj_part = desc.split(":")[1]
+        # Split by comma or 'or' or 'and'
+        raw_subjs = re.split(r',| or | and ', subj_part)
+        subjects = [normalize_subject(s.strip()) for s in raw_subjs if s.strip()]
+    elif "Mathematics Extended Part (Module 1 or 2)" in desc:
+        subjects = ["Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)"]
+    elif "Chemistry" in desc and "one of" not in desc.lower():
+        subjects = ["Chemistry"]
+        
+    return {
+        "count": count,
+        "subjects": subjects,
+        "grade": str(grade),
+        "note": desc
     }
 
 def build_hkbu_elective(grade, constraint):
@@ -797,13 +848,19 @@ def unify_data():
                     "elect2": build_generic_elective(hku_reqs_raw.get("elect2"))
                 }
                 
-                if code == "JS6456":
-                    obj["min_requirements_2026"]["elect1"] = {
-                        "count": 1,
-                        "subjects": ["Biology", "Chemistry"],
-                        "grade": "3",
-                        "note": "Level 3 or above in one of the following subjects: Biology, or Chemistry."
-                    }
+                # Check for specific elective requirements (e.g. Medicine needs Bio/Chem)
+                spec_desc = hku_reqs_raw.get("specific_elective_desc")
+                if spec_desc:
+                    pool = build_hku_elective_pool(spec_desc, hku_reqs_raw.get("elect1", "3"))
+                    if pool:
+                        if pool["count"] == 1:
+                            obj["min_requirements_2026"]["elect1"] = pool
+                        elif pool["count"] == 2:
+                            # Split into two identical pools for simplicity in calculation
+                            p1 = pool.copy()
+                            p1["count"] = 1
+                            obj["min_requirements_2026"]["elect1"] = p1
+                            obj["min_requirements_2026"]["elect2"] = p1.copy()
 
             elif school_key == "HKUST":
                 formula_text_2025 = entry.get('formula_text_2025')
