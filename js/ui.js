@@ -126,6 +126,14 @@ const JUPAS_UI = {
         const saveBtn = document.getElementById('save-button');
         if (saveBtn) saveBtn.addEventListener('click', () => this.saveGradesToStorage());
 
+        const confirmGradesBtn = document.getElementById('confirm-grades-button');
+        if (confirmGradesBtn) {
+            confirmGradesBtn.addEventListener('click', () => {
+                this.setAccordion('grade-accordion', false);
+                this.setAccordion('prog-accordion', true);
+            });
+        }
+
         document.addEventListener('change', (e) => {
             if (e.target.classList.contains('grade-input') || e.target.classList.contains('subject-select')) {
                 this.syncStateToHash(); 

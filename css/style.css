@@ -99,12 +99,13 @@ header p { margin: 5px 0 0 0; font-size: 0.9em; opacity: 0.8; }
 .elective-row select.subject-select { width: 180px; }
 .elective-row select.grade-input { width: 65px; }
 
-.sidebar-actions { display: flex; gap: 10px; margin-top: 10px; }
-.btn-reset, .btn-save {
-    flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85em;
+.sidebar-actions { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.btn-reset, .btn-save, .btn-confirm {
+    padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85em;
 }
-.btn-reset { background-color: var(--error-color); color: white; }
-.btn-save { background-color: var(--accent-color); color: white; }
+.btn-reset { background-color: var(--error-color); color: white; flex: 1; }
+.btn-save { background-color: var(--accent-color); color: white; flex: 1; }
+.btn-confirm { background-color: var(--success-color); color: white; width: 100%; margin-bottom: 5px; }
 
 /* --- Programme Explorer (Inside Accordion) --- */
 .programme-explorer {
