@@ -45,13 +45,22 @@ const JUPAS_UI = {
             this.renderSubjectInputs();
             this.setupEventListeners();
             
+            // Restore state
             if (window.location.hash) {
                 this.loadStateFromHash();
             } else {
                 this.loadGradesFromStorage();
             }
 
-            this.updateSearch(""); 
+            const savedSearch = localStorage.getItem('jupas_search_query');
+            if (savedSearch) document.getElementById('search-input').value = savedSearch;
+            
+            this.updateSearch(savedSearch || ""); 
+
+            // Initial view: Open Grade Input, Collapse Programme Selection
+            this.setAccordion('grade-accordion', true);
+            this.setAccordion('prog-accordion', false);
+
             console.log("JUPAS UI Initialized.");
         } catch (error) {
             console.error("Initialization Error:", error);
@@ -59,23 +68,26 @@ const JUPAS_UI = {
         }
     },
 
+    /**
+     * Accordion Logic
+     */
+    toggleAccordion: function(id) {
+        const el = document.getElementById(id);
+        el.classList.toggle('collapsed');
+    },
+
+    setAccordion: function(id, isOpen) {
+        const el = document.getElementById(id);
+        if (isOpen) el.classList.remove('collapsed');
+        else el.classList.add('collapsed');
+    },
+
     renderSubjectInputs: function() {
         const container = document.getElementById('subject-inputs');
-        let html = `
-            <div class="sidebar-header">
-                <h3>Input Your DSE Grades</h3>
-                <button class="toggle-btn mobile-only" onclick="JUPAS_UI.toggleSidebar()">Hide</button>
-            </div>
-            <div id="inputs-content">`;
-
-        this.coreSubjects.forEach(s => {
-            html += this.createSubjectRow(s, s === "Citizenship and Social Development");
-        });
-
+        let html = "";
+        this.coreSubjects.forEach(s => html += this.createSubjectRow(s, s === "Citizenship and Social Development"));
         html += "<h4 style='margin-top:20px;'>Electives</h4>";
         for (let i = 1; i <= 4; i++) html += this.createElectiveSlot(i);
-        
-        html += `</div>`;
         container.innerHTML = html;
     },
 
@@ -99,7 +111,10 @@ const JUPAS_UI = {
 
     setupEventListeners: function() {
         const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', (e) => this.updateSearch(e.target.value));
+        searchInput.addEventListener('input', (e) => {
+            localStorage.setItem('jupas_search_query', e.target.value);
+            this.updateSearch(e.target.value);
+        });
 
         const resetBtn = document.getElementById('reset-button');
         if (resetBtn) resetBtn.addEventListener('click', () => {
@@ -115,16 +130,8 @@ const JUPAS_UI = {
             if (e.target.classList.contains('grade-input') || e.target.classList.contains('subject-select')) {
                 this.syncStateToHash(); 
                 if (this.selectedProgramme) this.performCalculation();
-                // Collapse sidebar on mobile after grade selection
-                if (window.innerWidth <= 1024 && e.target.classList.contains('grade-input') && e.target.value !== "") {
-                    // (Optional: auto-collapse)
-                }
             }
         });
-    },
-
-    toggleSidebar: function() {
-        document.getElementById('subject-inputs-container').classList.toggle('collapsed');
     },
 
     syncStateToHash: function() {
@@ -167,7 +174,7 @@ const JUPAS_UI = {
     },
 
     saveGradesToStorage: function() {
-        const grades = this.getGradesFromUI();
+        const grades = this.getGradesFromUI_Flattened();
         localStorage.setItem('jupas_student_grades_explicit', JSON.stringify(grades));
         this.showToast("Grades successfully saved to browser!");
     },
@@ -175,33 +182,28 @@ const JUPAS_UI = {
     loadGradesFromStorage: function() {
         const saved = localStorage.getItem('jupas_student_grades_explicit');
         if (!saved) return;
-        const data = JSON.parse(saved);
-        this.applyGradesToUI(data);
-    },
-
-    getGradesFromUI: function() {
-        const data = { cores: {}, electives: [] };
-        document.querySelectorAll('select[data-subject]').forEach(el => { data.cores[el.dataset.subject] = el.value; });
-        for (let i = 1; i <= 4; i++) {
-            data.electives.push({
-                name: document.getElementById(`e${i}-name`).value,
-                grade: document.getElementById(`e${i}-grade`).value
-            });
-        }
-        return data;
+        try {
+            const data = JSON.parse(saved);
+            this.applyGradesToUI(data);
+        } catch (e) { console.error("Failed to parse saved grades."); }
     },
 
     applyGradesToUI: function(data) {
+        // Handle both old structured format and new flat format if needed
+        const cores = data.cores || data; 
         document.querySelectorAll('select[data-subject]').forEach(el => {
-            if (data.cores[el.dataset.subject]) el.value = data.cores[el.dataset.subject];
+            if (cores[el.dataset.subject]) el.value = cores[el.dataset.subject];
         });
-        data.electives.forEach((e, i) => {
-            const idx = i + 1;
-            const nameEl = document.getElementById(`e${idx}-name`);
-            const gradeEl = document.getElementById(`e${idx}-grade`);
-            if (nameEl && e.name) nameEl.value = e.name;
-            if (gradeEl && e.grade) gradeEl.value = e.grade;
-        });
+        const electives = data.electives || [];
+        if (electives.length > 0) {
+            electives.forEach((e, i) => {
+                const idx = i + 1;
+                const nameEl = document.getElementById(`e${idx}-name`);
+                const gradeEl = document.getElementById(`e${idx}-grade`);
+                if (nameEl && e.name) nameEl.value = e.name;
+                if (gradeEl && e.grade) gradeEl.value = e.grade;
+            });
+        }
     },
 
     resetGrades: function() {
@@ -219,7 +221,7 @@ const JUPAS_UI = {
                    (p.name_en || "").toLowerCase().includes(q) ||
                    (p.institution || "").toLowerCase().includes(q);
         });
-        const displayList = q ? filtered : filtered.slice(0, 50);
+        const displayList = q ? filtered : filtered.slice(0, 100);
         let html = "";
         displayList.forEach(p => {
             html += `<div class="programme-item ${this.selectedProgramme && this.selectedProgramme.jupas_code === p.jupas_code ? 'active' : ''}" 
@@ -236,10 +238,10 @@ const JUPAS_UI = {
         this.selectedProgramme = this.allProgrammes.find(p => p.jupas_code === code);
         this.performCalculation();
         this.updateSearch(document.getElementById('search-input').value);
-        // Collapse programme explorer on mobile after selection
-        if (window.innerWidth <= 1024) {
-            document.querySelector('.programme-explorer').classList.add('collapsed');
-        }
+        
+        // Collapse Programme Selection and Grade Input after selection
+        this.setAccordion('prog-accordion', false);
+        this.setAccordion('grade-accordion', false);
     },
 
     performCalculation: function() {
@@ -264,18 +266,13 @@ const JUPAS_UI = {
     renderResult: function(eligibility, result) {
         const container = document.getElementById('result-display');
         const p = this.selectedProgramme;
-        if (!p) return;
 
-        // Helper: Format score comparison into two columns
-        const getCompCells = (histScore) => {
+        const formatComp = (histScore) => {
             if (!histScore || !result.totalScore) return "<td>-</td><td>-</td>";
             const diff = result.totalScore - histScore;
-            // Calculate relative percentage change: (New - Old) / Old * 100
             const pctChange = ((result.totalScore - histScore) / histScore * 100).toFixed(1);
             const className = diff >= 0 ? "pos" : "neg";
-            return `
-                <td class="comp-cell ${className}">${diff >= 0 ? '+' : ''}${diff.toFixed(2)}</td>
-                <td class="comp-cell ${className}">${diff >= 0 ? '+' : ''}${pctChange}%</td>`;
+            return `<td class="comp-cell ${className}">${diff >= 0 ? '+' : ''}${diff.toFixed(2)}</td><td class="comp-cell ${className}">${diff >= 0 ? '+' : ''}${pctChange}%</td>`;
         };
 
         const generateHistoricalLogicGrid = (gradeBreakdown, title) => {
@@ -366,10 +363,10 @@ const JUPAS_UI = {
                     <table class="historical-table">
                         <thead><tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr></thead>
                         <tbody>
-                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
-                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
-                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
-                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
+                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${formatComp(p.scores_2025.uq)}</tr>
+                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${formatComp(p.scores_2025.median)}</tr>
+                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${formatComp(p.scores_2025.lq)}</tr>
+                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${formatComp(p.scores_2025.mean)}</tr>
                         </tbody>
                     </table>
                     ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "UQ")}
@@ -377,7 +374,7 @@ const JUPAS_UI = {
                     ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
                 </div>
 
-                <h3>Calculation Detail</h3>
+                <h3>Your Calculation Detail</h3>
                 <table class="audit-table">
                     <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
                     <tbody>
@@ -422,4 +419,4 @@ const JUPAS_UI = {
 };
 
 window.addEventListener('DOMContentLoaded', () => JUPAS_UI.init());
-window.JUPAS_UI = JUPAS_UI; // Export for global access
+window.JUPAS_UI = JUPAS_UI; 

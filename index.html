@@ -14,36 +14,53 @@
     </header>
 
     <div class="main-container">
-        <!-- 1. Left Sidebar: Grade Inputs -->
-        <section class="sidebar" id="subject-inputs-container">
-            <div id="subject-inputs">
-                <!-- Populated by JUPAS_UI.renderSubjectInputs() -->
-                <p>Loading inputs...</p>
+        <!-- Accordion Stack -->
+        <aside class="accordion-sidebar">
+            
+            <!-- 1. Grade Input Accordion -->
+            <div class="accordion-item" id="grade-accordion">
+                <div class="accordion-header" onclick="JUPAS_UI.toggleAccordion('grade-accordion')">
+                    <h3>1. Input Your DSE Grades</h3>
+                    <span class="icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div id="subject-inputs">
+                        <p>Loading inputs...</p>
+                    </div>
+                    <div class="sidebar-actions">
+                        <button id="save-button" class="btn-save">Save to Browser</button>
+                        <button id="reset-button" class="btn-reset">Reset All</button>
+                    </div>
+                </div>
             </div>
-            <div class="sidebar-actions">
-                <button id="save-button" class="btn-save">Save to Browser</button>
-                <button id="reset-button" class="btn-reset">Reset All</button>
-            </div>
-        </section>
 
-        <!-- 2. Middle Column: Programme Explorer -->
-        <section class="programme-explorer">
-            <input type="text" id="search-input" placeholder="Search by JUPAS Code, Name, or Institution...">
-            <div id="programme-list">
-                <!-- Populated by JUPAS_UI.updateSearch() -->
+            <!-- 2. Programme Selection Accordion -->
+            <div class="accordion-item" id="prog-accordion">
+                <div class="accordion-header" onclick="JUPAS_UI.toggleAccordion('prog-accordion')">
+                    <h3>2. Select a Programme</h3>
+                    <span class="icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="programme-explorer">
+                        <input type="text" id="search-input" placeholder="Search by Code, Name, or Institution...">
+                        <div id="programme-list">
+                            <!-- Populated by JUPAS_UI -->
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
 
-        <!-- 3. Right Panel: Live Results -->
-        <section class="content-area" id="result-display">
+        </aside>
+
+        <!-- 3. Main Display: Results -->
+        <main class="content-area" id="result-display">
             <div class="placeholder-msg">
-                <p>← Select a programme to see your estimated score and eligibility.</p>
+                <p>Please enter your grades and select a programme to begin calculation.</p>
             </div>
-        </section>
+        </main>
     </div>
 
     <!-- Application Logic -->
-    <!-- Note: Load order matters. Calculator is pure logic, UI manages the DOM. -->
     <script src="js/calculator.js"></script>
     <script src="js/ui.js"></script>
 </body>
