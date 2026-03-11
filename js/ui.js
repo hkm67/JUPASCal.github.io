@@ -243,13 +243,15 @@ const JUPAS_UI = {
         const container = document.getElementById('result-display');
         const p = this.selectedProgramme;
 
-        // Helper: Format score comparison
-        const formatComp = (histScore) => {
-            if (!histScore || !result.totalScore) return "";
+        // Helper: Format score comparison into two columns
+        const getCompCells = (histScore) => {
+            if (!histScore || !result.totalScore) return "<td>-</td><td>-</td>";
             const diff = result.totalScore - histScore;
             const pct = (result.totalScore / histScore * 100).toFixed(1);
             const className = diff >= 0 ? "pos" : "neg";
-            return `<span class="comp ${className}">(${diff >= 0 ? '+' : ''}${diff.toFixed(2)} | ${pct}%)</span>`;
+            return `
+                <td class="comp ${className}">${diff >= 0 ? '+' : ''}${diff.toFixed(2)}</td>
+                <td class="comp ${className}">${pct}%</td>`;
         };
 
         // Helper: Generate horizontal logic grid
@@ -327,13 +329,13 @@ const JUPAS_UI = {
                 <h3>2025 Historical Comparison</h3>
                 <table class="historical-table">
                     <thead>
-                        <tr><th>Position</th><th>2025 Score</th><th>Comparison (Diff | %)</th></tr>
+                        <tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>Upper Quartile (UQ)</td><td>${p.scores_2025.uq || 'N/A'}</td><td>${formatComp(p.scores_2025.uq)}</td></tr>
-                        <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td><td>${formatComp(p.scores_2025.median)}</td></tr>
-                        <tr><td>Lower Quartile (LQ)</td><td>${p.scores_2025.lq || 'N/A'}</td><td>${formatComp(p.scores_2025.lq)}</td></tr>
-                        <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td><td>${formatComp(p.scores_2025.mean)}</td></tr>
+                        <tr><td>Upper Quartile (UQ)</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
+                        <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
+                        <tr><td>Lower Quartile (LQ)</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
+                        <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
                     </tbody>
                 </table>
                 
