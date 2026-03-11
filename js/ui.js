@@ -368,39 +368,39 @@ const JUPAS_UI = {
 
                 ${weightInfo}
 
-                <details class="calculation-audit-dropdown">
-                    <summary>View Your Calculation Detail (Audit Trail)</summary>
-                    <div class="audit-content">
-                        <table class="audit-table">
-                            <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
-                            <tbody>
-                                ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => `
-                                    <tr class="${c.used ? 'selected-subject' : 'unused'}">
-                                        <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
-                                        <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </details>
+                <h3>Your Calculation Detail</h3>
+                <table class="audit-table">
+                    <thead><tr><th>Subject</th><th>Grade</th><th>Points</th><th>Weight</th><th>Final</th></tr></thead>
+                    <tbody>
+                        ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => `
+                            <tr class="${c.used ? 'selected-subject' : 'unused'}">
+                                <td>${c.subject} ${c.isCompulsory ? '<small>(Compulsory)</small>' : ''}</td>
+                                <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${c.weightedScore.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
 
                 ${!isNewProgramme ? `
-                <div class="historical-scores">
-                    <h3>2025 Historical Comparison</h3>
-                    <table class="historical-table">
-                        <thead><tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr></thead>
-                        <tbody>
-                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
-                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
-                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
-                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
-                        </tbody>
-                    </table>
-                    ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "UQ")}
-                    ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
-                    ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
-                </div>` : '<div class="no-historical">No 2025 historical data available for this new programme.</div>'}
+                <details class="historical-audit-dropdown">
+                    <summary>View 2025 Historical Comparison & Benchmarks</summary>
+                    <div class="historical-scores">
+                        <h3>2025 Historical Comparison</h3>
+                        <table class="historical-table">
+                            <thead><tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr></thead>
+                            <tbody>
+                                <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
+                                <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
+                                <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
+                                <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
+                            </tbody>
+                        </table>
+                        ${generateHistoricalLogicGrid(p.score_grades_2025.uq, "UQ")}
+                        ${generateHistoricalLogicGrid(p.score_grades_2025.median, "Median")}
+                        ${generateHistoricalLogicGrid(p.score_grades_2025.lq, "LQ")}
+                        ${p.scores_2025.score_type === "estimated" ? `<p class="warning">Note: HKBU benchmarks are estimated from grade breakdowns.</p>` : ''}
+                    </div>
+                </details>` : '<div class="no-historical">No 2025 historical data available for this new programme.</div>'}
             </div>`;
         container.innerHTML = html;
     },
