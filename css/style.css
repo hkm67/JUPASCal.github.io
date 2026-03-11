@@ -28,6 +28,7 @@ header {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+/* Layout Containers */
 .main-container {
     display: flex;
     flex: 1;
@@ -43,19 +44,6 @@ header {
     overflow-y: auto;
 }
 
-.input-row {
-    margin-bottom: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.input-row label { font-size: 0.9em; font-weight: 600; }
-.input-row select { padding: 5px; width: 120px; }
-
-.elective-row select.subject-select { width: 180px; }
-.elective-row select.grade-input { width: 60px; }
-
 /* Middle: Programme List */
 .programme-explorer {
     flex: 1;
@@ -65,38 +53,6 @@ header {
     padding: 10px;
 }
 
-#search-input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 1em;
-}
-
-#programme-list {
-    flex: 1;
-    overflow-y: auto;
-}
-
-.programme-item {
-    background: white;
-    padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.1s;
-}
-
-.programme-item:hover { background: #f0f0f0; }
-.programme-item.active { border-left: 5px solid var(--accent-color); background: #eef6ff; }
-
-.programme-item .code { font-weight: bold; color: var(--accent-color); }
-.programme-item .name { font-size: 0.95em; margin: 4px 0; }
-.programme-item .inst { font-size: 0.8em; color: #777; }
-
 /* Right: Results */
 .content-area {
     width: 500px;
@@ -104,6 +60,61 @@ header {
     background: var(--card-bg);
     border-left: 1px solid var(--border-color);
     overflow-y: auto;
+}
+
+/* --- Responsive Media Queries --- */
+
+/* Tablet and Desktop Small */
+@media (max-width: 1200px) {
+    .sidebar { width: 300px; }
+    .content-area { width: 400px; }
+}
+
+/* Mobile & Large Tablets (Vertical Stacking) */
+@media (max-width: 1024px) {
+    body {
+        height: auto;
+        overflow-y: auto;
+    }
+    
+    .main-container {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+    }
+
+    .sidebar, .programme-explorer, .content-area {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        overflow-y: visible;
+    }
+
+    .sidebar { order: 1; }
+    .programme-explorer { order: 2; height: 500px; overflow-y: auto; }
+    .content-area { order: 3; }
+
+    header {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .input-row {
+        padding: 8px 0;
+    }
+
+    .input-row select {
+        height: 40px; /* Touch target */
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .score-value { font-size: 2.2em; }
+    .audit-table { font-size: 0.8em; }
+    .programme-explorer { height: 400px; }
 }
 
 .result-card h2 { margin-top: 0; color: var(--primary-color); }
