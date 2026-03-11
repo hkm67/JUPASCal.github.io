@@ -42,54 +42,32 @@ POLYU_WEIGHTS_2026 = "../../Reference(2026)/PolyU/PolyU_2026_Weights.json"
 OVERVIEW_FILE = "../../data/raw/2026 JUPAS Program Overview.xlsx"
 OUTPUT_FILE = "../../data/processed/JUPAS_2026_Unified_Data.json"
 CUHK_GRADES_FILE = "../../Reference(2026)/CUHK/cuhk_grades_2025.json"
+SUBJECT_MAPPING_FILE = "../../data/raw/subject_mapping.json"
+
+# Global mapping loaded once from external JSON
+_mapping_path = os.path.join(os.path.dirname(__file__), SUBJECT_MAPPING_FILE)
+with open(_mapping_path, encoding="utf-8") as f:
+    SUBJECT_MAP = json.load(f)
 
 def normalize_subject(name):
     """
-    Map various institution-specific subject codes/names to a standard set.
-    Handles abbreviations (CHIN), internal API codes (MTH1), and casing.
+    Standardizes all DSE subject names across 10 institutions using an external canonical map.
+    Converts Chinese terms, school-specific abbreviations, and variations.
     """
     if not name: return name
-    name = str(name).strip().strip(" .")
-    mapping = {
-        "CHIN": "Chinese Language",
-        "ENGL": "English Language",
-        "MATH": "Mathematics (Compulsory Part)",
-        "MTH1": "Mathematics Extended Part (Module 1)",
-        "MTH2": "Mathematics Extended Part (Module 2)",
-        "CSD": "Citizenship and Social Development",
-        "M1": "Mathematics Extended Part (Module 1)",
-        "M2": "Mathematics Extended Part (Module 2)",
-        "BIOL": "Biology",
-        "CHEM": "Chemistry",
-        "PHYS": "Physics",
-        "ECON": "Economics",
-        "INCT": "Information and Communication Technology",
-        "ICT": "Information and Communication Technology",
-        "HMSC": "Health Management and Social Care",
-        "HIST": "History",
-        "GEOG": "Geography",
-        "VART": "Visual Arts",
-        "MUSC": "Music",
-        "MAT1": "Mathematics Extended Part (Module 1)",
-        "MAT2": "Mathematics Extended Part (Module 2)",
-        "BBA": "Business, Accounting and Financial Studies",
-        "BAFS": "Business, Accounting and Financial Studies",
-        "MATHEMATICS (COMPULSORY PART)": "Mathematics (Compulsory Part)",
-        "ENGLISH LANGUAGE": "English Language",
-        "CHINESE LANGUAGE": "Chinese Language",
-        "CITIZENSHIP AND SOCIAL DEVELOPMENT": "Citizenship and Social Development",
-        "MATHEMATICS": "Mathematics (Compulsory Part)",
-        "CHI LANG": "Chinese Language",
-        "ENG LANG": "English Language",
-        "MATH COMP": "Mathematics (Compulsory Part)",
-        "BIO": "Biology",
-        "ENG": "English Language",
-        "CHI": "Chinese Language"
-    }
-    # Handle CUHK prefix 'A' (e.g. AENGL -> ENGL)
-    name_clean = name.strip('A').strip().upper()
-    return mapping.get(name_clean, name)
-
+    # Clean string: remove bullets, trailing punctuation, and extra whitespace
+    name = str(name).strip().replace("•", "").strip(" .)")
+    
+    # Authoritative Mapping (case-insensitive lookup using external JSON)
+    name_clean = name.upper()
+    if name_clean in SUBJECT_MAP:
+        return SUBJECT_MAP[name_clean]
+    
+    # Secondary check: institution-specific prefix cleaning (CUHK "A" prefix)
+    if name_clean.startswith("A") and name_clean[1:] in SUBJECT_MAP:
+        return SUBJECT_MAP[name_clean[1:]]
+        
+    return name
 def parse_hku_min_reqs(html):
     """Extract ENG/CHI/MATH/CSD/E1/E2 levels from HKU API HTML tables."""
     if not html: return {}
@@ -218,6 +196,30 @@ def parse_polyu_weights_string(w_str):
             weight = float(m.group(2))
             weights[subj] = weight
     return weights
+
+def get_conversion_table(institution, is_medicine=False):
+    """
+    Returns the grade-to-point conversion table for the institution.
+    Standard (Group A): 5**=8.5, 5*=7, 5=5.5, 4=4, 3=3, 2=2, 1=1
+    Standard (Group B): 5**=7, 5*=6, 5=5, 4=4, 3=3, 2=2, 1=1
+    """
+    # Group B institutions or special cases
+    if institution in ["LingnanU", "EdUHK", "HKMU", "SSSDP"] or is_medicine:
+        table = {
+            "5**": 7.0, "5*": 6.0, "5": 5.0, "4": 4.0, "3": 3.0, "2": 2.0, "1": 1.0,
+            "attained": 0.0, "A": 0.0
+        }
+        # Add Category C for these schools if known (standard is A=7, B=6, C=5, D=4, E=3)
+        cat_c = {"A": 7.0, "B": 6.0, "C": 5.0, "D": 4.0, "E": 3.0}
+    else:
+        # Group A: HKU, CUHK, HKUST, PolyU, CityUHK, HKBU
+        table = {
+            "5**": 8.5, "5*": 7.0, "5": 5.5, "4": 4.0, "3": 3.0, "2": 2.0, "1": 1.0,
+            "attained": 0.0, "A": 0.0
+        }
+        cat_c = {"A": 5.0, "B": 4.0, "C": 3.0, "D": 2.0, "E": 1.0}
+        
+    return {"category_a": table, "category_c": cat_c}
 
 def map_formula_id(formula_text):
     """Standardize formula descriptions into machine-readable IDs (best5, 4c2x, etc.)."""
@@ -428,6 +430,7 @@ def unify_data():
                 
                 "min_requirements_2026": {},
                 "calculation_constraints": [], # Machine-readable calculation flags
+                "score_conversion_table": {},
                 "max_achievable_score": None,
                 
                 "scores_2025": {"median": None, "lq": None, "uq": None, "mean": None, "expected_score": None},
@@ -965,6 +968,10 @@ def unify_data():
             
             if "conditional_remarks" in obj["min_requirements_2026"]:
                 obj["min_requirements_2026"]["conditional_remarks"] = clean_raw_string(obj["min_requirements_2026"]["conditional_remarks"])
+
+            # Assign conversion table
+            is_med = (code in ["JS4501", "JS4502"])
+            obj["score_conversion_table"] = get_conversion_table(obj["institution"], is_medicine=is_med)
 
             obj = apply_baselines(obj)
             unified.append(obj)
