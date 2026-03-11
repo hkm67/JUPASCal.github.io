@@ -10023,145 +10023,6 @@
     "remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Biology, Chemistry, Information and Communication Technology, Physics"
   },
   {
-    "jupas_code": "JS4386",
-    "name_en": "B.Sc. in Learning Design and Technology",
-    "name_zh": "理學士（學習設計與科技）",
-    "institution": "CUHK",
-    "faculty": "ENG",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "Mathematics (Compulsory Part)": 1.5,
-      "Biology": 1.5,
-      "Chemistry": 1.5,
-      "Physics": 1.5,
-      "DATE": 1.5,
-      "Information and Communication Technology": 1.5,
-      "Business, Accounting and Financial Studies": 1.5,
-      "Economics": 1.5,
-      "Geography": 1.5,
-      "Technology and Living (Food Science and Technology)": 1.5
-    },
-    "subject_weights_2026": {
-      "Mathematics (Compulsory Part)": 1.5,
-      "Biology": 1.5,
-      "Chemistry": 1.5,
-      "Physics": 1.5,
-      "DATE": 1.5,
-      "Information and Communication Technology": 1.5,
-      "Business, Accounting and Financial Studies": 1.5,
-      "Economics": 1.5,
-      "Geography": 1.5,
-      "Technology and Living (Food Science and Technology)": 1.5
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "subject_weights_2025_raw": "Mathematics (x 1.5) M1 or M2 (x 1.5) Biology, Chemistry, Physics, DAT, ICT, BAFS, Economics, Geography, Tech and Living (FST) (x 1.5)",
-    "subject_weights_2026_raw": "Mathematics (Compulsory Part) (x 1.5), Mathematics (Module 1 or 2) (x 1.5), Biology, Business, Accounting and Financial Studies, Chemistry, Design and Applied Technology, Economics, Geography, Information and Communication Technology, Physics, Technology and Living (Food Science and Technology) (x 1.5)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "3",
-      "math": "3",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "conditional_remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Biology, Business, Accounting and Financial Studies, Chemistry, Design and Applied Technology, Economics, Geography, Information and Communication Technology, Physics, Technology and Living (Food Science and Technology)"
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 30.5,
-      "lq": 30.25,
-      "uq": 31.75,
-      "mean": null,
-      "expected_score": 25.5
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "4",
-        "Elective 1": "4"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "4",
-        "CSD": "A",
-        "Elective 1": "5",
-        "Elective 2": "4",
-        "Elective 3": "4"
-      },
-      "uq": {
-        "CHIN": "4",
-        "ENGL": "5",
-        "MATH": "4",
-        "CSD": "A",
-        "Elective 1": "5",
-        "Elective 2": "4",
-        "Elective 3": "4"
-      }
-    },
-    "quota": null,
-    "remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Biology, Business, Accounting and Financial Studies, Chemistry, Design and Applied Technology, Economics, Geography, Information and Communication Technology, Physics, Technology and Living (Food Science and Technology)"
-  },
-  {
     "jupas_code": "JS4733",
     "name_en": "Mathematics and Information Engineering",
     "name_zh": "數學與信息工程學",
@@ -10422,145 +10283,6 @@
     "remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Geography, Physics"
   },
   {
-    "jupas_code": "JS4760",
-    "name_en": "Interdisciplinary Data Analytics & X Double Major Programme",
-    "name_zh": "跨學科數據分析及Ｘ雙主修課程",
-    "institution": "CUHK",
-    "faculty": "ENG",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "Mathematics (Compulsory Part)": 1.5
-    },
-    "subject_weights_2026": {
-      "Mathematics (Compulsory Part)": 1.5
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      },
-      {
-        "count": 1,
-        "subjects": [
-          "Economics",
-          "Information and Communication Technology"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      },
-      {
-        "count": 1,
-        "subjects": [
-          "Economics",
-          "Information and Communication Technology"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "subject_weights_2025_raw": "Mathematics (x 1.5) M1 or M2 (x 2) Economics or ICT (x 1.5)",
-    "subject_weights_2026_raw": "Mathematics (Module 1 or 2) (x 2), Mathematics (Compulsory Part) (x 1.5), Economics or Information and Communication Technology (x 1.5)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "3",
-      "math": "3",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "conditional_remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Economics, Information and Communication Technology"
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 35.0,
-      "lq": 34.75,
-      "uq": 37.0,
-      "mean": null,
-      "expected_score": 31.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "5",
-        "Elective 2": "4"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "3",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "5*",
-        "Elective 1": "4",
-        "Elective 2": "3"
-      },
-      "uq": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "5",
-        "Elective 2": "5",
-        "Elective 3": "4"
-      }
-    },
-    "quota": null,
-    "remarks": "Taking Mathematics (Module 1 or 2) will be strongly recommended | The following subjects are preferred:, Mathematics (Module 1 or 2), Economics, Information and Communication Technology"
-  },
-  {
     "jupas_code": "JS4903",
     "name_en": "Bachelor of Laws",
     "name_zh": "法學士",
@@ -10660,109 +10382,6 @@
         "Elective 1": "5*",
         "Elective 2": "5",
         "Elective 3": "4"
-      }
-    },
-    "quota": null,
-    "remarks": ""
-  },
-  {
-    "jupas_code": "JS4264",
-    "name_en": "Bachelor of Business Administration (Integrated BBA Programme) and Juris Doctor Double Degree Programme",
-    "name_zh": "工商管理學士（工商管理學士綜合課程）及法律博士雙學位課程",
-    "institution": "CUHK",
-    "faculty": "LAW",
-    "formula_2025": "5 subjects",
-    "formula_2025_id": "custom",
-    "formula_2026": "AENGL+ACHIN+AMATH+Best(2)",
-    "formula_2026_id": "custom",
-    "subject_weights_2025": {
-      "English Language": 2.0
-    },
-    "subject_weights_2026": {
-      "English Language": 2.0
-    },
-    "best_of_weights_2025": [],
-    "best_of_weights_2026": [],
-    "subject_weights_2025_raw": "English (x 2) | Chinese, English and Mathematics | must be included in the score | calculation (i.e. Chi + Eng + Math + Best | 2 subjects)",
-    "subject_weights_2026_raw": "English (x 2), Chinese, English and Mathematics (Compulsory Part) must be included in the score calculation (i.e. Chinese + English + Mathematics (Compulsory Part) + Best 2 subjects)",
-    "min_requirements_2026": {
-      "chi": "4",
-      "eng": "5",
-      "math": "3",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      }
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 37.5,
-      "lq": 36.0,
-      "uq": 37.5,
-      "mean": null,
-      "expected_score": 34.5
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "4",
-        "ENGL": "5*",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "4",
-        "Elective 1": "5*",
-        "Elective 2": "5*"
-      },
-      "lq": {
-        "CHIN": "5",
-        "ENGL": "5",
-        "MATH": "5*",
-        "CSD": "A",
-        "Elective 1": "5*",
-        "Elective 2": "5",
-        "Elective 3": "5"
-      },
-      "uq": {
-        "CHIN": "5**",
-        "ENGL": "5*",
-        "MATH": "4",
-        "CSD": "A",
-        "Elective 1": "5",
-        "Elective 2": "5",
-        "Elective 3": "5"
       }
     },
     "quota": null,
@@ -11547,106 +11166,6 @@
     "remarks": "Category A subjects only"
   },
   {
-    "jupas_code": "JS4725",
-    "name_en": "Biotechnology, Entrepreneurship and Healthcare Management",
-    "name_zh": "生物科技、創業與醫療管理",
-    "institution": "CUHK",
-    "faculty": "MED",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {},
-    "subject_weights_2026": {},
-    "best_of_weights_2025": [],
-    "best_of_weights_2026": [],
-    "subject_weights_2025_raw": "--",
-    "subject_weights_2026_raw": "",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "4",
-      "math": "3",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Biology",
-          "Chemistry"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      }
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 27.5,
-      "lq": 27.5,
-      "uq": 29.0,
-      "mean": null,
-      "expected_score": 27.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "5**",
-        "ENGL": "4",
-        "MATH": "4",
-        "CSD": "A",
-        "Elective 1": "5",
-        "Elective 2": "5",
-        "Elective 3": "4"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "5*",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "4",
-        "Elective 2": "4"
-      },
-      "uq": {
-        "CHIN": "3",
-        "ENGL": "5",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "5*",
-        "Elective 1": "5",
-        "Elective 2": "5"
-      }
-    },
-    "quota": null,
-    "remarks": ""
-  },
-  {
     "jupas_code": "JS4601",
     "name_en": "Science",
     "name_zh": "理學",
@@ -12321,1039 +11840,6 @@
     },
     "quota": null,
     "remarks": ""
-  },
-  {
-    "jupas_code": "JS4276",
-    "name_en": "Quantitative Finance and Risk Management Science",
-    "name_zh": "計量金融學及風險管理科學",
-    "institution": "CUHK",
-    "faculty": "SCI",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "English Language": 2.0,
-      "Mathematics (Compulsory Part)": 2.0
-    },
-    "subject_weights_2026": {
-      "English Language": 2.0,
-      "Mathematics (Compulsory Part)": 2.0
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)",
-          "Chemistry",
-          "Physics",
-          "Economics"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)",
-          "Chemistry",
-          "Physics",
-          "Economics"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "subject_weights_2025_raw": "English (x 2) | Mathematics (x 2) | The best one subject of M1/M2, | Chemistry, Physics or Economics (x 1.5)",
-    "subject_weights_2026_raw": "English (x 2), Mathematics (Compulsory Part) (x 2), The best one subject of Mathematics (Module 1 or 2), Chemistry, Economics or Physics (x 1.5)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "3",
-      "math": "3",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      }
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 57.75,
-      "lq": 54.75,
-      "uq": 63.75,
-      "mean": null,
-      "expected_score": 55.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "5*",
-        "ENGL": "5*",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5*",
-        "Elective 1": "5**",
-        "Elective 2": "5**",
-        "Elective 3": "5**"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "5",
-        "MATH": "5**",
-        "LS": "4",
-        "M1/M2": "5**",
-        "Elective 1": "5*",
-        "Elective 2": "5*",
-        "Elective 3": "5*"
-      },
-      "uq": {
-        "CHIN": "4",
-        "ENGL": "5**",
-        "MATH": "5**",
-        "CSD": "A",
-        "M1/M2": "5*",
-        "Elective 1": "5**",
-        "Elective 2": "5**",
-        "Elective 3": "5**"
-      }
-    },
-    "quota": null,
-    "remarks": ""
-  },
-  {
-    "jupas_code": "JS4386",
-    "name_en": "B.Sc. in Learning Design and Technology",
-    "name_zh": "理學士（學習設計與科技）",
-    "institution": "CUHK",
-    "faculty": "SCI",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "Mathematics (Compulsory Part)": 1.5,
-      "Biology": 1.5,
-      "Chemistry": 1.5,
-      "Physics": 1.5,
-      "DATE": 1.5,
-      "Information and Communication Technology": 1.5,
-      "Business, Accounting and Financial Studies": 1.5,
-      "Economics": 1.5,
-      "Geography": 1.5,
-      "Technology and Living (Food Science and Technology)": 1.5
-    },
-    "subject_weights_2026": {
-      "Mathematics (Compulsory Part)": 1.5,
-      "Biology": 1.5,
-      "Chemistry": 1.5,
-      "Physics": 1.5,
-      "DATE": 1.5,
-      "Information and Communication Technology": 1.5,
-      "Business, Accounting and Financial Studies": 1.5,
-      "Economics": 1.5,
-      "Geography": 1.5,
-      "Technology and Living (Food Science and Technology)": 1.5
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "subject_weights_2025_raw": "Mathematics (x 1.5) M1 or M2 (x 1.5) Biology, Chemistry, Physics, DAT, ICT, BAFS, Economics, Geography, Tech and Living (FST) (x 1.5)",
-    "subject_weights_2026_raw": "Mathematics (Compulsory Part) (x 1.5), Mathematics (Module 1 or 2) (x 1.5), Biology, Business, Accounting and Financial Studies, Chemistry, Design and Applied Technology, Economics, Geography, Information and Communication Technology, Physics, Technology and Living (Food Science and Technology) (x 1.5)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "3",
-      "math": "3",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "conditional_remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Biology, Business, Accounting and Financial Studies, Chemistry, Design and Applied Technology, Economics, Geography, Information and Communication Technology, Physics, Technology and Living (Food Science and Technology)"
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 30.5,
-      "lq": 30.25,
-      "uq": 31.75,
-      "mean": null,
-      "expected_score": 25.5
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "4",
-        "Elective 1": "4"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "4",
-        "CSD": "A",
-        "Elective 1": "5",
-        "Elective 2": "4",
-        "Elective 3": "4"
-      },
-      "uq": {
-        "CHIN": "4",
-        "ENGL": "5",
-        "MATH": "4",
-        "CSD": "A",
-        "Elective 1": "5",
-        "Elective 2": "4",
-        "Elective 3": "4"
-      }
-    },
-    "quota": null,
-    "remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Biology, Business, Accounting and Financial Studies, Chemistry, Design and Applied Technology, Economics, Geography, Information and Communication Technology, Physics, Technology and Living (Food Science and Technology)"
-  },
-  {
-    "jupas_code": "JS4416",
-    "name_en": "Computational Data Science",
-    "name_zh": "計算數據科學",
-    "institution": "CUHK",
-    "faculty": "SCI",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "Mathematics (Compulsory Part)": 2.0,
-      "Biology": 1.5,
-      "Chemistry": 1.5,
-      "Physics": 1.5,
-      "Economics": 1.5,
-      "Information and Communication Technology": 1.5
-    },
-    "subject_weights_2026": {
-      "Mathematics (Compulsory Part)": 2.0,
-      "Biology": 1.5,
-      "Chemistry": 1.5,
-      "Physics": 1.5,
-      "Economics": 1.5,
-      "Information and Communication Technology": 1.5
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      }
-    ],
-    "subject_weights_2025_raw": "Mathematics (x 2) M1 or M2 (x 2) Biology, Chemistry, Physics, Economics, ICT (x 1.5)",
-    "subject_weights_2026_raw": "Mathematics (Compulsory Part) (x 2), Mathematics (Module 1 or 2) (x 2), Biology, Chemistry, Economics, Information and Communication Technology, Physics (x 1.5)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "4",
-      "math": "4",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "conditional_remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Biology, Chemistry, Economics, Information and Communication Technology, Physics"
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 54.5,
-      "lq": 53.0,
-      "uq": 59.0,
-      "mean": null,
-      "expected_score": 50.75
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "5",
-        "ENGL": "4",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5*",
-        "Elective 1": "5*",
-        "Elective 2": "5*"
-      },
-      "lq": {
-        "CHIN": "5*",
-        "ENGL": "4",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "5**",
-        "Elective 2": "5"
-      },
-      "uq": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5**",
-        "CSD": "A",
-        "M1/M2": "5**",
-        "Elective 1": "5*",
-        "Elective 2": "5*"
-      }
-    },
-    "quota": null,
-    "remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Biology, Chemistry, Economics, Information and Communication Technology, Physics"
-  },
-  {
-    "jupas_code": "JS4470",
-    "name_en": "Materials Science and Engineering",
-    "name_zh": "材料科學與工程學",
-    "institution": "CUHK",
-    "faculty": "SCI",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "Mathematics (Compulsory Part)": 1.25,
-      "Physics": 1.25,
-      "Chemistry": 1.25
-    },
-    "subject_weights_2026": {
-      "Mathematics (Compulsory Part)": 1.25,
-      "Physics": 1.25,
-      "Chemistry": 1.25
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 1.25
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 1.25
-      }
-    ],
-    "subject_weights_2025_raw": "Mathematics (x 1.25) M1 or M2 (x 1.25) Chemistry, Physics (x 1.25)",
-    "subject_weights_2026_raw": "Mathematics (Compulsory Part) (x 1.25), Mathematics (Module 1 or 2) (x 1.25), Chemistry, Physics (x 1.25)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "3",
-      "math": "3",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Biology",
-          "Chemistry",
-          "ICT",
-          "Physics"
-        ],
-        "grade": "3",
-        "note": "One of the following"
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "conditional_remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Biology, Chemistry, Information and Communication Technology, Physics"
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 26.375,
-      "lq": 24.625,
-      "uq": 26.875,
-      "mean": null,
-      "expected_score": 24.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "5",
-        "ENGL": "4",
-        "MATH": "4",
-        "CSD": "A",
-        "M1/M2": "3",
-        "Elective 1": "5",
-        "Elective 2": "4",
-        "Elective 3": "3"
-      },
-      "lq": {
-        "CHIN": "3",
-        "ENGL": "4",
-        "MATH": "4",
-        "CSD": "A",
-        "M1/M2": "3",
-        "Elective 1": "5",
-        "Elective 2": "4"
-      },
-      "uq": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "4",
-        "CSD": "A",
-        "Elective 1": "5",
-        "Elective 2": "5",
-        "Elective 3": "5"
-      }
-    },
-    "quota": null,
-    "remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Biology, Chemistry, Information and Communication Technology, Physics"
-  },
-  {
-    "jupas_code": "JS4725",
-    "name_en": "Biotechnology, Entrepreneurship and Healthcare Management",
-    "name_zh": "生物科技、創業與醫療管理",
-    "institution": "CUHK",
-    "faculty": "SCI",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {},
-    "subject_weights_2026": {},
-    "best_of_weights_2025": [],
-    "best_of_weights_2026": [],
-    "subject_weights_2025_raw": "--",
-    "subject_weights_2026_raw": "",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "4",
-      "math": "3",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Biology",
-          "Chemistry"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      }
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 27.5,
-      "lq": 27.5,
-      "uq": 29.0,
-      "mean": null,
-      "expected_score": 27.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "5**",
-        "ENGL": "4",
-        "MATH": "4",
-        "CSD": "A",
-        "Elective 1": "5",
-        "Elective 2": "5",
-        "Elective 3": "4"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "5*",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "4",
-        "Elective 2": "4"
-      },
-      "uq": {
-        "CHIN": "3",
-        "ENGL": "5",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "5*",
-        "Elective 1": "5",
-        "Elective 2": "5"
-      }
-    },
-    "quota": null,
-    "remarks": ""
-  },
-  {
-    "jupas_code": "JS4733",
-    "name_en": "Mathematics and Information Engineering",
-    "name_zh": "數學與信息工程學",
-    "institution": "CUHK",
-    "faculty": "SCI",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "Mathematics (Compulsory Part)": 2.0,
-      "Biology": 1.5,
-      "Chemistry": 1.5,
-      "Physics": 1.5,
-      "Information and Communication Technology": 1.5
-    },
-    "subject_weights_2026": {
-      "Mathematics (Compulsory Part)": 2.0,
-      "Biology": 1.5,
-      "Chemistry": 1.5,
-      "Physics": 1.5,
-      "Information and Communication Technology": 1.5
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      }
-    ],
-    "subject_weights_2025_raw": "Mathematics (x 2) M1 or M2 (x 2) Biology, Chemistry, Physics, ICT (x 1.5)",
-    "subject_weights_2026_raw": "Mathematics (Compulsory Part) (x 2), Mathematics (Module 1 or 2) (x 2), Biology, Chemistry, Information and Communication Technology, Physics (x 1.5)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "4",
-      "math": "5",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "4",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "2)"
-        ],
-        "grade": "5",
-        "note": ""
-      },
-      "conditional_remarks": "The following subjects are preferred:, Biology, Chemistry, Information and Communication Technology, Physics"
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 63.5,
-      "lq": 52.0,
-      "uq": 65.0,
-      "mean": null,
-      "expected_score": 46.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "5*",
-        "ENGL": "5**",
-        "MATH": "5**",
-        "CSD": "A",
-        "M1/M2": "5**",
-        "Elective 1": "5*",
-        "Elective 2": "5*",
-        "Elective 3": "5"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "5*",
-        "Elective 2": "5",
-        "Elective 3": "5"
-      },
-      "uq": {
-        "CHIN": "5",
-        "ENGL": "5",
-        "MATH": "5**",
-        "CSD": "A",
-        "M1/M2": "5**",
-        "Elective 1": "5**",
-        "Elective 2": "5**"
-      }
-    },
-    "quota": null,
-    "remarks": "The following subjects are preferred:, Biology, Chemistry, Information and Communication Technology, Physics"
-  },
-  {
-    "jupas_code": "JS4750",
-    "name_en": "Aerospace Science and Earth Informatics & X Double Major Programme",
-    "name_zh": "航天科學與地球信息學及Ｘ雙主修課程",
-    "institution": "CUHK",
-    "faculty": "SCI",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "Mathematics (Compulsory Part)": 1.5,
-      "Physics": 2.0,
-      "Geography": 2.0
-    },
-    "subject_weights_2026": {
-      "Mathematics (Compulsory Part)": 1.5,
-      "Physics": 2.0,
-      "Geography": 2.0
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      }
-    ],
-    "subject_weights_2025_raw": "Mathematics (x 1.5) M1 or M2 (x 2) Physics, Geography (x 2)",
-    "subject_weights_2026_raw": "Mathematics (Module 1 or 2) (x2), Mathematics (Compulsory Part) (x 1.5), Geography, Physics (x2)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "3",
-      "math": "2",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "conditional_remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Geography, Physics"
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 44.25,
-      "lq": 38.25,
-      "uq": 48.0,
-      "mean": null,
-      "expected_score": 35.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "3",
-        "ENGL": "5*",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "5*",
-        "Elective 2": "5",
-        "Elective 3": "4"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "4",
-        "Elective 1": "5*",
-        "Elective 2": "5"
-      },
-      "uq": {
-        "CHIN": "5**",
-        "ENGL": "4",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5*",
-        "Elective 1": "5",
-        "Elective 2": "4"
-      }
-    },
-    "quota": null,
-    "remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Geography, Physics"
-  },
-  {
-    "jupas_code": "JS4760",
-    "name_en": "Interdisciplinary Data Analytics & X Double Major Programme",
-    "name_zh": "跨學科數據分析及Ｘ雙主修課程",
-    "institution": "CUHK",
-    "faculty": "SCI",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "Mathematics (Compulsory Part)": 1.5
-    },
-    "subject_weights_2026": {
-      "Mathematics (Compulsory Part)": 1.5
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      },
-      {
-        "count": 1,
-        "subjects": [
-          "Economics",
-          "Information and Communication Technology"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      },
-      {
-        "count": 1,
-        "subjects": [
-          "Economics",
-          "Information and Communication Technology"
-        ],
-        "weight": 1.5
-      }
-    ],
-    "subject_weights_2025_raw": "Mathematics (x 1.5) M1 or M2 (x 2) Economics or ICT (x 1.5)",
-    "subject_weights_2026_raw": "Mathematics (Module 1 or 2) (x 2), Mathematics (Compulsory Part) (x 1.5), Economics or Information and Communication Technology (x 1.5)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "3",
-      "math": "3",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "conditional_remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Economics, Information and Communication Technology"
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 35.0,
-      "lq": 34.75,
-      "uq": 37.0,
-      "mean": null,
-      "expected_score": 31.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "5",
-        "Elective 2": "4"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "3",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "5*",
-        "Elective 1": "4",
-        "Elective 2": "3"
-      },
-      "uq": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "5",
-        "Elective 2": "5",
-        "Elective 3": "4"
-      }
-    },
-    "quota": null,
-    "remarks": "Taking Mathematics (Module 1 or 2) will be strongly recommended | The following subjects are preferred:, Mathematics (Module 1 or 2), Economics, Information and Communication Technology"
   },
   {
     "jupas_code": "JS4801",
@@ -14688,233 +13174,6 @@
     },
     "quota": null,
     "remarks": ""
-  },
-  {
-    "jupas_code": "JS4254",
-    "name_en": "Interdisciplinary Major Programme in Global Economics and Finance",
-    "name_zh": "環球經濟與金融跨學科主修課程",
-    "institution": "CUHK",
-    "faculty": "SOC",
-    "formula_2025": "5 subjects",
-    "formula_2025_id": "custom",
-    "formula_2026": "AENGL+Best(4)",
-    "formula_2026_id": "custom",
-    "subject_weights_2025": {},
-    "subject_weights_2026": {},
-    "best_of_weights_2025": [],
-    "best_of_weights_2026": [],
-    "subject_weights_2025_raw": "English must be included in the score | calculation (i.e. Eng + Best 4 subjects)",
-    "subject_weights_2026_raw": "English must be included in the score calculation (i.e. English + Best 4 subjects)",
-    "min_requirements_2026": {
-      "chi": "4",
-      "eng": "5",
-      "math": "4",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      }
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 35.0,
-      "lq": 33.5,
-      "uq": 35.0,
-      "mean": null,
-      "expected_score": 32.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "5",
-        "ENGL": "5*",
-        "MATH": "5*",
-        "CSD": "A",
-        "Elective 1": "5**",
-        "Elective 2": "5*",
-        "Elective 3": "4"
-      },
-      "lq": {
-        "CHIN": "5",
-        "ENGL": "5",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "5**",
-        "Elective 1": "5**",
-        "Elective 2": "4",
-        "Elective 3": "4"
-      },
-      "uq": {
-        "CHIN": "5**",
-        "ENGL": "5",
-        "MATH": "5*",
-        "CSD": "A",
-        "Elective 1": "5**",
-        "Elective 2": "5",
-        "Elective 3": "5"
-      }
-    },
-    "quota": null,
-    "remarks": ""
-  },
-  {
-    "jupas_code": "JS4750",
-    "name_en": "Aerospace Science and Earth Informatics & X Double Major Programme",
-    "name_zh": "航天科學與地球信息學及Ｘ雙主修課程",
-    "institution": "CUHK",
-    "faculty": "SOC",
-    "formula_2025": "Best 5 subjects",
-    "formula_2025_id": "best5",
-    "formula_2026": "Best(5)",
-    "formula_2026_id": "best5",
-    "subject_weights_2025": {
-      "Mathematics (Compulsory Part)": 1.5,
-      "Physics": 2.0,
-      "Geography": 2.0
-    },
-    "subject_weights_2026": {
-      "Mathematics (Compulsory Part)": 1.5,
-      "Physics": 2.0,
-      "Geography": 2.0
-    },
-    "best_of_weights_2025": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      }
-    ],
-    "best_of_weights_2026": [
-      {
-        "count": 1,
-        "subjects": [
-          "Mathematics Extended Part (Module 1)",
-          "Mathematics Extended Part (Module 2)"
-        ],
-        "weight": 2.0
-      }
-    ],
-    "subject_weights_2025_raw": "Mathematics (x 1.5) M1 or M2 (x 2) Physics, Geography (x 2)",
-    "subject_weights_2026_raw": "Mathematics (Module 1 or 2) (x2), Mathematics (Compulsory Part) (x 1.5), Geography, Physics (x2)",
-    "min_requirements_2026": {
-      "chi": "3",
-      "eng": "3",
-      "math": "2",
-      "csd": "A",
-      "elect1": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "elect2": {
-        "count": 1,
-        "subjects": [
-          "Any"
-        ],
-        "grade": "3",
-        "note": ""
-      },
-      "conditional_remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Geography, Physics"
-    },
-    "calculation_constraints": [],
-    "score_conversion_table": {
-      "category_a": {
-        "5**": 8.5,
-        "5*": 7.0,
-        "5": 5.5,
-        "4": 4.0,
-        "3": 3.0,
-        "2": 2.0,
-        "1": 1.0,
-        "attained": 0.0,
-        "A": 0.0
-      },
-      "category_c": {
-        "A": 5.0,
-        "B": 4.0,
-        "C": 3.0,
-        "D": 2.0,
-        "E": 1.0
-      }
-    },
-    "max_achievable_score": null,
-    "scores_2025": {
-      "median": 44.25,
-      "lq": 38.25,
-      "uq": 48.0,
-      "mean": null,
-      "expected_score": 35.0
-    },
-    "score_grades_2025": {
-      "median": {
-        "CHIN": "3",
-        "ENGL": "5*",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "5",
-        "Elective 1": "5*",
-        "Elective 2": "5",
-        "Elective 3": "4"
-      },
-      "lq": {
-        "CHIN": "4",
-        "ENGL": "4",
-        "MATH": "5",
-        "CSD": "A",
-        "M1/M2": "4",
-        "Elective 1": "5*",
-        "Elective 2": "5"
-      },
-      "uq": {
-        "CHIN": "5**",
-        "ENGL": "4",
-        "MATH": "5*",
-        "CSD": "A",
-        "M1/M2": "5*",
-        "Elective 1": "5",
-        "Elective 2": "4"
-      }
-    },
-    "quota": null,
-    "remarks": "The following subjects are preferred:, Mathematics (Module 1 or 2), Geography, Physics"
   },
   {
     "jupas_code": "JS8001",
@@ -17149,12 +15408,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 23.5,
-      "lq": 22.5,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 21.95,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -17239,12 +15497,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 21.5,
-      "lq": 20.0,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 21.0,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -17334,12 +15591,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 26.5,
-      "lq": 24.5,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 24.88,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -17424,12 +15680,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 23.0,
-      "lq": 20.5,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 21.3,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -17521,12 +15776,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 25.9,
-      "lq": 26.05,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 25.5,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -17622,12 +15876,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 28.0,
-      "lq": 28.25,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 25.54,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -17713,12 +15966,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 20.0,
-      "lq": 19.0,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 18.9,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -17808,12 +16060,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 22.5,
-      "lq": 22.5,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 22.15,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -17901,12 +16152,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 22.0,
-      "lq": 22.5,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 22.07,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -17992,12 +16242,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 20.5,
-      "lq": 20.0,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 20.46,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18094,12 +16343,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 34.875,
-      "lq": 33.375,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 32.27,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18195,12 +16443,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 29.75,
-      "lq": 26.0,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 27.04,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18290,12 +16537,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 23.5,
-      "lq": 22.625,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 22.99,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18389,12 +16635,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 21.875,
-      "lq": 22.0,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 21.85,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18479,12 +16724,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 21.0,
-      "lq": 19.5,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 20.68,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18575,12 +16819,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 22.0,
-      "lq": 21.25,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 21.83,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18674,12 +16917,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 21.4,
-      "lq": 19.9,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 18.55,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18763,12 +17005,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 20.5,
-      "lq": 18.0,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 19.34,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18857,12 +17098,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 18.8,
-      "lq": 18.6,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 18.7,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -18947,12 +17187,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 20.0,
-      "lq": 19.0,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 19.5,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -19038,12 +17277,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 20.5,
-      "lq": 20.5,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 20.15,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {
@@ -19133,12 +17371,11 @@
     },
     "max_achievable_score": null,
     "scores_2025": {
-      "median": 18.75,
-      "lq": 20.25,
+      "median": null,
+      "lq": null,
       "uq": null,
       "mean": 19.73,
-      "expected_score": null,
-      "score_type": "estimated"
+      "expected_score": null
     },
     "score_grades_2025": {
       "median": {

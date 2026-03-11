@@ -421,6 +421,7 @@ def unify_data():
                     hku_extra_map[code] = parse_hku_extra_info(h_html)
 
     unified = []
+    seen_codes = set()
 
     # 2. Iterate through institutions
     for school_key, path in FILES.items():
@@ -430,7 +431,8 @@ def unify_data():
         
         for entry in data:
             code = entry.get('jupas_code') or entry.get('code')
-            if not code: continue
+            if not code or code in seen_codes: continue
+            seen_codes.add(code)
             ov = overview_map.get(code, {})
             
             # Base Unified Object Structure
