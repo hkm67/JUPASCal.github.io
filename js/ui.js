@@ -232,11 +232,11 @@ const JUPAS_UI = {
                                 ${subjects.map(s => `<td>${s.grade}</td>`).join('')}
                             </tr>
                             <tr class="weights-row">
-                                <td class="row-label">比重</td>
+                                <td class="row-label">Weight</td>
                                 ${subjects.map(s => `<td>${s.multiplier}</td>`).join('')}
                             </tr>
                             <tr class="points-row">
-                                <td class="row-label">分數</td>
+                                <td class="row-label">Score</td>
                                 ${subjects.map(s => `<td class="${s.used ? 'selected' : ''}">${s.weightedScore.toFixed(2)}</td>`).join('')}
                             </tr>
                         </table>
@@ -289,9 +289,9 @@ const JUPAS_UI = {
 
     getShortName: function(fullName) {
         const map = {
-            "Chinese Language": "中文",
-            "English Language": "英文",
-            "Mathematics (Compulsory Part)": "數學",
+            "Chinese Language": "CHI",
+            "English Language": "ENG",
+            "Mathematics (Compulsory Part)": "MATH",
             "Citizenship and Social Development": "CSD",
             "Mathematics Extended Part (Module 1)": "M1",
             "Mathematics Extended Part (Module 2)": "M2",
