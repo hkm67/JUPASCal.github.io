@@ -1,0 +1,151 @@
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --success-color: #27ae60;
+    --error-color: #e74c3c;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --border-color: #ddd;
+    --text-color: #333;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Sidebar: Inputs */
+.sidebar {
+    width: 350px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+}
+
+.input-row {
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-row label { font-size: 0.9em; font-weight: 600; }
+.input-row select { padding: 5px; width: 120px; }
+
+.elective-row select.subject-select { width: 180px; }
+.elective-row select.grade-input { width: 60px; }
+
+/* Middle: Programme List */
+.programme-explorer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #eee;
+    padding: 10px;
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+#programme-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.programme-item {
+    background: white;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.1s;
+}
+
+.programme-item:hover { background: #f0f0f0; }
+.programme-item.active { border-left: 5px solid var(--accent-color); background: #eef6ff; }
+
+.programme-item .code { font-weight: bold; color: var(--accent-color); }
+.programme-item .name { font-size: 0.95em; margin: 4px 0; }
+.programme-item .inst { font-size: 0.8em; color: #777; }
+
+/* Right: Results */
+.content-area {
+    width: 500px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-left: 1px solid var(--border-color);
+    overflow-y: auto;
+}
+
+.result-card h2 { margin-top: 0; color: var(--primary-color); }
+
+.eligibility {
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.eligibility.pass { background: #d4edda; color: #155724; }
+.eligibility.fail { background: #f8d7da; color: #721c24; }
+
+.score-box {
+    background: var(--primary-color);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.score-value { font-size: 3em; font-weight: bold; }
+
+.audit-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+.audit-table th, .audit-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+/* The Excel-style highlights */
+.selected-subject {
+    background-color: #e8f5e9 !important;
+    font-weight: 600;
+}
+.selected-subject td:first-child { border-left: 4px solid var(--success-color); }
+
+.unused { color: #999; text-decoration: line-through; }
+
+.formula-text { font-size: 0.85em; color: #666; font-style: italic; margin-top: 20px; }
+.warning { font-size: 0.8em; color: var(--error-color); font-style: italic; }

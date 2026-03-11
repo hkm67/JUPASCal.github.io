@@ -1,27 +1,44 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>2025 JUPAS Excel計分器</title>
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUPAS Cal 2026 — Unofficial Score Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h2>若此Excel無法正常使用，請前往
-            <a href="https://drive.google.com/drive/u/2/folders/1PmyDrmQ2CumbWrqY7NRqa0Ol-M9VnkFz">Google Drive</a>
-        下載Excel使用。請定期刷新頁面，以使用最新版本。(按F5 - 注意，所有輸入的資料均不會被保存。)
-    </h2>
-        <p>
-            此網上版Excel為Microsoft + Github的免費功能，故此會有最高瀏覽&使用人數限制。如你可以使用電腦Excel，請不要使用此頁面，以留給有需要的同學。
-    </p>
 
-    
-    <div style="display: flex; height:  85%">
-        <iframe width="100%" height="100%" frameborder="0" scrolling="no" src="https://1drv.ms/x/c/02874402b22fbb6c/IQTUmLmfp-g4RY5PfJHBhf3QAXxGf_OpGH1w8bTs2FW6rak?em=2&AllowTyping=True&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>
+    <header>
+        <h1>JUPAS Cal 2026</h1>
+        <p>Unofficial Annual Score Calculator for HK DSE Applicants</p>
+    </header>
+
+    <div class="main-container">
+        <!-- 1. Left Sidebar: Grade Inputs -->
+        <section class="sidebar" id="subject-inputs">
+            <!-- Populated by JUPAS_UI.renderSubjectInputs() -->
+            <p>Loading inputs...</p>
+        </section>
+
+        <!-- 2. Middle Column: Programme Explorer -->
+        <section class="programme-explorer">
+            <input type="text" id="search-input" placeholder="Search by JUPAS Code, Name, or Institution...">
+            <div id="programme-list">
+                <!-- Populated by JUPAS_UI.updateSearch() -->
+            </div>
+        </section>
+
+        <!-- 3. Right Panel: Live Results -->
+        <section class="content-area" id="result-display">
+            <div class="placeholder-msg">
+                <p>← Select a programme to see your estimated score and eligibility.</p>
+            </div>
+        </section>
     </div>
-    <div style="display: flex; height: 5%">
-        <h3 >使用 Ctrl + 滑鼠滾輪 以放大/縮小。 注意，所有輸入的資料均不會被保存。</h3>
-    </div>
-    
+
+    <!-- Application Logic -->
+    <!-- Note: Load order matters. Calculator is pure logic, UI manages the DOM. -->
+    <script src="js/calculator.js"></script>
+    <script src="js/ui.js"></script>
 </body>
 </html>
