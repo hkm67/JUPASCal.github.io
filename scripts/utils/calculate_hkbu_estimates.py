@@ -4,31 +4,42 @@ import os
 MASTER_DATA = "data/processed/JUPAS_2026_Unified_Data.json"
 
 def calculate_score(grades, weights, conv_table):
+    """
+    Refined calculation for HKBU Median/LQ estimation.
+    Applies multipliers accurately to core subjects and electives found in the breakdown.
+    """
     if not grades: return None
     
     subject_scores = []
-    # Core and Electives in breakdown
+    
+    # Identify specific weighted electives for this programme
+    core_names = ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", 
+                  "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)",
+                  "Citizenship and Social Development"]
+    weighted_electives = {k: v for k, v in weights.items() if k not in core_names}
+    
+    # Sort weighted electives by multiplier descending to apply to the best breakdown slots
+    sorted_elective_multipliers = sorted(weighted_electives.values(), reverse=True)
+    
+    # Track which core weights were used
     for subj, grade in grades.items():
-        # Get point from canonical table
         base_val = conv_table.get(str(grade).strip(), 0)
-        
         weight = 1.0
-        # Basic mapping for HKBU breakdowns
+        
         if subj == "CHIN": weight = weights.get("Chinese Language", 1.0)
         elif subj == "ENGL": weight = weights.get("English Language", 1.0)
         elif subj == "MATH": weight = weights.get("Mathematics (Compulsory Part)", 1.0)
         elif subj == "M1/M2": 
-            # Check for M1 or M2 weights
             w1 = weights.get("Mathematics Extended Part (Module 1)", 1.0)
             w2 = weights.get("Mathematics Extended Part (Module 2)", 1.0)
             weight = max(w1, w2)
         elif "Elective" in subj:
-            # Risk-adverse: take the highest multiplier among all known electives for this programme
-            core_names = ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", 
-                          "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)",
-                          "Citizenship and Social Development"]
-            elective_weights = [v for k, v in weights.items() if k not in core_names]
-            weight = max(elective_weights) if elective_weights else 1.0
+            # Risk-adverse refined: apply the highest available elective multipliers 
+            # to the elective slots in the breakdown order.
+            if sorted_elective_multipliers:
+                weight = sorted_elective_multipliers.pop(0)
+            else:
+                weight = 1.0
             
         subject_scores.append(base_val * weight)
     
@@ -70,7 +81,7 @@ def update_hkbu():
     with open(MASTER_DATA, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     
-    print(f"Updated {updated_count} HKBU programmes with estimated scores based on canonical conversion tables.")
+    print(f"Updated {updated_count} HKBU programmes with REFINED estimated scores.")
 
 if __name__ == "__main__":
     update_hkbu()
