@@ -14,9 +14,19 @@ const JUPAS_CALCULATOR = {
 
     /**
      * Calculates the admission score for a specific programme.
+     *
+     * YEAR LABELING RULE: Always pass year = "2025" for scoring.
+     * The 2026 calculator uses 2025 weights to ensure a fair comparison against
+     * the 2025 admission scores (median/LQ). Using 2026 weights with 2025 scores
+     * would be unfair if a school changed its formula between cycles.
+     * The 2026 weights are stored in the JSON for reference only and will power
+     * the 2027 calculator once 2026 scores are published.
+     *
+     * Eligibility (min_requirements_2026) is the only place 2026 data is used.
+     *
      * @param {Object} studentGrades - Map of subject names to grades (e.g. {"English Language": "5*"})
      * @param {Object} programme - The programme object from our Unified JSON.
-     * @param {string} year - The data year to use ("2025" or "2026").
+     * @param {string} year - The data year to use for weights/formula. Must be "2025" for the 2026 calculator.
      * @returns {Object} Result containing final score, selected subjects, and detailed audit trail.
      */
     calculateScore: function(studentGrades, programme, year = "2025") {
@@ -175,29 +185,51 @@ const JUPAS_CALCULATOR = {
             let matches = [];
             for (let [subj, grade] of Object.entries(studentGrades)) {
                 if (usedSubjects.has(subj)) continue;
-                if (poolObj.subjects.includes("Any") || poolObj.subjects.includes(subj)) {
+                
+                let isMatch = false;
+                // Wildcard or explicit subject match
+                if (poolObj.subjects.includes("Any") || poolObj.subjects.includes("*") || poolObj.subjects.includes(subj)) {
+                    isMatch = true;
+                }
+                
+                // Special case: Many schools define "Category A subjects only" which includes M1/M2
+                if (poolObj.note && poolObj.note.includes("Category A") && (subj.includes("Module 1") || subj.includes("Module 2"))) {
+                    isMatch = true;
+                }
+
+                if (isMatch) {
                     if (this.compareGrades(grade, poolObj.grade)) {
                         matches.push(subj);
                     }
                 }
             }
             if (matches.length >= poolObj.count) {
+                // Sort matches to pick the one that satisfies the requirement but might be "worse" 
+                // for the total score, saving the "better" one for other requirements if needed.
+                // (Simplistic greedy approach)
                 return { pass: true, matched: matches[0] };
             }
             return { pass: false };
         };
 
         let used = new Set();
+        // Crucial: Core subjects (except CSD) can sometimes count as electives in some unis, 
+        // but for eligibility check we usually only look at electives.
+        // However, we must NOT use the subjects already used for Core requirements.
+        used.add("Chinese Language");
+        used.add("English Language");
+        used.add("Mathematics (Compulsory Part)");
+
         let e1 = checkElective(reqs.elect1, used);
         if (!e1.pass) {
-            reasons.push(`Elective 1 requirement not met: ${reqs.elect1.note || reqs.elect1.subjects.join('/')}`);
+            reasons.push(`Elective 1 requirement not met: ${reqs.elect1.note || reqs.elect1.subjects.join('/')} at Level ${reqs.elect1.grade}`);
         } else if (e1.matched) {
             used.add(e1.matched);
         }
 
         let e2 = checkElective(reqs.elect2, used);
         if (!e2.pass) {
-            reasons.push(`Elective 2 requirement not met: ${reqs.elect2.note || reqs.elect2.subjects.join('/')}`);
+            reasons.push(`Elective 2 requirement not met: ${reqs.elect2.note || reqs.elect2.subjects.join('/')} at Level ${reqs.elect2.grade}`);
         }
 
         return {
