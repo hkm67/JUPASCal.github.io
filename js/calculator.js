@@ -20,12 +20,17 @@ const JUPAS_CALCULATOR = {
      * @returns {Object} Result containing final score, selected subjects, and detailed audit trail.
      */
     calculateScore: function(studentGrades, programme, year = "2025") {
+        if (!programme || !programme.score_conversion_table) {
+            console.error("Invalid programme data:", programme);
+            return { totalScore: 0, selected: [], allCandidates: [] };
+        }
+        
         const weights = programme[`subject_weights_${year}`] || {};
         const bestOfPools = programme[`best_of_weights_${year}`] || [];
         const formulaId = programme[`formula_${year}_id`];
         const constraints = programme.calculation_constraints || [];
-        const convTable = programme.score_conversion_table.category_a;
-        const catCTable = programme.score_conversion_table.category_c;
+        const convTable = (programme.score_conversion_table && programme.score_conversion_table.category_a) || {};
+        const catCTable = (programme.score_conversion_table && programme.score_conversion_table.category_c) || {};
 
         // --- Step 1: Pre-process all student subjects into a list of potentials ---
         let candidates = [];

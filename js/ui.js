@@ -51,18 +51,34 @@ const JUPAS_UI = {
      * Initializes the application.
      */
     init: async function() {
+        console.log("Initializing JUPAS UI...");
+        const listContainer = document.getElementById('programme-list');
+        
         try {
             const response = await fetch('data/processed/JUPAS_2026_Unified_Data.json');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             this.allProgrammes = await response.json();
+            
+            if (!this.allProgrammes || this.allProgrammes.length === 0) {
+                throw new Error("Dataset is empty.");
+            }
             
             this.renderSubjectInputs();
             this.setupEventListeners();
-            this.updateSearch(""); // Show all initially or wait for search
+            this.updateSearch(""); 
             
             console.log("JUPAS UI Initialized with", this.allProgrammes.length, "programmes.");
         } catch (error) {
-            console.error("Failed to load JUPAS data:", error);
-            document.getElementById('programme-list').innerHTML = "Error loading data. Please refresh.";
+            console.error("Initialization Error:", error);
+            listContainer.innerHTML = `<div class="error-msg">
+                <p><b>Error loading admission data:</b></p>
+                <code>${error.message}</code>
+                <p>If you are opening this file locally, please use a local web server (e.g., Live Server in VS Code or 'python -m http.server').</p>
+            </div>`;
         }
     },
 
