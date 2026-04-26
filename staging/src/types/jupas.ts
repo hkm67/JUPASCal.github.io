@@ -2,6 +2,12 @@ export type Grade = "5**" | "5*" | "5" | "4" | "3" | "2" | "1" | "A" | "B" | "C"
 
 export type StudentGrades = Record<string, string>;
 
+export type Profile = {
+  id: string;
+  name: string;
+  grades: StudentGrades;
+};
+
 export type RequirementPool = {
   count: number;
   subjects: string[];

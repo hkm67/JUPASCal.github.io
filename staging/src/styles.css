@@ -194,6 +194,42 @@ button {
   gap: 8px;
 }
 
+.profile-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.profile-switcher {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.profile-switcher select {
+  min-height: 36px;
+  padding: 0 8px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  width: auto;
+}
+
+.profile-switcher .ghost-button,
+.share-button {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  min-height: 36px;
+}
+
+.share-button.copied {
+  border-color: var(--good);
+  color: var(--good);
+}
+
 .step-title-content {
   min-width: 0;
 }
@@ -1922,5 +1958,89 @@ input {
   .audit-row span:nth-child(4),
   .audit-row strong:last-child {
     grid-column: auto;
+  }
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .app-shell {
+    padding: 0;
+    width: 100%;
+  }
+
+  .hero,
+  .header-actions,
+  .left-rail,
+  .filters-bar,
+  .results-panel,
+  .detail-picker,
+  .theme-toggle,
+  .ghost-button,
+  .profile-switcher,
+  .share-button,
+  .detail-badges .status.warn,
+  .collapsible-trigger em,
+  .weight-toggle {
+    display: none !important;
+  }
+
+  .workspace {
+    display: block;
+  }
+
+  .main-column {
+    display: none;
+  }
+
+  .detail-panel {
+    position: static;
+    display: block;
+    width: 100%;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .detail-header {
+    border-bottom: 2px solid black;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+  }
+
+  .score-hero {
+    border: 2px solid black;
+    background: white !important;
+    color: black !important;
+  }
+
+  .collapsible-body {
+    display: block !important;
+    grid-template-rows: none !important;
+    opacity: 1 !important;
+  }
+
+  .collapsible-section {
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    page-break-inside: avoid;
+  }
+
+  .collapsible-trigger {
+    background: #f0f0f0 !important;
+    color: black !important;
+  }
+
+  .benchmark-card {
+    border: 1px solid black !important;
+  }
+
+  .audit-row {
+    border: 1px solid #eee !important;
+    page-break-inside: avoid;
   }
 }

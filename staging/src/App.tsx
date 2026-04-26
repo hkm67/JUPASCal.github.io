@@ -4,7 +4,7 @@ import { FiltersBar } from "./components/FiltersBar";
 import { GradeInput } from "./components/GradeInput";
 import { ResultsView } from "./components/ResultsView";
 import { buildProgrammeResult, filterResults, sortResults, type Filters, type SortKey } from "./lib/results";
-import type { Programme, ProgrammeResult, StudentGrades } from "./types/jupas";
+import type { Profile, Programme, ProgrammeResult, StudentGrades } from "./types/jupas";
 
 const DATA_URL = "/data/processed/JUPAS_2026_Unified_Data.json";
 
@@ -19,7 +19,10 @@ type Theme = "light" | "dark";
 
 function App() {
   const [programmes, setProgrammes] = useState<Programme[]>([]);
-  const [grades, setGrades] = useState<StudentGrades>(() => loadGrades());
+  const [profiles, setProfiles] = useState<Profile[]>(() => loadProfiles());
+  const [activeProfileId, setActiveProfileId] = useState<string>(() => loadActiveProfileId(profiles));
+  const activeProfile = profiles.find((p) => p.id === activeProfileId) || profiles[0];
+  const grades = activeProfile.grades;
   const deferredGrades = useDeferredValue(grades);
   const [theme, setTheme] = useState<Theme>(() => loadTheme());
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
@@ -41,6 +44,25 @@ function App() {
       .then((data) => {
         if (!cancelled) {
           setProgrammes(data);
+          // Initial hash load
+          const hash = window.location.hash.slice(1);
+          if (hash) {
+            try {
+              const shared = JSON.parse(decodeURIComponent(hash));
+              if (shared.grades) {
+                const newProfile: Profile = {
+                  id: `shared-${Date.now()}`,
+                  name: "Shared Profile",
+                  grades: shared.grades,
+                };
+                setProfiles((prev) => [newProfile, ...prev]);
+                setActiveProfileId(newProfile.id);
+                if (shared.pickedCodes) setPickedCodes(shared.pickedCodes);
+              }
+            } catch (e) {
+              console.error("Failed to parse hash", e);
+            }
+          }
         }
       })
       .catch((error: Error) => {
@@ -52,8 +74,16 @@ function App() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("jupas-staging-grades", JSON.stringify(grades));
-  }, [grades]);
+    localStorage.setItem("jupas-staging-profiles", JSON.stringify(profiles));
+    localStorage.setItem("jupas-staging-active-profile-id", activeProfileId);
+
+    // Update URL hash
+    const stateToShare = {
+      grades: activeProfile.grades,
+      pickedCodes,
+    };
+    window.location.hash = encodeURIComponent(JSON.stringify(stateToShare));
+  }, [profiles, activeProfileId, pickedCodes, activeProfile.grades]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -93,6 +123,36 @@ function App() {
   const activeResult = useMemo(() => {
     return pickedResults.find((result) => result.programme.jupas_code === activeCode) || pickedResults[0];
   }, [activeCode, pickedResults]);
+
+  function setGrades(nextGrades: StudentGrades) {
+    setProfiles((prev) =>
+      prev.map((p) => (p.id === activeProfileId ? { ...p, grades: nextGrades } : p))
+    );
+  }
+
+  function addProfile() {
+    const id = `profile-${Date.now()}`;
+    const newProfile: Profile = {
+      id,
+      name: `Profile ${profiles.length + 1}`,
+      grades: {},
+    };
+    setProfiles((prev) => [...prev, newProfile]);
+    setActiveProfileId(id);
+  }
+
+  function renameProfile(id: string, name: string) {
+    setProfiles((prev) => prev.map((p) => (p.id === id ? { ...p, name } : p)));
+  }
+
+  function deleteProfile(id: string) {
+    if (profiles.length <= 1) return;
+    const nextProfiles = profiles.filter((p) => p.id !== id);
+    setProfiles(nextProfiles);
+    if (activeProfileId === id) {
+      setActiveProfileId(nextProfiles[0].id);
+    }
+  }
 
   function applyProgrammeFilters(nextFilters: Filters) {
     if (window.matchMedia?.("(max-width: 920px)").matches) {
@@ -173,7 +233,16 @@ function App() {
 
       <div className="workspace">
         <div className="left-rail">
-          <GradeInput grades={grades} onChange={setGrades} />
+          <GradeInput
+            grades={grades}
+            onChange={setGrades}
+            profiles={profiles}
+            activeProfileId={activeProfileId}
+            onProfileSelect={setActiveProfileId}
+            onProfileAdd={addProfile}
+            onProfileRename={renameProfile}
+            onProfileDelete={deleteProfile}
+          />
         </div>
         <div className="main-column">
           <section className="panel step2-panel" aria-label="Programme comparison">
@@ -246,12 +315,23 @@ function loadTheme(): Theme {
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-function loadGrades(): StudentGrades {
+function loadProfiles(): Profile[] {
   try {
-    return JSON.parse(localStorage.getItem("jupas-staging-grades") || "{}") as StudentGrades;
-  } catch {
-    return {};
+    const saved = localStorage.getItem("jupas-staging-profiles");
+    if (saved) return JSON.parse(saved) as Profile[];
+  } catch (e) {
+    console.error("Failed to load profiles", e);
   }
+  // Fallback to legacy single-grade storage or empty
+  const legacyGrades = localStorage.getItem("jupas-staging-grades");
+  const grades = legacyGrades ? JSON.parse(legacyGrades) : {};
+  return [{ id: "default", name: "Profile 1", grades }];
+}
+
+function loadActiveProfileId(profiles: Profile[]): string {
+  const saved = localStorage.getItem("jupas-staging-active-profile-id");
+  if (saved && profiles.some((p) => p.id === saved)) return saved;
+  return profiles[0].id;
 }
 
 function visibleGrades(grades: StudentGrades): StudentGrades {
@@ -259,3 +339,4 @@ function visibleGrades(grades: StudentGrades): StudentGrades {
 }
 
 export default App;
+

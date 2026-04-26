@@ -1,15 +1,32 @@
 import { memo, useState } from "react";
 import { CAT_A_SUBJECTS, CAT_C_GRADES, CAT_C_SUBJECTS, CORE_SUBJECTS, CSD_GRADES, DSE_GRADES, M12_SUBJECT } from "../lib/subjects";
-import type { StudentGrades } from "../types/jupas";
+import type { Profile, StudentGrades } from "../types/jupas";
+import { ProfileSwitcher } from "./ProfileSwitcher";
+import { ShareButton } from "./ShareButton";
 
 type Props = {
   grades: StudentGrades;
   onChange: (grades: StudentGrades) => void;
+  profiles: Profile[];
+  activeProfileId: string;
+  onProfileSelect: (id: string) => void;
+  onProfileAdd: () => void;
+  onProfileRename: (id: string, name: string) => void;
+  onProfileDelete: (id: string) => void;
 };
 
 const ELECTIVE_SLOTS = ["elective-1", "elective-2", "elective-3", "elective-4"];
 
-export const GradeInput = memo(({ grades, onChange }: Props) => {
+export const GradeInput = memo(({
+  grades,
+  onChange,
+  profiles,
+  activeProfileId,
+  onProfileSelect,
+  onProfileAdd,
+  onProfileRename,
+  onProfileDelete,
+}: Props) => {
   const [collapsed, setCollapsed] = useState(false);
   const slotSubjects = ELECTIVE_SLOTS.map((slot) => grades[`${slot}:subject`] || "");
 
@@ -59,6 +76,17 @@ export const GradeInput = memo(({ grades, onChange }: Props) => {
       </div>
 
       <div className="grade-panel-body">
+        <div className="profile-action-row">
+          <ProfileSwitcher
+            profiles={profiles}
+            activeProfileId={activeProfileId}
+            onSelect={onProfileSelect}
+            onAdd={onProfileAdd}
+            onRename={onProfileRename}
+            onDelete={onProfileDelete}
+          />
+          <ShareButton />
+        </div>
         <div className="grade-grid">
           {CORE_SUBJECTS.map((subject) => (
             <div className="field" key={subject}>
