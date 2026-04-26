@@ -37,7 +37,42 @@ Filter the subjects based on `calculation_constraints`:
 
 ---
 
-## 2. Reference Implementations
+## 2. HKUST-Specific Rules
+
+HKUST's scoring logic was reverse-engineered from their official client-side JS calculator. Two rules differ from other institutions:
+
+### 6th Subject Bonus
+HKUST adds a bonus for the best 6th subject using a fixed rate per programme:
+
+```
+bonus = max_attainable_weighting × (bonus_percentage / 100) × 6th_subject_converted_score
+```
+
+- `max_attainable_weighting` — the sum of all multipliers in the optimal best-5 selection (programme-specific). Computed by the unifier as: `sum(explicit_weights) + pool_slots × pool_weight + remaining_slots × 1.0`. E.g., for JS5212 = 9.0; for JS5312 = 7.5 (ENG×2 + MATH×2 + pool×1.5 + 2×1).
+- `bonus_percentage` = 5 (global, hardcoded in the HKUST calculator).
+- `6th_subject_converted_score` — the raw converted grade points of the best unused subject from eligible categories.
+
+Example (JS5212, 5** = 8.5 pts): `bonus = 9.0 × 0.05 × 8.5 = 3.825`
+
+**UI display:** The bonus is shown as `+N% of total` in the weight column, where N = `(subject_basePoints / 8.5) × 5`. This is a grade-relative display (e.g., 5* → +4.12%, grade 5 → +3.24%) — it is **not** a percentage of the subject's own points, and **not** a percentage of the total score. The actual bonus value (added directly to the total) is shown in the Final column. A footnote is displayed below the breakdown table to clarify this for users.
+
+The eligible categories for the 6th subject are stored in `hkust_weighted_best.bonus_eligible_categories` (varies by programme — e.g., some include Category B/C, others only Core/Cat A/Cat C).
+
+### Better-of Programmes
+JS5312 (Finance), JS5331 (Accounting & Finance), JS5332 (Investment Management), JS5822 (Quantitative Finance) offer two scoring options and admit the higher:
+- **Option A:** Best 3 subjects (any) × 1
+- **Option B:** Best 1 from {Chem, Phys, Econ, M1, M2} × 1.5 + best 2 other subjects × 1
+
+Since option B is always ≥ option A (when a qualifying subject is available), this is handled by storing the pool in `best_of_weights_2025`. The calculator's existing pool logic naturally applies × 1.5 when the student has a qualifying subject; if not, the pool has no effect and option A applies.
+
+**Important:** The `max_attainable_weighting` for these programmes is 7.5 (with the pool), not 7.0 (plain). The unifier computes this from the formula structure. Note that in HKUST documentation, "HA" stands for **Highest Attainable** score (the theoretical maximum with all 5**), which should align with our calculated `max_achievable_score`.
+
+### M1 / M2 Interchangeability
+All HKUST programmes (and most others) treat M1 and M2 identically — a student who took both will only have one counted. The pool logic with `count: 1` already ensures only the better of M1/M2 receives the weighted multiplier. However, if both M1 and M2 are taken, both could still enter the best-N selection (one at the pool weight, one at ×1). A `maths_m1m2_as_one` constraint (already present for CityU) prevents this for programmes that flag it. This is a known gap for HKUST programmes — pending UI fix to present M1/M2 as a single combined input.
+
+---
+
+## 3. Reference Implementations
 
 *   **Python (Ground Truth):** `scripts/utils/calculation_engine.py`
 *   **JavaScript (Production):** `js/calculator.js`

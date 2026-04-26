@@ -23,45 +23,60 @@ const JUPAS_UI = {
 
     coreSubjects: ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", "Citizenship and Social Development"],
     
-    electivePool: [
-        "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)", "Biology", "Chemistry", 
-        "Physics", "Economics", "Geography", "History", "Chinese History", "Information and Communication Technology",
-        "Business, Accounting and Financial Studies", "Design and Applied Technology", "Health Management and Social Care",
-        "Tourism and Hospitality Studies", "Visual Arts", "Music", "Physical Education", "Chinese Literature", 
-        "Literature in English", "Ethics and Religious Studies"
+    // Categorized Elective Pools
+    catA_Pool: [
+        "Biology", "Chemistry", "Physics", "Economics", "Geography", "History", "Chinese History",
+        "Information and Communication Technology", "Business, Accounting and Financial Studies",
+        "Design and Applied Technology", "Health Management and Social Care", "Tourism and Hospitality Studies",
+        "Chinese Literature", "Literature in English", "Technology and Living (Food Science and Technology)",
+        "Visual Arts", "Music", "Physical Education", "Ethics and Religious Studies"
     ],
 
+    catC_Pool: ["French", "German", "Hindi", "Japanese", "Spanish", "Urdu"],
+
     gradesOptions: ["5**", "5*", "5", "4", "3", "2", "1", "U"],
+    catCGrades: ["A", "B", "C", "D", "E", "U"],
 
     init: async function() {
         console.log("Initializing JUPAS UI...");
         const listContainer = document.getElementById('programme-list');
         
         try {
+            console.log("Fetching unified data...");
             const response = await fetch('data/processed/JUPAS_2026_Unified_Data.json');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             this.allProgrammes = await response.json();
+            console.log(`Loaded ${this.allProgrammes.length} programmes.`);
             
+            console.log("Rendering subject inputs...");
             this.renderSubjectInputs();
+            
+            console.log("Setting up event listeners...");
             this.setupEventListeners();
             
             if (window.location.hash) {
-                this.loadStateFromHash();
+                console.log("Loading state from hash...");
+                try { this.loadStateFromHash(); } catch(e) { console.error("Hash Load Error:", e); }
             } else {
-                this.loadGradesFromStorage();
+                console.log("Loading grades from storage...");
+                try { this.loadGradesFromStorage(); } catch(e) { console.error("Storage Load Error:", e); }
             }
 
+            console.log("Updating search...");
             const savedSearch = localStorage.getItem('jupas_search_query');
-            if (savedSearch) document.getElementById('search-input').value = savedSearch;
+            if (savedSearch) {
+                const searchEl = document.getElementById('search-input');
+                if (searchEl) searchEl.value = savedSearch;
+            }
             this.updateSearch(savedSearch || ""); 
 
             this.setAccordion('grade-accordion', true);
             this.setAccordion('prog-accordion', false);
 
-            console.log("JUPAS UI Initialized.");
+            console.log("JUPAS UI Initialized Successfully.");
         } catch (error) {
-            console.error("Initialization Error:", error);
-            listContainer.innerHTML = `<div class="error-msg">Error loading data.</div>`;
+            console.error("Critical Initialization Error:", error);
+            listContainer.innerHTML = `<div class="error-msg">Error loading data: ${error.message}</div>`;
         }
     },
 
@@ -79,10 +94,20 @@ const JUPAS_UI = {
     renderSubjectInputs: function() {
         const container = document.getElementById('subject-inputs');
         let html = "";
+
+        // Cores
         this.coreSubjects.forEach(s => html += this.createSubjectRow(s, s === "Citizenship and Social Development"));
+
+        // Electives
         html += "<h4 style='margin-top:20px;'>Electives</h4>";
-        for (let i = 1; i <= 4; i++) html += this.createElectiveSlot(i);
+        html += this.createM12Slot();                                         // M1/2 (fixed)
+        const ordinals = ['1st', '2nd', '3rd', '4th'];
+        for (let i = 1; i <= 4; i++) html += this.createElectiveSlot(i, this.catA_Pool, false, `${ordinals[i-1]} Elective`);
+        html += this.createElectiveSlot(5, this.catC_Pool, true, 'Cat C Language');
+        html += this.createCatBSlot();                                        // Cat B placeholder
+
         container.innerHTML = html;
+        this.updateElectiveExclusivity();
     },
 
     createSubjectRow: function(name, isCSD) {
@@ -93,13 +118,30 @@ const JUPAS_UI = {
         return `<div class="input-row"><label>${name}</label>${selectHtml}</div>`;
     },
 
-    createElectiveSlot: function(index) {
-        let subjSelect = `<select class="subject-select" id="e${index}-name"><option value="">(Pick Subject)</option>`;
-        this.electivePool.forEach(s => subjSelect += `<option value="${s}">${s}</option>`);
-        subjSelect += "</select>";
-        let gradeSelect = `<select class="grade-input" id="e${index}-grade"><option value="">--</option>`;
+    createM12Slot: function() {
+        let gradeSelect = `<select class="grade-input" id="m12-grade" data-subject="Mathematics Extended Part (Module 1 or 2)"><option value="">--</option>`;
         this.gradesOptions.forEach(o => gradeSelect += `<option value="${o}">${o}</option>`);
         gradeSelect += "</select>";
+        return `<div class="input-row"><label>Mathematics Extended Part (M1/2)</label>${gradeSelect}</div>`;
+    },
+
+    createCatBSlot: function() {
+        return `<div class="input-row elective-row cat-b-placeholder">
+            <select class="subject-select" disabled><option>Applied Learning (Cat B)</option></select>
+            <select class="grade-input" disabled><option>--</option></select>
+        </div>`;
+    },
+
+    createElectiveSlot: function(index, pool, isCatC = false, placeholder = 'Pick Subject') {
+        let subjSelect = `<select class="subject-select" id="e${index}-name"><option value="">${placeholder}</option>`;
+        pool.forEach(s => subjSelect += `<option value="${s}">${s}</option>`);
+        subjSelect += "</select>";
+        
+        const grades = isCatC ? this.catCGrades : this.gradesOptions;
+        let gradeSelect = `<select class="grade-input" id="e${index}-grade"><option value="">--</option>`;
+        grades.forEach(o => gradeSelect += `<option value="${o}">${o}</option>`);
+        gradeSelect += "</select>";
+        
         return `<div class="input-row elective-row">${subjSelect}${gradeSelect}</div>`;
     },
 
@@ -130,22 +172,63 @@ const JUPAS_UI = {
 
         document.addEventListener('change', (e) => {
             if (e.target.classList.contains('grade-input') || e.target.classList.contains('subject-select')) {
+                if (e.target.classList.contains('subject-select')) {
+                    this.updateElectiveExclusivity();
+                }
                 this.syncStateToHash(); 
                 if (this.selectedProgramme) this.performCalculation();
             }
         });
     },
 
+    updateElectiveExclusivity: function() {
+        // Enforce exclusivity across all 4 Cat A slots
+        const selected = [];
+        for (let i = 1; i <= 4; i++) {
+            const el = document.getElementById(`e${i}-name`);
+            if (el && el.value) selected.push(el.value);
+        }
+
+        for (let i = 1; i <= 4; i++) {
+            const select = document.getElementById(`e${i}-name`);
+            if (!select) continue;
+            const currentVal = select.value;
+            
+            Array.from(select.options).forEach(opt => {
+                if (!opt.value) return;
+                if (selected.includes(opt.value) && opt.value !== currentVal) {
+                    opt.disabled = true;
+                    opt.style.display = 'none';
+                } else {
+                    opt.disabled = false;
+                    opt.style.display = 'block';
+                }
+            });
+        }
+    },
+
     syncStateToHash: function() {
         let params = new URLSearchParams();
-        const coreShort = {"Chinese Language": "chi", "English Language": "eng", "Mathematics (Compulsory Part)": "math", "Citizenship and Social Development": "csd"};
+        const coreShort = {
+            "Chinese Language": "chi", 
+            "English Language": "eng", 
+            "Mathematics (Compulsory Part)": "math", 
+            "Citizenship and Social Development": "csd",
+            "Mathematics Extended Part (Module 1 or 2)": "m12"
+        };
+        
+        // Cores + M12
         document.querySelectorAll('select[data-subject]').forEach(el => {
             if (el.value) params.set(coreShort[el.dataset.subject], el.value);
         });
-        for (let i = 1; i <= 4; i++) {
-            const name = document.getElementById(`e${i}-name`).value;
-            const grade = document.getElementById(`e${i}-grade`).value;
-            if (name && grade) params.set(`e${i}`, `${name}:${grade}`);
+        
+        // Electives 1-5 (Cat A ×4 + Cat C); e6 (Cat B) is a placeholder, not persisted
+        for (let i = 1; i <= 5; i++) {
+            const nameEl = document.getElementById(`e${i}-name`);
+            const gradeEl = document.getElementById(`e${i}-grade`);
+            if (nameEl && gradeEl && nameEl.value && gradeEl.value) {
+                params.set(`e${i}`, `${nameEl.value}:${gradeEl.value}`);
+            }
         }
         const newHash = params.toString();
         history.replaceState(null, null, newHash ? "#" + newHash : " ");
@@ -155,7 +238,14 @@ const JUPAS_UI = {
         const hash = window.location.hash.substring(1);
         if (!hash) return;
         const params = new URLSearchParams(hash);
-        const coreLong = {"chi": "Chinese Language", "eng": "English Language", "math": "Mathematics (Compulsory Part)", "csd": "Citizenship and Social Development"};
+        const coreLong = {
+            "chi": "Chinese Language", 
+            "eng": "English Language", 
+            "math": "Mathematics (Compulsory Part)", 
+            "csd": "Citizenship and Social Development",
+            "m12": "Mathematics Extended Part (Module 1 or 2)"
+        };
+        
         Object.keys(coreLong).forEach(short => {
             const val = params.get(short);
             if (val) {
@@ -163,7 +253,8 @@ const JUPAS_UI = {
                 if (el) el.value = val;
             }
         });
-        for (let i = 1; i <= 4; i++) {
+        
+        for (let i = 1; i <= 5; i++) {
             const val = params.get(`e${i}`);
             if (val && val.includes(':')) {
                 const [name, grade] = val.split(':');
@@ -173,6 +264,8 @@ const JUPAS_UI = {
                 if (gradeEl) gradeEl.value = grade;
             }
         }
+        this.updateElectiveExclusivity();
+
     },
 
     saveGradesToStorage: function() {
@@ -191,20 +284,30 @@ const JUPAS_UI = {
     },
 
     applyGradesToUI: function(data) {
-        const cores = data.cores || data; 
+        // Handle both old and new formats
+        const grades = data.cores || data; 
         document.querySelectorAll('select[data-subject]').forEach(el => {
-            if (cores[el.dataset.subject]) el.value = cores[el.dataset.subject];
+            if (grades[el.dataset.subject]) el.value = grades[el.dataset.subject];
         });
-        const electives = data.electives || [];
-        if (electives.length > 0) {
-            electives.forEach((e, i) => {
-                const idx = i + 1;
-                const nameEl = document.getElementById(`e${idx}-name`);
-                const gradeEl = document.getElementById(`e${idx}-grade`);
-                if (nameEl && e.name) nameEl.value = e.name;
-                if (gradeEl && e.grade) gradeEl.value = e.grade;
-            });
+        
+        for (let [name, grade] of Object.entries(grades)) {
+            // Cat A (e1-e4): restore into first available empty slot
+            if (this.catA_Pool.includes(name)) {
+                for (let i = 1; i <= 4; i++) {
+                    const nameEl = document.getElementById(`e${i}-name`);
+                    const gradeEl = document.getElementById(`e${i}-grade`);
+                    if (nameEl && !nameEl.value) { nameEl.value = name; gradeEl.value = grade; break; }
+                }
+            }
+            // Cat C (e5)
+            if (this.catC_Pool.includes(name)) {
+                const e5Name = document.getElementById('e5-name');
+                const e5Grade = document.getElementById('e5-grade');
+                if (e5Name) { e5Name.value = name; e5Grade.value = grade; }
+            }
         }
+        
+        this.updateElectiveExclusivity();
     },
 
     resetGrades: function() {
@@ -212,6 +315,7 @@ const JUPAS_UI = {
         document.querySelectorAll('select.grade-input, select.subject-select').forEach(el => el.value = "");
         history.replaceState(null, null, " ");
         if (this.selectedProgramme) this.performCalculation();
+        this.updateElectiveExclusivity();
     },
 
     updateSearch: function(query) {
@@ -248,18 +352,22 @@ const JUPAS_UI = {
         const grades = this.getGradesFromUI_Flattened();
         const isNew = !this.selectedProgramme.scores_2025.median && !this.selectedProgramme.scores_2025.lq && !this.selectedProgramme.scores_2025.mean;
         const calcYear = isNew ? "2026" : "2025";
-        const eligibility = JUPAS_CALCULATOR.checkEligibility(grades, this.selectedProgramme.min_requirements_2026);
+        const eligibility = JUPAS_CALCULATOR.checkEligibility(grades, this.selectedProgramme.min_requirements_2026, this.selectedProgramme);
         const result = JUPAS_CALCULATOR.calculateScore(grades, this.selectedProgramme, calcYear);
         this.renderResult(eligibility, result, isNew);
     },
 
     getGradesFromUI_Flattened: function() {
         const grades = {};
+        // Cores + M1/2
         document.querySelectorAll('select[data-subject]').forEach(el => { if (el.value) grades[el.dataset.subject] = el.value; });
-        for (let i = 1; i <= 4; i++) {
-            const name = document.getElementById(`e${i}-name`).value;
-            const grade = document.getElementById(`e${i}-grade`).value;
-            if (name && grade) grades[name] = grade;
+        // Cat A (e1-e4) + Cat C (e5); e6 Cat B is a placeholder, skipped
+        for (let i = 1; i <= 5; i++) {
+            const nameEl = document.getElementById(`e${i}-name`);
+            const gradeEl = document.getElementById(`e${i}-grade`);
+            if (nameEl && gradeEl && nameEl.value && gradeEl.value) {
+                grades[nameEl.value] = gradeEl.value;
+            }
         }
         return grades;
     },
@@ -282,6 +390,7 @@ const JUPAS_UI = {
             const weights = p.subject_weights_2025 || {};
             const core_names = ["Chinese Language", "English Language", "Mathematics (Compulsory Part)", 
                           "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)",
+                          "Mathematics Extended Part (Module 1 or 2)",
                           "Citizenship and Social Development"];
             const electiveMultipliers = Object.keys(weights).filter(k => !core_names.includes(k)).map(k => ({name: k, w: weights[k]})).sort((a,b) => b.w - a.w);
 
@@ -315,11 +424,14 @@ const JUPAS_UI = {
 
         const calcYear = isNewProgramme ? "2026" : "2025";
         const wInfo = p[`subject_weights_${calcYear}`];
+        const pools = p[`best_of_weights_${calcYear}`] || [];
+        
         let weightInfo = `<div class="weighting-reference">
             <h4>Formula & Weights (${calcYear} Cycle)</h4>
             <p class="formula-main"><b>Formula:</b> ${p[`formula_${calcYear}`]}</p>
             <div class="weights-list">
                 ${Object.entries(wInfo).map(([name, w]) => `<span><b>${this.getShortName(name)}</b>: x${w}</span>`).join('')}
+                ${pools.map(pool => `<span><b>${pool.subjects.map(s => this.getShortName(s)).join('/')}</b>: x${pool.weight}</span>`).join('')}
             </div>
         </div>`;
 
@@ -364,10 +476,10 @@ const JUPAS_UI = {
                     <table class="historical-table">
                         <thead><tr><th>Position</th><th>2025 Score</th><th>Diff</th><th>%</th></tr></thead>
                         <tbody>
-                            <tr><td>UQ</td><td>${p.scores_2025.uq || 'N/A'}</td>${getCompCells(p.scores_2025.uq)}</tr>
-                            <tr><td>Median</td><td>${p.scores_2025.median || 'N/A'}</td>${getCompCells(p.scores_2025.median)}</tr>
-                            <tr><td>LQ</td><td>${p.scores_2025.lq || 'N/A'}</td>${getCompCells(p.scores_2025.lq)}</tr>
-                            <tr><td>Mean</td><td>${p.scores_2025.mean || 'N/A'}</td>${getCompCells(p.scores_2025.mean)}</tr>
+                            ${p.scores_2025.uq ? `<tr><td>UQ</td><td>${p.scores_2025.uq}</td>${getCompCells(p.scores_2025.uq)}</tr>` : ''}
+                            ${p.scores_2025.median ? `<tr><td>Median</td><td>${p.scores_2025.median}</td>${getCompCells(p.scores_2025.median)}</tr>` : ''}
+                            ${p.scores_2025.mean ? `<tr><td>Average (Mean)</td><td>${p.scores_2025.mean}</td>${getCompCells(p.scores_2025.mean)}</tr>` : ''}
+                            ${p.scores_2025.lq ? `<tr><td>LQ</td><td>${p.scores_2025.lq}</td>${getCompCells(p.scores_2025.lq)}</tr>` : ''}
                         </tbody>
                     </table>
                     
@@ -382,6 +494,50 @@ const JUPAS_UI = {
                     </details>
                 </div>` : '<div class="no-historical">No 2025 historical data available.</div>'}
 
+                ${p.offer_statistics && p.offer_statistics.length > 0 ? `
+                <div class="stats-section">
+                    <h3>Competition & Offer Trends</h3>
+                    <div class="stats-table-wrapper">
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Quota</th>
+                                    <th>Band A Apps</th>
+                                    <th>Ratio (1:N)</th>
+                                    <th>Band A Offers</th>
+                                    <th>Offer %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${(() => {
+                                    const years = [...new Set(p.offer_statistics.map(s => s.Year))].sort((a,b) => b - a).slice(0, 3);
+                                    return years.map(y => {
+                                        const app = p.offer_statistics.find(s => s.Year === y && s.Type === "Application");
+                                        const off = p.offer_statistics.find(s => s.Year === y && s.Type === "Offer");
+                                        if (!app && !off) return "";
+                                        const quota = app ? app.Quota : (off ? off.Quota : 0);
+                                        const bandAApps = app ? app["Band A"] : 0;
+                                        const bandAOffs = off ? off["Band A"] : 0;
+                                        const ratio = quota > 0 ? (bandAApps / quota).toFixed(1) : "-";
+                                        const offPct = bandAApps > 0 ? (bandAOffs / bandAApps * 100).toFixed(1) : "-";
+                                        return `
+                                            <tr>
+                                                <td>${y}</td>
+                                                <td>${quota || "-"}</td>
+                                                <td>${bandAApps}</td>
+                                                <td>${ratio}</td>
+                                                <td>${bandAOffs}</td>
+                                                <td>${offPct}%</td>
+                                            </tr>`;
+                                    }).join('');
+                                })()}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="stats-note"><small>* Ratio = Band A Applicants per Quota place. Offer % = Band A Offers / Band A Applicants.</small></p>
+                </div>` : ''}
+
                 <h3>Your Calculation Detail</h3>
                 <table class="audit-table">
                     <thead><tr><th>Subject</th><th>Grade</th><th>Pts</th><th>W</th><th>Final</th></tr></thead>
@@ -389,25 +545,34 @@ const JUPAS_UI = {
                         ${result.allCandidates.sort((a,b) => (b.used === a.used) ? 0 : b.used ? 1 : -1).map(c => {
                             let label = this.getShortName(c.subject);
                             if (c.isCompulsory) label += ' <small>(C)</small>';
-                            if (c.isBonus) label += ` <small class="bonus-label">(${c.bonusValue || 'Bonus'})</small>`;
                             
-                            // For bonus subjects, show the actual bonus points in the final column
+                            let multiplierText = `x${c.multiplier}`;
                             let finalPoints = c.weightedScore;
-                            if (c.isBonus && !c.bonusValue) {
-                                // HKU/PolyU style: already calculated in weightedScore
-                            } else if (c.isBonus && c.bonusValue) {
-                                // HKUST style: weightedScore is the final points added
+
+                            // Special handling for bonus display
+                            if (c.isBonus) {
+                                if (c.bonusValue && c.bonusValue.includes('x')) {
+                                    // HKU/PolyU style multiplier bonus
+                                    const m = parseFloat(c.bonusValue.replace('+', '').replace('x', ''));
+                                    multiplierText = `x${m}`;
+                                } else if (c.bonusValue && c.bonusValue.includes('%')) {
+                                    // HKUST style percentage bonus
+                                    multiplierText = `<small class="bonus-label">${c.bonusValue}</small>`;
+                                }
                             }
 
                             return `
                                 <tr class="${c.used ? 'selected-subject' : 'unused'}">
                                     <td>${label}</td>
-                                    <td>${c.grade}</td><td>${c.basePoints}</td><td>x${c.multiplier}</td><td>${finalPoints.toFixed(2)}</td>
+                                    <td>${c.grade}</td><td>${c.basePoints}</td><td>${multiplierText}</td><td>${finalPoints.toFixed(2)}</td>
                                 </tr>
                             `;
                         }).join('')}
                     </tbody>
                 </table>
+                ${result.selected.some(c => c.isBonus && c.bonusValue && c.bonusValue.includes('of total')) ? `
+                <p class="bonus-note"><small>* HKUST 6th subject bonus is added directly to the total score. The % shown reflects grade attainment (subject pts ÷ 8.5 × 5%) — it is <em>not</em> a percentage of the subject's own points.</small></p>
+                ` : ''}
             </div>`;
         container.innerHTML = html;
     },
@@ -431,7 +596,9 @@ const JUPAS_UI = {
         const map = {
             "Chinese Language": "CHI", "English Language": "ENG", "Mathematics (Compulsory Part)": "MATH",
             "Citizenship and Social Development": "CSD", "Mathematics Extended Part (Module 1)": "M1",
-            "Mathematics Extended Part (Module 2)": "M2", "Information and Communication Technology": "ICT",
+            "Mathematics Extended Part (Module 2)": "M2", 
+            "Mathematics Extended Part (Module 1 or 2)": "M1/2",
+            "Information and Communication Technology": "ICT",
             "Business, Accounting and Financial Studies": "BAFS", "Biology": "Bio", "Chemistry": "Chem", "Physics": "Phys"
         };
         if (map[fullName]) return map[fullName];

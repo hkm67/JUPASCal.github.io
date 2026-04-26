@@ -8,11 +8,11 @@ import time
 
 # --- Step 1: Scrape Programme Overview ---
 
-OVERVIEW_FILE = '2026 JUPAS Program Overview.xlsx'
+OVERVIEW_FILE = 'data/raw/2026 JUPAS Program Overview.csv'
 
 if os.path.exists(OVERVIEW_FILE):
     print(f'Step 1 already done, loading {OVERVIEW_FILE}')
-    df_all = pd.read_excel(OVERVIEW_FILE, index_col='JUPAS Catalogue No.')
+    df_all = pd.read_csv(OVERVIEW_FILE, index_col='JUPAS Catalogue No.')
     university_data = df_all.reset_index().to_dict('records')
 else:
     url_JUPAS = 'https://www.jupas.edu.hk/en/programmes-offered/by-funding-category/'
@@ -66,7 +66,7 @@ else:
 
     df_all = pd.DataFrame(university_data).set_index('JUPAS Catalogue No.')
     print(f'\nTotal programmes scraped: {len(df_all)}')
-    df_all.to_excel(OVERVIEW_FILE)
+    df_all.to_csv(OVERVIEW_FILE)
 
 
 # --- Step 2: Scrape Offer Table ---
@@ -127,4 +127,4 @@ for count, program in enumerate(university_data):
         offer_table = pd.concat([offer_table, pd.DataFrame([new_row])], ignore_index=True)
 
 print(f'\nDone. Total rows: {len(offer_table)}')
-offer_table.to_excel('2026 JUPAS Offer Table.xlsx', index=False)
+offer_table.to_csv('data/raw/2026 JUPAS Offer Table.csv', index=False)

@@ -73,33 +73,22 @@ Different schools / programmes use different formulas. Common patterns:
 
 ---
 
-## Automation Strategy
+## Automation Status (2026 cycle — complete)
 
-### Already Automated (scraping script: `2026_scrap.py`)
-- All JUPAS codes, programme names (EN + ZH), institutions
-- Quota per programme
-- Application & offer statistics (historical)
-- Output: `2026 JUPAS Program Overview.xlsx`, `2026 JUPAS Offer Table.xlsx`
+All per-school scrapers are implemented and have been run. See `CLAUDE.md` for the script reference table.
 
-### To Automate (per school)
-- PolyU — already has a scraping script from prior years (`polyu.ps1`)
-- CUHK — tabula-based PDF extraction (prior scripts exist in Archives)
-- Others — to be built per school
-
-### Manual (for now)
-- Schools that only publish PDFs with no machine-readable structure
-- Verify scraped data against source
+- JUPAS overview: `scripts/extraction/2026_scrap.py` → `data/raw/2026 JUPAS Program Overview.xlsx`
+- Per-school JSON outputs: `Reference(2026)/{School}/{School}_2026_Data.json`
+- Unified master: `data/processed/JUPAS_2026_Unified_Data.json` (432 programmes)
 
 ---
 
-## Future Direction: Web Application
-The current Excel-based approach uses complex cell references and formulas ("spaghetti code") to handle the different calculation methods. A proper web app would:
-- Have a clean input form (DSE grades per subject)
-- Calculate scores dynamically per programme using stored weighting rules
-- Display results ranked by estimated score vs. historical admission scores
-- Be easier to maintain and update each year
+## Web Application
 
-**Potential stack:** Python (FastAPI or Flask) backend + simple HTML/JS frontend, or a static site with JS only.
+The Excel-based calculator has been replaced with a static web app:
+- `index.html` + `js/calculator.js` + `js/ui.js` + `css/style.css`
+- Pure vanilla JS, hosted on GitHub Pages, no backend
+- See `docs/manuals/WEBAPP_PLAN.md` for architecture details
 
 ---
 
@@ -107,20 +96,8 @@ The current Excel-based approach uses complex cell references and formulas ("spa
 
 1. [x] Archive 2024 & 2025 files
 2. [x] Create `scripts/extraction/2026_scrap.py` and run → `data/raw/2026 JUPAS Program Overview.xlsx` + `data/raw/2026 JUPAS Offer Table.xlsx` (422 programmes)
-3. [x] Collect per-school weighting & admission score data:
-   - [x] CUHK — 8 PDFs + API scraper (`scripts/extraction/cuhk_scrap.py`) → `Reference(2026)/CUHK/CUHK_2026_Data.json/xlsx`
-   - [x] CityU — API scraper (`scripts/extraction/cityu_scrap.py`) + 2 PDFs + extractors
-   - [x] HKU — API scraper (`scripts/extraction/hku_scrap.py`) + PDF extractor → `Reference(2026)/HKU/HKU_2026_Data.json/xlsx`
-   - [x] HKUST — JS scraper (`scripts/extraction/hkust_scrap.py`) → `Reference(2026)/HKUST/HKUST_2026_Data.json/xlsx`
-   - [x] PolyU — Playwright scraper (`scripts/extraction/polyu_scrap.py`) → `Reference(2026)/PolyU/PolyU_2026_Data.json/xlsx` + `PolyU_2026_Weights.json`
-   - [x] HKBU — PDF extractors → `Reference(2026)/HKBU/HKBU_2026_Data.json/xlsx`
-   - [x] LingU — PDF extractors → `Reference(2026)/LingU/LingU_2026_Data.json/xlsx`
-   - [x] EdUHK — PDF extractor → `Reference(2026)/EdUHK/EdUHK_2026_Data.json/xlsx`
-   - [x] HKMU — PDF extractor → `Reference(2026)/HKMU/HKMU_2026_Data.json/xlsx`
-   - [x] SSSDP — PDF extractor → `Reference(2026)/SSSDP/SSSDP_2026_Data.json/xlsx`
-4. [x] Build automation scripts per school where possible
-5. [x] Compile and unify all data into a master JSON:
-   - Run `~/miniconda3/envs/jupascal/bin/python scripts/utils/unify_2026_data.py`
-   - Generates `data/processed/JUPAS_2026_Unified_Data.json` with structured requirements and calculation constraints.
-6. [ ] Update `index.html` with new OneDrive embed link (or Web App UI)
+3. [x] Collect per-school weighting & admission score data (all 10 institutions complete)
+4. [x] Build automation scripts per school
+5. [x] Compile and unify: `~/miniconda3/envs/jupascal/bin/python scripts/utils/unify_2026_data.py`
+6. [x] Build web app (replaced OneDrive Excel embed)
 7. [ ] Commit and open Pull Request on GitHub

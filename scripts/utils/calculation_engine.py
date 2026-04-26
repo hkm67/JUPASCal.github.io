@@ -68,8 +68,21 @@ def calculate_programme_score(student_grades, programme, year="2025"):
 
     # 5. Selection Logic (Best N)
     selected_subjects = []
-    target_count = 5 if "5" in str(programme.get(f"formula_{year}")) else 6
-    if formula_id == "best6": target_count = 6
+    target_count = 5
+    has_bonus = any(c["type"] in ["bonus_6th", "additional_bonus_6th"] for c in constraints)
+    
+    if formula_id == "best6":
+        target_count = 6
+    elif formula_id == "best5" or has_bonus:
+        target_count = 5
+    else:
+        f_text = str(programme.get(f"formula_{year}", ""))
+        if "Best 6" in f_text or "3 Core + 3 Elective" in f_text or "4 Core + 2 Elective" in f_text:
+            target_count = 6
+        elif "Best 5" in f_text or "3 Core + 2 Elective" in f_text:
+            target_count = 5
+        elif "6" in f_text and "5" not in f_text:
+            target_count = 6
 
     # A. Compulsory individual subjects first
     for s in subject_scores:
@@ -113,7 +126,12 @@ def calculate_programme_score(student_grades, programme, year="2025"):
                 # If PolyU, check for Level 3+
                 if c.get("polyu_style") and bc["base_points"] < 3:
                     continue
-                bc.update({"used": True, "is_bonus": True, "weighted_points": bc["weighted_points"] * c["multiplier"], "bonus_value": f"+{c['multiplier']}x"})
+                
+                # Update internal points for breakdown
+                bc["weight"] = c["multiplier"]
+                bc["weighted_points"] = bc["weighted_points"] * c["multiplier"]
+                
+                bc.update({"used": True, "is_bonus": True, "bonus_value": f"+{c['multiplier']}x"})
                 selected_subjects.append(bc)
         
         # HKUST Style (% of Highest Attainable)
@@ -125,7 +143,12 @@ def calculate_programme_score(student_grades, programme, year="2025"):
                 if bonus_pct > 0:
                     current_total = sum(s["weighted_points"] for s in selected_subjects)
                     ha_score = programme.get("max_achievable_score") or current_total
-                    bc.update({"used": True, "is_bonus": True, "weighted_points": ha_score * bonus_pct, "bonus_value": f"+{bonus_pct*100}%"})
+                    bonus_points = ha_score * bonus_pct
+                    
+                    # Update internal points for breakdown
+                    bc["weighted_points"] = bonus_points
+                    
+                    bc.update({"used": True, "is_bonus": True, "bonus_value": f"+{bonus_pct*100}%"})
                     selected_subjects.append(bc)
 
     final_score = sum(s["weighted_points"] for s in selected_subjects)

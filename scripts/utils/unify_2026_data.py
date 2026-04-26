@@ -21,32 +21,35 @@ CORE LOGIC:
 
 # File paths for institution-specific JSONs (extracted via university scrapers)
 FILES = {
-    "CityU": "../../Reference(2026)/CityU/CityU_2026_Data.json",
-    "CUHK": "../../Reference(2026)/CUHK/CUHK_2026_Data.json",
-    "EdUHK": "../../Reference(2026)/EdUHK/EdUHK_2026_Data.json",
-    "HKBU": "../../Reference(2026)/HKBU/HKBU_2026_Data.json",
-    "HKMU": "../../Reference(2026)/HKMU/HKMU_2026_Data.json",
-    "HKU": "../../Reference(2026)/HKU/HKU_2026_Data.json",
-    "HKUST": "../../Reference(2026)/HKUST/HKUST_2026_Data.json",
-    "LingU": "../../Reference(2026)/LingU/LingU_2026_Data.json",
-    "PolyU": "../../Reference(2026)/PolyU/PolyU_2026_Data.json",
-    "SSSDP": "../../Reference(2026)/SSSDP/SSSDP_2026_Data.json"
+    "CityU": "Reference(2026)/CityU/CityU_2026_Data.json",
+    "CUHK": "Reference(2026)/CUHK/CUHK_2026_Data.json",
+    "EdUHK": "Reference(2026)/EdUHK/EdUHK_2026_Data.json",
+    "HKBU": "Reference(2026)/HKBU/HKBU_2026_Data.json",
+    "HKMU": "Reference(2026)/HKMU/HKMU_2026_Data.json",
+    "HKU": "Reference(2026)/HKU/HKU_2026_Data.json",
+    "HKUST": "Reference(2026)/HKUST/HKUST_2026_Data.json",
+    "LingU": "Reference(2026)/LingU/LingU_2026_Data.json",
+    "PolyU": "Reference(2026)/PolyU/PolyU_2026_Data.json",
+    "SSSDP": "Reference(2026)/SSSDP/SSSDP_2026_Data.json"
 }
 
-# Supplemental Data Files (PDF extractions or raw API caches)
-CUHK_2025_REQ = "../../Reference(2026)/CUHK/CUHK_PDF_2025_Requirements.json"
-CUHK_2026_REQ = "../../Reference(2026)/CUHK/CUHK_PDF_2026_Requirements.json"
-HKU_RAW_API = "../../Reference(2026)/HKU/hku_raw_api.json"
-POLYU_WEIGHTS_2026 = "../../Reference(2026)/PolyU/PolyU_2026_Weights.json"
+# Supplemental: HKUST structured formula data reverse-engineered from official JS calculator
+HKUST_JS_EXTRACT = "Reference(2026)/HKUST/HKUST_2026_JS_Extracted.json"
 
-OVERVIEW_FILE = "../../data/raw/2026 JUPAS Program Overview.xlsx"
-OUTPUT_FILE = "../../data/processed/JUPAS_2026_Unified_Data.json"
-CUHK_GRADES_FILE = "../../Reference(2026)/CUHK/cuhk_grades_2025.json"
-SUBJECT_MAPPING_FILE = "../../data/raw/subject_mapping.json"
+# Supplemental Data Files (PDF extractions or raw API caches)
+CUHK_2025_REQ = "Reference(2026)/CUHK/CUHK_PDF_2025_Requirements.json"
+CUHK_2026_REQ = "Reference(2026)/CUHK/CUHK_PDF_2026_Requirements.json"
+HKU_RAW_API = "Reference(2026)/HKU/hku_raw_api.json"
+POLYU_WEIGHTS_2026 = "Reference(2026)/PolyU/PolyU_2026_Weights.json"
+
+OVERVIEW_FILE = "data/raw/2026 JUPAS Program Overview.csv"
+OFFER_TABLE_FILE = "data/raw/2026 JUPAS Offer Table.csv"
+OUTPUT_FILE = "data/processed/JUPAS_2026_Unified_Data.json"
+CUHK_GRADES_FILE = "Reference(2026)/CUHK/cuhk_grades_2025.json"
+SUBJECT_MAPPING_FILE = "data/raw/subject_mapping.json"
 
 # Global mapping loaded once from external JSON
-_mapping_path = os.path.join(os.path.dirname(__file__), SUBJECT_MAPPING_FILE)
-with open(_mapping_path, encoding="utf-8") as f:
+with open(SUBJECT_MAPPING_FILE, encoding="utf-8") as f:
     SUBJECT_MAP = json.load(f)
 
 def normalize_subject(name):
@@ -76,8 +79,10 @@ def normalize_subject(name):
     # Handle mangled internal parentheses
     if "(" in name:
         name_upper = name.upper()
-        if "MODULE 1" in name_upper or "M1" in name_upper: return "Mathematics Extended Part (Module 1)"
-        if "MODULE 2" in name_upper or "M2" in name_upper: return "Mathematics Extended Part (Module 2)"
+        if "MODULE 1" in name_upper or "M1" in name_upper or "CALCULUS AND STATISTICS" in name_upper: 
+            return "Mathematics Extended Part (Module 1)"
+        if "MODULE 2" in name_upper or "M2" in name_upper or "ALGEBRA AND CALCULUS" in name_upper: 
+            return "Mathematics Extended Part (Module 2)"
         if "COMPULSORY" in name_upper: return "Mathematics (Compulsory Part)"
         
     return name
@@ -139,6 +144,39 @@ def parse_hku_weights(weight_text):
             subjects = m.group(2).split('/')
             for s in subjects:
                 weights[normalize_subject(s.strip())] = weight
+    return weights
+
+def parse_hku_formula_weights(formula_text):
+    """Extract explicit HKU formula multipliers such as '1.5 x Chin' or '2 x M1 / M2'."""
+    if not formula_text:
+        return {}
+
+    weights = {}
+    text = str(formula_text)
+    alias_map = {
+        "chin": ["Chinese Language"],
+        "chinese": ["Chinese Language"],
+        "eng": ["English Language"],
+        "english": ["English Language"],
+        "math": ["Mathematics (Compulsory Part)"],
+        "maths": ["Mathematics (Compulsory Part)"],
+    }
+
+    for match in re.finditer(r'([\d.]+)\s*x\s*(Chin(?:ese)?|Eng(?:lish)?|Maths?)\b', text, re.IGNORECASE):
+        weight = float(match.group(1))
+        for subject in alias_map[match.group(2).lower()]:
+            weights[subject] = weight
+
+    for match in re.finditer(r'(M1\s*/\s*M2)\s*x\s*([\d.]+)', text, re.IGNORECASE):
+        weight = float(match.group(2))
+        weights["Mathematics Extended Part (Module 1)"] = weight
+        weights["Mathematics Extended Part (Module 2)"] = weight
+
+    for match in re.finditer(r'([\d.]+)\s*x\s*(M1\s*/\s*M2)', text, re.IGNORECASE):
+        weight = float(match.group(1))
+        weights["Mathematics Extended Part (Module 1)"] = weight
+        weights["Mathematics Extended Part (Module 2)"] = weight
+
     return weights
 
 def parse_cuhk_weights(weight_text):
@@ -225,7 +263,7 @@ def get_conversion_table(institution, is_medicine=False):
     Standard (Group B): 5**=7, 5*=6, 5=5, 4=4, 3=3, 2=2, 1=1
     """
     # Group B institutions or special cases
-    if institution in ["LingnanU", "EdUHK", "HKMU", "SSSDP"] or is_medicine:
+    if institution in ["LingnanU", "EdUHK", "HKBU", "HKMU", "SSSDP"] or is_medicine:
         table = {
             "5**": 7.0, "5*": 6.0, "5": 5.0, "4": 4.0, "3": 3.0, "2": 2.0, "1": 1.0,
             "attained": 0.0, "A": 0.0
@@ -233,7 +271,7 @@ def get_conversion_table(institution, is_medicine=False):
         # Add Category C for these schools if known (standard is A=7, B=6, C=5, D=4, E=3)
         cat_c = {"A": 7.0, "B": 6.0, "C": 5.0, "D": 4.0, "E": 3.0}
     else:
-        # Group A: HKU, CUHK, HKUST, PolyU, CityUHK, HKBU
+        # Group A: HKU, CUHK, HKUST, PolyU, CityUHK
         table = {
             "5**": 8.5, "5*": 7.0, "5": 5.5, "4": 4.0, "3": 3.0, "2": 2.0, "1": 1.0,
             "attained": 0.0, "A": 0.0
@@ -270,7 +308,26 @@ def extract_logic_from_formula(formula_text):
     if m_best:
         best_n = int(m_best.group(1)) + len(compulsory)
         
-    # 2. Detect CUHK Dynamic Pools: Best(1, [AECON, AINCT]):1.5
+    # 1.5 Detect CUHK Compulsory Pools in Formula: Best(1, [ABIOL, ACHEM])
+    # Note: These are different from weighting pools because they appear in the formula part
+    compulsory_pools = []
+    # If the Best(N, [Pool]) pattern appears without a trailing multiplier (:X.X), 
+    # OR if it's in the formula_text (which usually doesn't have multipliers), it's likely a requirement.
+    for m in re.finditer(r'Best\((\d+)\s*,\s*\[(.*?)\]\)', f):
+        # Check if it has a multiplier immediately after
+        if f[m.end():m.end()+1] != ':':
+            count = int(m.group(1))
+            subjs = re.findall(r'A([A-Z0-9]+)', m.group(2))
+            norm_subjs = [normalize_subject(s) for s in subjs]
+            compulsory_pools.append({
+                "count": count,
+                "subjects": norm_subjs,
+                "description": f"Best {count} from {', '.join(norm_subjs)} must be included"
+            })
+            # Also add to best_n if not already accounted for
+            best_n += count
+
+    # 2. Detect CUHK Dynamic Weighting Pools: Best(1, [AECON, AINCT]):1.5
     for m in re.finditer(r'Best\((\d+)\s*,\s*\[(.*?)\]\)\s*:\s*([\d\.]+)', f):
         count = int(m.group(1))
         subjs = re.findall(r'A([A-Z0-9]+)', m.group(2))
@@ -281,19 +338,30 @@ def extract_logic_from_formula(formula_text):
             "weight": float(m.group(3))
         })
     
-    # 3. Detect HKU style: Best 5 Subjects + 0.5 x 6th / 0.2 x 6th
+    # 3. Detect HKU style: Best 5 Subjects + 0.5 x 6th / 0.2 x 6th / 0.2 x 7th
     if "Best 5" in f or "Best(5)" in f: best_n = 5
     if "Best 6" in f or "Best(6)" in f: best_n = 6
+    if "Best 7" in f or "Best(7)" in f: best_n = 7
     
-    # regex for N.N x 6th
-    m_bonus = re.search(r'([\d.]+)\s*x\s*6th', f, re.IGNORECASE)
-    if m_bonus:
+    # regex for N.N x 6th/7th
+    for m_bonus in re.finditer(r'([\d.]+)\s*x\s*(\d)(?:th|rd)?\s*Best', f, re.IGNORECASE):
         multiplier = float(m_bonus.group(1))
+        target_idx = int(m_bonus.group(2))
         bonus.append({
-            "type": "bonus_6th", 
+            "type": f"bonus_{target_idx}th", 
             "multiplier": multiplier,
-            "description": f"{multiplier} x 6th Best subject included as bonus"
+            "description": f"{multiplier} x {target_idx}th Best subject included as bonus"
         })
+
+    # 3.5 Detect HKU Compulsory Cores in Formula
+    if re.search(r'\bEng(?:lish)?\b', f, re.IGNORECASE):
+        compulsory.append("English Language")
+    if re.search(r'\bMaths?\b', f, re.IGNORECASE):
+        compulsory.append("Mathematics (Compulsory Part)")
+    if re.search(r'\bM1\b|\bM2\b', f, re.IGNORECASE):
+        compulsory.append("Mathematics Extended Part (Module 1 or 2)")
+    if re.search(r'\bChin(?:ese)?\b', f, re.IGNORECASE):
+        compulsory.append("Chinese Language")
 
     # 4. Detect PolyU style: English & Chinese + Best 3
     if "Chinese & English Languages + Any Best 3" in f:
@@ -311,7 +379,7 @@ def extract_logic_from_formula(formula_text):
     # Deduplicate compulsory
     compulsory = list(set(compulsory))
     
-    return {"compulsory": compulsory, "best_n": best_n, "bonus": bonus, "best_of": best_of}
+    return {"compulsory": compulsory, "best_n": best_n, "bonus": bonus, "best_of": best_of, "compulsory_pools": compulsory_pools}
 
 def map_formula_id(formula_text):
     """Standardize formula descriptions into machine-readable IDs."""
@@ -339,6 +407,56 @@ def clean_raw_string(text):
     text = re.sub(r',\s*,', ',', text)
     text = text.replace(" ,", ",")
     return text.strip(", ")
+
+def estimate_hkbu_score_from_grades(grades, weights, conversion_table):
+    """
+    Estimate HKBU median/LQ totals from published subject-grade breakdowns.
+    HKBU publishes weighted mean, but median/LQ are provided as subject grades,
+    so we apply the programme's 2025 weights and sum the best five subjects.
+    """
+    if not grades:
+        return None
+
+    core_names = {
+        "Chinese Language",
+        "English Language",
+        "Mathematics (Compulsory Part)",
+        "Mathematics Extended Part (Module 1)",
+        "Mathematics Extended Part (Module 2)",
+        "Citizenship and Social Development",
+    }
+    weighted_elective_multipliers = sorted(
+        [weight for subject, weight in weights.items() if subject not in core_names],
+        reverse=True
+    )
+    subject_scores = []
+
+    for subject, grade in grades.items():
+        base_points = conversion_table.get(str(grade).strip(), 0)
+        weight = 1.0
+
+        if subject == "CHIN":
+            weight = weights.get("Chinese Language", 1.0)
+        elif subject == "ENGL":
+            weight = weights.get("English Language", 1.0)
+        elif subject == "MATH":
+            weight = weights.get("Mathematics (Compulsory Part)", 1.0)
+        elif subject == "M1/M2":
+            weight = max(
+                weights.get("Mathematics Extended Part (Module 1)", 1.0),
+                weights.get("Mathematics Extended Part (Module 2)", 1.0),
+            )
+        elif "Elective" in subject and weighted_elective_multipliers:
+            weight = weighted_elective_multipliers.pop(0)
+
+        if base_points:
+            subject_scores.append(base_points * weight)
+
+    if not subject_scores:
+        return None
+
+    subject_scores.sort(reverse=True)
+    return round(sum(subject_scores[:5]), 2)
 
 def build_cuhk_elective(note, text, req_str):
     """
@@ -495,12 +613,29 @@ def apply_baselines(obj):
 
 def unify_data():
     # 1. Pre-load Global Resources
-    df_overview = pd.read_excel(OVERVIEW_FILE)
+    df_overview = pd.read_csv(OVERVIEW_FILE)
     overview_map = {str(row['JUPAS Catalogue No.']): {
         "name_zh": row['chinese_name'],
         "name_en": row['Programme Full Title'],
         "institution": row['Institution / Scheme']
     } for _, row in df_overview.iterrows()}
+
+    # Load JUPAS Offer Statistics (Application/Offer trends)
+    offer_stats_map = {}
+    if os.path.exists(OFFER_TABLE_FILE):
+        df_offer = pd.read_csv(OFFER_TABLE_FILE)
+        # Convert numeric columns to native python types to avoid JSON serialisation errors
+        cols_to_fix = ['Year', 'Band A', 'Band B', 'Band C', 'Band D', 'Band E', 'Total']
+        for col in cols_to_fix:
+            if col in df_offer.columns:
+                df_offer[col] = pd.to_numeric(df_offer[col], errors='coerce').fillna(0).astype(int)
+        
+        # Replace remaining NaN (in non-numeric columns like Type) with empty strings to keep JSON valid
+        df_offer = df_offer.where(pd.notnull(df_offer), "")
+        
+        for code, group in df_offer.groupby('JUPAS'):
+            offer_stats_map[str(code)] = group.to_dict('records')
+    print(f"Loaded offer statistics for {len(offer_stats_map)} programmes.")
 
     # Load PolyU structured weights
     polyu_weights_2026 = {}
@@ -522,6 +657,14 @@ def unify_data():
     if os.path.exists(CUHK_GRADES_FILE):
         with open(CUHK_GRADES_FILE, encoding='utf-8') as f:
             cuhk_2025_grades = json.load(f)
+
+    # Load HKUST JS-extracted structured formula data
+    hkust_js_data = {}
+    if os.path.exists(HKUST_JS_EXTRACT):
+        with open(HKUST_JS_EXTRACT, 'r', encoding='utf-8') as f:
+            for entry in json.load(f):
+                hkust_js_data[entry['jupas_code']] = entry
+        print(f"Loaded HKUST JS extract: {len(hkust_js_data)} entries")
 
     # Load HKU Raw API for Min Reqs & Extra Info
     hku_req_map = {}
@@ -602,6 +745,7 @@ def unify_data():
                     "median": entry.get('score_median_grades') or entry.get('median_grades'),
                     "lq": entry.get('score_lq_grades') or entry.get('lq_grades')
                 },
+                "offer_statistics": [],
                 
                 "quota": entry.get('quota'),
                 "remarks": " | ".join(filter(lambda x: x and x not in ["", "--", "-"], [entry.get('remarks'), entry.get('other_req'), entry.get('formula_remarks'), entry.get('requirement_remarks')]))
@@ -630,15 +774,34 @@ def unify_data():
                 m_comp = re.search(r'\(includes\s*(.*)\)', sf, re.IGNORECASE)
                 if m_comp:
                     comp_text = m_comp.group(1).strip(" .")
-                    subjs = []
-                    for s in re.split(r',(?![^\(]*\))', comp_text):
-                        subjs.append(normalize_subject(s.strip()))
                     
-                    obj["calculation_constraints"].append({
-                        "type": "compulsory_subjects",
-                        "subjects": subjs,
-                        "description": f"Formula includes: {', '.join(subjs)}"
-                    })
+                    # Check for "and one subject from Bio/Chem/Phys" pattern
+                    pool_match = re.search(r'and one subject from (.*)', comp_text, re.IGNORECASE)
+                    fixed_text = comp_text
+                    if pool_match:
+                        pool_raw = pool_match.group(1)
+                        pool_subjs = [normalize_subject(s.strip()) for s in re.split(r' / |/|,', pool_raw)]
+                        obj["calculation_constraints"].append({
+                            "type": "compulsory_subject_pool",
+                            "count": 1,
+                            "subjects": pool_subjs,
+                            "description": f"Formula requires one subject from: {', '.join(pool_subjs)}"
+                        })
+                        fixed_text = comp_text[:pool_match.start()].strip(" ,")
+
+                    # Handle fixed compulsory subjects
+                    subjs = []
+                    for s in re.split(r',| and ', fixed_text):
+                        if not s.strip(): continue
+                        norm_s = normalize_subject(s.strip())
+                        if norm_s: subjs.append(norm_s)
+                    
+                    if subjs:
+                        obj["calculation_constraints"].append({
+                            "type": "compulsory_subjects",
+                            "subjects": subjs,
+                            "description": f"Formula includes: {', '.join(subjs)}"
+                        })
 
                 # Detect Math + M1/M2 mutual exclusivity
                 if entry.get('maths_calc_as_one') == 1 or "only one subject will be included" in sf:
@@ -793,14 +956,12 @@ def unify_data():
                 # Parse Weights from subject_weight field
                 sw_text = entry.get('subject_weight')
                 obj["subject_weights_2026"] = parse_hku_weights(sw_text)
+                obj["subject_weights_2025"] = parse_hku_weights(sw_text)
                 
                 # Formula often contains multipliers too, e.g. "2 x Eng"
                 f_text = str(formula_26)
-                if "2 x Eng" in f_text: obj["subject_weights_2026"]["English Language"] = 2.0
-                elif "1.5 x Eng" in f_text: obj["subject_weights_2026"]["English Language"] = 1.5
-                
-                if "2 x Math" in f_text: obj["subject_weights_2026"]["Mathematics (Compulsory Part)"] = 2.0
-                elif "1.5 x Math" in f_text: obj["subject_weights_2026"]["Mathematics (Compulsory Part)"] = 1.5
+                obj["subject_weights_2026"].update(parse_hku_formula_weights(formula_26))
+                obj["subject_weights_2025"].update(parse_hku_formula_weights(formula_25))
 
                 # Detect Best of pools in HKU formula
                 m_best = re.search(r'Best of (.*?) with Weighting([\d.]+)', f_text, re.IGNORECASE)
@@ -814,11 +975,10 @@ def unify_data():
                         "weight": weight
                     })
 
-                obj["subject_weights_2025"] = obj["subject_weights_2026"].copy()
                 obj["best_of_weights_2025"] = obj["best_of_weights_2026"].copy()
                 
                 obj["subject_weights_2026_raw"] = sw_text
-                obj["subject_weights_2025_raw"] = sw_text 
+                obj["subject_weights_2025_raw"] = formula_25 if parse_hku_formula_weights(formula_25) else sw_text 
 
                 # Constraints
                 obj["calculation_constraints"].append({
@@ -863,59 +1023,115 @@ def unify_data():
                             obj["min_requirements_2026"]["elect2"] = p1.copy()
 
             elif school_key == "HKUST":
+                # Use structured data from JS-extracted source (reverse-engineered from official
+                # HKUST calculator). Falls back to old scraper data if JS extract is missing.
+                js = hkust_js_data.get(code, {})
+
                 formula_text_2025 = entry.get('formula_text_2025')
-                formula_text_2026 = entry.get('otherSubjects')
+                formula_text_2026 = js.get('otherSubjects_text') or entry.get('otherSubjects', '')
                 obj["formula_2025"] = formula_text_2025 or formula_text_2026
                 obj["formula_2026"] = formula_text_2026
-                
-                # Eng Multiplier
-                eng_m = float(str(entry.get('engMultiplier', 'x1')).replace('x',''))
-                obj["subject_weights_2026"]["English Language"] = eng_m
-                
-                # Second Multiplier
-                sec_m = float(str(entry.get('secondMultiplier', 'x1')).replace('x',''))
-                sec_subj = entry.get('secondMultiplierSubject')
-                if sec_subj and sec_m != 1.0:
-                    obj["subject_weights_2026"][normalize_subject(sec_subj)] = sec_m
-                
-                # Parse sub-weightings from formula text
-                best_of_26, flat_26 = parse_hkust_weights(formula_text_2026)
-                obj["subject_weights_2026"].update(flat_26)
-                obj["best_of_weights_2026"] = best_of_26
-                
-                best_of_25, flat_25 = parse_hkust_weights(formula_text_2025)
-                if best_of_25 or flat_25:
-                    obj["subject_weights_2025"] = flat_25
-                    obj["best_of_weights_2025"] = best_of_25
-                    # Don't forget core multipliers
-                    obj["subject_weights_2025"]["English Language"] = eng_m
-                    if sec_subj and sec_m != 1.0:
-                        obj["subject_weights_2025"][normalize_subject(sec_subj)] = sec_m
-                else:
+
+                # Subject weights: use structured JS data, normalizing keys to canonical names.
+                js_weights = js.get('subject_weights_2026', {})
+                if js_weights:
+                    obj["subject_weights_2026"] = {normalize_subject(k): v for k, v in js_weights.items()}
+                    # HKUST formula is stable across cycles — use same weights for 2025
                     obj["subject_weights_2025"] = obj["subject_weights_2026"].copy()
-                    obj["best_of_weights_2025"] = obj["best_of_weights_2026"].copy()
-                
+                else:
+                    # Fallback: parse from string fields (old approach)
+                    eng_m = float(str(entry.get('engMultiplier', 'x1')).replace('x', ''))
+                    sec_m = float(str(entry.get('secondMultiplier', 'x1')).replace('x', ''))
+                    sec_subj = entry.get('secondMultiplierSubject')
+                    obj["subject_weights_2026"]["English Language"] = eng_m
+                    if sec_subj and sec_m != 1.0:
+                        obj["subject_weights_2026"][normalize_subject(sec_subj)] = sec_m
+                    obj["subject_weights_2025"] = obj["subject_weights_2026"].copy()
+
+                # For "better-of" programmes (JS5312/JS5331/JS5332/JS5822):
+                # Option A = plain best-3; Option B = best-1 from Chem/Phys/Econ/M1/M2 x1.5 + best-2.
+                # The pool exists in both 2025 and 2026 formulas (formula_text_2025 confirms this).
+                # Note: "HA=62.48" in HKUST's PDF is the actual highest observed score in admissions,
+                # not the theoretical all-5** maximum (which is ~66.94 with the pool).
+                formula_steps = js.get('formula_steps', [])
+                is_better_of = js.get('is_better_of', False)
+                pool_weight = 1.0  # default if no pool found
+                if is_better_of:
+                    for step in formula_steps:
+                        if step.get('type') == 'better_of':
+                            options = step.get('options', [])
+                            if len(options) >= 2:
+                                option_b = options[1]
+                                for case in option_b:
+                                    if case.get('type') == 'best_from_pool' and case.get('weights'):
+                                        pool_entry = {
+                                            "count": 1,
+                                            # Normalize subject names to canonical form
+                                            "subjects": [normalize_subject(s) for s in case['subject_filter']],
+                                            "weight": case['weights'][0]['weight']
+                                        }
+                                        pool_weight = pool_entry["weight"]
+                                        # Pool applies to both 2025 and 2026 formulas
+                                        obj["best_of_weights_2026"].append(pool_entry)
+                                        obj["best_of_weights_2025"].append(pool_entry.copy())
+                            break
+
+                # Store formula_steps as a reference field for future use
+                obj["hkust_formula_steps"] = formula_steps
+
                 # Constraints
+                bonus_6th = js.get('bonus_6th', {})
+                bonus_pct = bonus_6th.get('bonus_percentage', 5)
+                bonus_cats = bonus_6th.get('eligible_categories',
+                    (entry.get('extra_subject_bonus_category', '') or '').split(','))
+                if isinstance(bonus_cats, str):
+                    bonus_cats = [c.strip() for c in bonus_cats.split(',') if c.strip()]
+
+                # max_attainable_weighting: sum of all multipliers in the optimal best-N selection.
+                # For better-of programmes: explicit weights + 1 pool slot at pool_weight + remaining at 1.0
+                subject_num = entry.get('subjectNum', 5)
+                explicit_weights = obj["subject_weights_2025"]
+                explicit_sum = sum(explicit_weights.values())
+                pool_slots = 1 if is_better_of else 0
+                remaining_slots = subject_num - len(explicit_weights) - pool_slots
+                max_attainable = explicit_sum + pool_slots * pool_weight + remaining_slots * 1.0
+
                 obj["calculation_constraints"].append({
                     "type": "hkust_weighted_best",
-                    "subject_count": entry.get('subjectNum', 5),
-                    "max_weighting_cap": entry.get('max_attainable_weighting'),
-                    "extra_subject_bonus_category": entry.get('extra_subject_bonus_category'),
-                    "bonus_scale": {
-                        "5**": 0.05, "5*": 0.0412, "5": 0.0324, "4": 0.0235, "3": 0.0176
-                    },
-                    "description": f"Weighted Best {entry.get('subjectNum', 5)} subjects with bonus for the 6th best subject (max 5%)."
+                    "subject_count": subject_num,
+                    "max_attainable_weighting": round(max_attainable, 4),
+                    "bonus_percentage": bonus_pct,
+                    "bonus_eligible_categories": bonus_cats,
+                    "description": (
+                        f"Weighted Best {subject_num} subjects "
+                        f"with {bonus_pct}% of max_attainable_weighting bonus for 6th subject."
+                    )
                 })
 
-                # Structured Requirements 2026
-                obj["min_requirements_2026"] = {
-                    "chi": entry.get('req_chin'),
-                    "eng": entry.get('req_eng'),
-                    "math": entry.get('req_math'),
-                    "csd": "A" if str(entry.get('req_csd')).lower() == "attained" else entry.get('req_csd'),
-                    "elect1": {"count": 1, "subjects": ["Any"], "grade": entry.get('req_e1', "3"), "note": ""},
-                    "elect2": {"count": 1, "subjects": ["Any"], "grade": entry.get('req_e2', "3"), "note": ""}
-                }
+                # Requirements: use structured JS data for reliability
+                js_reqs = js.get('min_requirements_2026_raw', {})
+                if js_reqs:
+                    csd_raw = js_reqs.get('csd', 'attained')
+                    obj["min_requirements_2026"] = {
+                        "chi": js_reqs.get('chinese'),
+                        "eng": js_reqs.get('english'),
+                        "math": js_reqs.get('maths_core'),
+                        "csd": "A" if str(csd_raw).lower() == "attained" else csd_raw,
+                        "elect1": {"count": 1, "subjects": ["Any"],
+                                   "grade": js_reqs.get('elective_subject_1', '3'), "note": ""},
+                        "elect2": {"count": 1, "subjects": ["Any"],
+                                   "grade": js_reqs.get('elective_subject_2', '3'), "note": ""}
+                    }
+                else:
+                    # Fallback to old scraper fields
+                    obj["min_requirements_2026"] = {
+                        "chi": entry.get('req_chin'),
+                        "eng": entry.get('req_eng'),
+                        "math": entry.get('req_math'),
+                        "csd": "A" if str(entry.get('req_csd', '')).lower() == "attained" else entry.get('req_csd'),
+                        "elect1": {"count": 1, "subjects": ["Any"], "grade": entry.get('req_e1', "3"), "note": ""},
+                        "elect2": {"count": 1, "subjects": ["Any"], "grade": entry.get('req_e2', "3"), "note": ""}
+                    }
 
             elif school_key == "PolyU":
                 formula_text = entry.get('calculation_mechanism')
@@ -1127,6 +1343,10 @@ def unify_data():
                 obj["scores_2025"]["lq"] = entry.get('score_lq')
                 obj["max_achievable_score"] = entry.get('score_ha')
                 obj["scores_2025"]["expected_score"] = entry.get('expected_score')
+            elif school_key == "PolyU":
+                obj["scores_2025"]["mean"] = entry.get('score_avg')
+                obj["scores_2025"]["median"] = entry.get('score_median')
+                obj["scores_2025"]["lq"] = entry.get('score_lq')
             else:
                 obj["scores_2025"]["median"] = entry.get('score_median')
                 obj["scores_2025"]["lq"] = entry.get('score_lq')
@@ -1172,6 +1392,15 @@ def unify_data():
                 if not obj["best_of_weights_2026"]:
                     obj["best_of_weights_2026"] = obj["best_of_weights_2025"].copy()
             
+            # Merge extracted compulsory pools (CUHK style)
+            for pool in logic_25.get("compulsory_pools", []):
+                obj["calculation_constraints"].append({
+                    "type": "compulsory_subject_pool",
+                    "count": pool["count"],
+                    "subjects": pool["subjects"],
+                    "description": pool["description"]
+                })
+            
             # Merge extracted bonuses
             for b in logic_25["bonus"]:
                 if b["type"] not in [x["type"] for x in obj["calculation_constraints"]]:
@@ -1203,7 +1432,27 @@ def unify_data():
             is_med = (code in ["JS4501", "JS4502"])
             obj["score_conversion_table"] = get_conversion_table(obj["institution"], is_medicine=is_med)
 
+            if school_key == "HKBU":
+                conversion_table = obj["score_conversion_table"]["category_a"]
+                median_estimate = estimate_hkbu_score_from_grades(
+                    obj["score_grades_2025"].get("median"),
+                    obj["subject_weights_2025"],
+                    conversion_table
+                )
+                lq_estimate = estimate_hkbu_score_from_grades(
+                    obj["score_grades_2025"].get("lq"),
+                    obj["subject_weights_2025"],
+                    conversion_table
+                )
+                if median_estimate is not None:
+                    obj["scores_2025"]["median"] = median_estimate
+                    obj["scores_2025"]["score_type"] = "estimated"
+                if lq_estimate is not None:
+                    obj["scores_2025"]["lq"] = lq_estimate
+                    obj["scores_2025"]["score_type"] = "estimated"
+
             obj = apply_baselines(obj)
+            obj["offer_statistics"] = offer_stats_map.get(code, [])
             unified_map[code] = obj
 
     # 5. Export Unified Master File
