@@ -4,6 +4,7 @@ import { FiltersBar } from "./components/FiltersBar";
 import { GradeInput } from "./components/GradeInput";
 import { ResultsView } from "./components/ResultsView";
 import { buildProgrammeResult, filterResults, sortResults, type Filters, type SortKey } from "./lib/results";
+import { readHashState, writeHashState } from "./lib/hashState";
 import type { Profile, Programme, ProgrammeResult, StudentGrades } from "./types/jupas";
 
 const DATA_URL = "/data/processed/JUPAS_2026_Unified_Data.json";
@@ -29,7 +30,7 @@ function App() {
   const [programmeFiltersOpen, setProgrammeFiltersOpen] = useState(true);
   const [sortKey, setSortKey] = useState<SortKey>("benchmark");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  const [pickedCodes, setPickedCodes] = useState<string[]>([]);
+  const [pickedCodes, setPickedCodes] = useState<string[]>(() => loadInitialPickedCodes());
   const [activeCode, setActiveCode] = useState<string>();
   const [reviewRequest, setReviewRequest] = useState(0);
   const [loadError, setLoadError] = useState<string>();
@@ -44,25 +45,6 @@ function App() {
       .then((data) => {
         if (!cancelled) {
           setProgrammes(data);
-          // Initial hash load
-          const hash = window.location.hash.slice(1);
-          if (hash) {
-            try {
-              const shared = JSON.parse(decodeURIComponent(hash));
-              if (shared.grades) {
-                const newProfile: Profile = {
-                  id: `shared-${Date.now()}`,
-                  name: "Shared Profile",
-                  grades: shared.grades,
-                };
-                setProfiles((prev) => [newProfile, ...prev]);
-                setActiveProfileId(newProfile.id);
-                if (shared.pickedCodes) setPickedCodes(shared.pickedCodes);
-              }
-            } catch (e) {
-              console.error("Failed to parse hash", e);
-            }
-          }
         }
       })
       .catch((error: Error) => {
@@ -76,13 +58,9 @@ function App() {
   useEffect(() => {
     localStorage.setItem("jupas-staging-profiles", JSON.stringify(profiles));
     localStorage.setItem("jupas-staging-active-profile-id", activeProfileId);
-
-    // Update URL hash
-    const stateToShare = {
-      grades: activeProfile.grades,
-      pickedCodes,
-    };
-    window.location.hash = encodeURIComponent(JSON.stringify(stateToShare));
+    
+    // Update URL hash safely without triggering infinite reloads
+    writeHashState(activeProfile.grades, pickedCodes);
   }, [profiles, activeProfileId, pickedCodes, activeProfile.grades]);
 
   useEffect(() => {
@@ -316,6 +294,16 @@ function loadTheme(): Theme {
 }
 
 function loadProfiles(): Profile[] {
+  // Check hash first!
+  const hashState = readHashState();
+  if (hashState && Object.keys(hashState.grades).length > 0) {
+    return [{
+      id: `shared-${Date.now()}`,
+      name: "Shared Profile",
+      grades: hashState.grades
+    }];
+  }
+
   try {
     const saved = localStorage.getItem("jupas-staging-profiles");
     if (saved) return JSON.parse(saved) as Profile[];
@@ -328,7 +316,19 @@ function loadProfiles(): Profile[] {
   return [{ id: "default", name: "Profile 1", grades }];
 }
 
+function loadInitialPickedCodes(): string[] {
+  const hashState = readHashState();
+  if (hashState && hashState.pickedCodes.length > 0) {
+    return hashState.pickedCodes;
+  }
+  return [];
+}
+
 function loadActiveProfileId(profiles: Profile[]): string {
+  // If we just loaded a shared profile, make it active
+  if (profiles.length === 1 && profiles[0].id.startsWith("shared-")) {
+    return profiles[0].id;
+  }
   const saved = localStorage.getItem("jupas-staging-active-profile-id");
   if (saved && profiles.some((p) => p.id === saved)) return saved;
   return profiles[0].id;
