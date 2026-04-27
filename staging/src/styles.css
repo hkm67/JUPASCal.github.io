@@ -22,7 +22,7 @@
   --warn: #9b6a14;
   --shadow: 0 18px 60px rgba(29, 42, 47, 0.12);
   --score-gradient: linear-gradient(135deg, #0d655e, #143b3b);
-  font-family: "Aptos", "Segoe UI", sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 :root[data-theme="dark"] {
