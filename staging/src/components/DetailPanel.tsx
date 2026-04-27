@@ -25,12 +25,18 @@ export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeCh
     setAuditOpen(false);
   }, [result?.programme.jupas_code, result?.eligibility.eligible]);
 
+  const prevReviewRequest = useRef(0);
+
   useEffect(() => {
-    if (!reviewRequest || !result) return;
-    const timer = window.setTimeout(() => {
-      panelRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
-    }, 320);
-    return () => window.clearTimeout(timer);
+    if (reviewRequest > prevReviewRequest.current) {
+      prevReviewRequest.current = reviewRequest;
+      if (result) {
+        const timer = window.setTimeout(() => {
+          panelRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+        }, 320);
+        return () => window.clearTimeout(timer);
+      }
+    }
   }, [reviewRequest, result]);
 
   if (!result) {

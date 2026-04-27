@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { institutionLabel } from "../lib/institutions";
 import { bandLabel, formatDelta, formatPercent } from "../lib/results";
 import type { SortKey } from "../lib/results";
@@ -26,9 +26,14 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
     setMobileCollapsed(false);
   }, [results]);
 
+  const prevReviewRequest = useRef(0);
+
   useEffect(() => {
-    if (reviewRequest > 0 && selectedResults.length) {
-      setMobileCollapsed(true);
+    if (reviewRequest > prevReviewRequest.current) {
+      prevReviewRequest.current = reviewRequest;
+      if (selectedResults.length) {
+        setMobileCollapsed(true);
+      }
     }
   }, [reviewRequest, selectedResults.length]);
 
