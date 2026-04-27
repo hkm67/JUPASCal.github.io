@@ -55,6 +55,11 @@ export const GradeInput = memo(({
   function reset() {
     onChange({});
     setCollapsed(false);
+    
+    // Smooth scroll back to the Grade Input panel on mobile if collapsed
+    if (window.matchMedia?.("(max-width: 920px)").matches) {
+      document.querySelector(".grade-panel")?.scrollIntoView({ block: "start", behavior: "smooth" });
+    }
   }
 
   function finishMobileEntry() {
