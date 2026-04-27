@@ -16,6 +16,9 @@ const DEFAULT_FILTERS: Filters = {
   band: "all",
 };
 
+const INITIAL_HASH_STATE = readHashState();
+const IS_SHARED_LINK = INITIAL_HASH_STATE !== null;
+
 type Theme = "light" | "dark";
 
 function App() {
@@ -27,12 +30,12 @@ function App() {
   const deferredGrades = useDeferredValue(grades);
   const [theme, setTheme] = useState<Theme>(() => loadTheme());
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
-  const [programmeFiltersOpen, setProgrammeFiltersOpen] = useState(true);
+  const [programmeFiltersOpen, setProgrammeFiltersOpen] = useState(!IS_SHARED_LINK);
   const [sortKey, setSortKey] = useState<SortKey>("benchmark");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [pickedCodes, setPickedCodes] = useState<string[]>(() => loadInitialPickedCodes());
   const [activeCode, setActiveCode] = useState<string>();
-  const [reviewRequest, setReviewRequest] = useState(0);
+  const [reviewRequest, setReviewRequest] = useState(IS_SHARED_LINK ? 1 : 0);
   const [loadError, setLoadError] = useState<string>();
 
   useEffect(() => {
@@ -212,6 +215,7 @@ function App() {
       <div className="workspace">
         <div className="left-rail">
           <GradeInput
+            initiallyCollapsed={IS_SHARED_LINK}
             grades={grades}
             onChange={setGrades}
             profiles={profiles}

@@ -5,6 +5,7 @@ import { ProfileSwitcher } from "./ProfileSwitcher";
 import { ShareButton } from "./ShareButton";
 
 type Props = {
+  initiallyCollapsed?: boolean;
   grades: StudentGrades;
   onChange: (grades: StudentGrades) => void;
   profiles: Profile[];
@@ -18,6 +19,7 @@ type Props = {
 const ELECTIVE_SLOTS = ["elective-1", "elective-2", "elective-3", "elective-4"];
 
 export const GradeInput = memo(({
+  initiallyCollapsed = false,
   grades,
   onChange,
   profiles,
@@ -27,7 +29,7 @@ export const GradeInput = memo(({
   onProfileRename,
   onProfileDelete,
 }: Props) => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(initiallyCollapsed);
   const slotSubjects = ELECTIVE_SLOTS.map((slot) => grades[`${slot}:subject`] || "");
 
   function setGrade(subject: string, grade: string) {
