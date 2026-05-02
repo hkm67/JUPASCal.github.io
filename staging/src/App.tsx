@@ -1,8 +1,11 @@
-import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import { Fragment, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { DetailPanel } from "./components/DetailPanel";
 import { FiltersBar } from "./components/FiltersBar";
 import { GradeInput } from "./components/GradeInput";
+import { ProfileBar } from "./components/ProfileSwitcher";
 import { ResultsView } from "./components/ResultsView";
+import { ShareView } from "./components/ShareView";
+import { ShareButton } from "./components/ShareButton";
 import { buildProgrammeResult, filterResults, sortResults, type Filters, type SortKey } from "./lib/results";
 import { readHashState, writeHashState } from "./lib/hashState";
 import type { Profile, Programme, ProgrammeResult, StudentGrades } from "./types/jupas";
@@ -37,6 +40,13 @@ function App() {
   const [activeCode, setActiveCode] = useState<string>();
   const [reviewRequest, setReviewRequest] = useState(IS_SHARED_LINK ? 1 : 0);
   const [loadError, setLoadError] = useState<string>();
+  const [step, setStep] = useState<1 | 2 | 3>(() => {
+    if (IS_SHARED_LINK && INITIAL_HASH_STATE) {
+      if (INITIAL_HASH_STATE.pickedCodes.length > 0) return 3;
+      if (Object.keys(INITIAL_HASH_STATE.grades).length > 0) return 2;
+    }
+    return 1;
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -46,23 +56,17 @@ function App() {
         return response.json() as Promise<Programme[]>;
       })
       .then((data) => {
-        if (!cancelled) {
-          setProgrammes(data);
-        }
+        if (!cancelled) setProgrammes(data);
       })
       .catch((error: Error) => {
         if (!cancelled) setLoadError(error.message);
       });
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
     localStorage.setItem("jupas-staging-profiles", JSON.stringify(profiles));
     localStorage.setItem("jupas-staging-active-profile-id", activeProfileId);
-    
-    // Update URL hash safely without triggering infinite reloads
     writeHashState(activeProfile.grades, pickedCodes);
   }, [profiles, activeProfileId, pickedCodes, activeProfile.grades]);
 
@@ -80,7 +84,7 @@ function App() {
     }
     const sorted = [...byInstitution.entries()].sort((a, b) => a[1] - b[1]).map(([institution]) => institution);
     if (sorted.includes("HKMU") && sorted.includes("SSSDP")) {
-      return sorted.filter((institution) => institution !== "SSSDP").flatMap((institution) => institution === "HKMU" ? [institution, "SSSDP"] : [institution]);
+      return sorted.filter((i) => i !== "SSSDP").flatMap((i) => i === "HKMU" ? [i, "SSSDP"] : [i]);
     }
     return sorted;
   }, [programmes]);
@@ -94,7 +98,7 @@ function App() {
   }, [allResults, filters, sortDirection, sortKey]);
 
   const pickedResults = useMemo(() => {
-    const byCode = new Map(allResults.map((result) => [result.programme.jupas_code, result]));
+    const byCode = new Map(allResults.map((r) => [r.programme.jupas_code, r]));
     return pickedCodes.flatMap((code) => {
       const result = byCode.get(code);
       return result ? [result] : [];
@@ -102,7 +106,7 @@ function App() {
   }, [allResults, pickedCodes]);
 
   const activeResult = useMemo(() => {
-    return pickedResults.find((result) => result.programme.jupas_code === activeCode) || pickedResults[0];
+    return pickedResults.find((r) => r.programme.jupas_code === activeCode) || pickedResults[0];
   }, [activeCode, pickedResults]);
 
   function setGrades(nextGrades: StudentGrades) {
@@ -113,13 +117,10 @@ function App() {
 
   function addProfile() {
     const id = `profile-${Date.now()}`;
-    const newProfile: Profile = {
-      id,
-      name: `Profile ${profiles.length + 1}`,
-      grades: {},
-    };
+    const newProfile: Profile = { id, name: `My Profile ${profiles.length + 1}`, grades: {} };
     setProfiles((prev) => [...prev, newProfile]);
     setActiveProfileId(id);
+    setStep(1);
   }
 
   function renameProfile(id: string, name: string) {
@@ -130,53 +131,33 @@ function App() {
     if (profiles.length <= 1) return;
     const nextProfiles = profiles.filter((p) => p.id !== id);
     setProfiles(nextProfiles);
-    if (activeProfileId === id) {
-      setActiveProfileId(nextProfiles[0].id);
-    }
-  }
-
-  function applyProgrammeFilters(nextFilters: Filters) {
-    if (window.matchMedia?.("(max-width: 920px)").matches) {
-      const step2Panel = document.querySelector(".step2-panel");
-      const panelTop = step2Panel?.getBoundingClientRect().top ?? 0;
-      if (panelTop < -120) {
-        step2Panel?.scrollIntoView({ block: "start", behavior: "auto" });
-        window.requestAnimationFrame(() => {
-          window.requestAnimationFrame(() => setFilters(nextFilters));
-        });
-        return;
-      }
-    }
-
-    setFilters(nextFilters);
+    if (activeProfileId === id) setActiveProfileId(nextProfiles[0].id);
   }
 
   function reviewSelectedProgrammes() {
     if (!pickedResults.length) return;
-    if (!activeCode || !pickedCodes.includes(activeCode)) {
-      setActiveCode(pickedResults[0].programme.jupas_code);
-    }
-
-    const finishReview = () => {
-      setProgrammeFiltersOpen(false);
-      setReviewRequest((current) => current + 1);
-    };
-
-    if (window.matchMedia?.("(max-width: 920px)").matches) {
-      document.querySelector(".step2-panel")?.scrollIntoView({ block: "start", behavior: "auto" });
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(finishReview);
-      });
-      return;
-    }
-
-    finishReview();
+    setActiveCode(pickedCodes[0]);
+    setProgrammeFiltersOpen(false);
+    setStep(3);
+    setReviewRequest((c) => c + 1);
   }
 
   function resetSelectedProgrammes() {
     setPickedCodes([]);
     setActiveCode(undefined);
     setProgrammeFiltersOpen(true);
+  }
+
+  function handleNext() {
+    if (step === 2 && pickedResults.length > 0) {
+      reviewSelectedProgrammes();
+    } else if (step < 3) {
+      setStep((step + 1) as 2 | 3);
+    }
+  }
+
+  if (IS_SHARED_LINK && INITIAL_HASH_STATE && INITIAL_HASH_STATE.pickedCodes.length > 0 && programmes.length > 0 && pickedResults.length > 0) {
+    return <ShareView profileName={activeProfile.name} results={pickedResults} />;
   }
 
   if (loadError) {
@@ -191,6 +172,16 @@ function App() {
     );
   }
 
+  const nextLabel =
+    step === 1 ? "Compare Programmes" :
+    step === 2 && pickedResults.length > 0 ? `Review ${pickedResults.length} selected` :
+    "Programme Detail";
+
+  const backLabel =
+    step === 2 ? "Edit Grades" :
+    step === 3 ? "Compare" :
+    null;
+
   return (
     <main className="app-shell">
       <header className="hero">
@@ -202,31 +193,37 @@ function App() {
         <div className="header-actions">
           <span>{programmes.length || "..."} programmes</span>
           <button
-            className="theme-toggle"
+            className={`theme-toggle${theme === "dark" ? " dark" : ""}`}
             type="button"
             aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            aria-pressed={theme === "dark"}
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >
-            {theme === "dark" ? "Light" : "Dark"}
+            <span className="theme-toggle-label">{theme === "dark" ? "Dark" : "Light"}</span>
+            <span className="theme-toggle-track">
+              <span className="theme-toggle-thumb" />
+            </span>
           </button>
         </div>
       </header>
 
-      <div className="workspace">
-        <div className="left-rail">
-          <GradeInput
-            initiallyCollapsed={IS_SHARED_LINK}
-            grades={grades}
-            onChange={setGrades}
-            profiles={profiles}
-            activeProfileId={activeProfileId}
-            onProfileSelect={setActiveProfileId}
-            onProfileAdd={addProfile}
-            onProfileRename={renameProfile}
-            onProfileDelete={deleteProfile}
-          />
+      <ProfileBar
+        profiles={profiles}
+        activeProfileId={activeProfileId}
+        onSelect={setActiveProfileId}
+        onAdd={addProfile}
+        onRename={renameProfile}
+        onDelete={deleteProfile}
+      />
+
+      <StepperBar step={step} pickedCount={pickedResults.length} onStepChange={setStep} />
+
+      <div className="stepper-content">
+        <div className={step === 1 ? "stepper-panel active" : "stepper-panel"}>
+          <GradeInput grades={grades} onChange={setGrades} onReset={() => setGrades({})} />
         </div>
-        <div className="main-column">
+
+        <div className={step === 2 ? "stepper-panel active" : "stepper-panel"}>
           <section className="panel step2-panel" aria-label="Programme comparison">
             <FiltersBar
               filters={filters}
@@ -235,7 +232,7 @@ function App() {
               total={allResults.length}
               shown={filteredResults.length}
               selectedCount={pickedResults.length}
-              onFiltersChange={applyProgrammeFilters}
+              onFiltersChange={setFilters}
               onOpenChange={setProgrammeFiltersOpen}
               onReviewSelected={reviewSelectedProgrammes}
               onResetSelected={resetSelectedProgrammes}
@@ -246,9 +243,7 @@ function App() {
               selectedResults={pickedResults}
               activeCode={activeResult?.programme.jupas_code}
               reviewRequest={reviewRequest}
-              onFocus={(code) => {
-                setActiveCode(code);
-              }}
+              onFocus={(code) => setActiveCode(code)}
               onPick={(code) => {
                 setPickedCodes((current) => current.includes(code) ? current : [...current, code]);
                 setActiveCode(code);
@@ -273,21 +268,108 @@ function App() {
             />
           </section>
         </div>
-        <DetailPanel
-          results={pickedResults}
-          activeCode={activeResult?.programme.jupas_code}
-          reviewRequest={reviewRequest}
-          onActiveCodeChange={setActiveCode}
-          onRemove={(code) => {
-            setPickedCodes((current) => current.filter((item) => item !== code));
-            if (activeCode === code) {
-              const next = pickedCodes.find((item) => item !== code);
-              setActiveCode(next);
-            }
-          }}
-        />
+
+        <div className={step === 3 ? "stepper-panel active" : "stepper-panel"}>
+          <DetailPanel
+            results={pickedResults}
+            activeCode={activeResult?.programme.jupas_code}
+            reviewRequest={reviewRequest}
+            onActiveCodeChange={setActiveCode}
+            onRemove={(code) => {
+              setPickedCodes((current) => current.filter((item) => item !== code));
+              if (activeCode === code) {
+                const next = pickedCodes.find((item) => item !== code);
+                setActiveCode(next);
+              }
+            }}
+          />
+        </div>
       </div>
+
+      <footer className="stepper-footer">
+        <div>
+          {backLabel ? (
+            <button
+              type="button"
+              className="ghost-button"
+              onClick={() => setStep((step - 1) as 1 | 2 | 3)}
+            >
+              Back
+            </button>
+          ) : <span />}
+        </div>
+        <div className="stepper-footer-right">
+          {step === 1 && Object.keys(grades).length > 0 ? (
+            <button type="button" className="ghost-button" onClick={() => setGrades({})}>
+              Reset
+            </button>
+          ) : null}
+          {step === 2 && pickedResults.length > 0 ? (
+            <button type="button" className="ghost-button" onClick={resetSelectedProgrammes}>
+              Reset
+            </button>
+          ) : null}
+          {step < 3 ? (
+            <button
+              type="button"
+              className="stepper-next-btn"
+              onClick={handleNext}
+              disabled={step === 2 && pickedResults.length === 0}
+            >
+              {nextLabel} <ArrowIcon direction="right" />
+            </button>
+          ) : pickedResults.length > 0 ? (
+            <ShareButton />
+          ) : null}
+        </div>
+      </footer>
     </main>
+  );
+}
+
+function StepperBar({
+  step,
+  pickedCount,
+  onStepChange,
+}: {
+  step: 1 | 2 | 3;
+  pickedCount: number;
+  onStepChange: (step: 1 | 2 | 3) => void;
+}) {
+  const steps: Array<{ n: 1 | 2 | 3; label: string }> = [
+    { n: 1, label: "Your Grades" },
+    { n: 2, label: "Compare" },
+    { n: 3, label: "Detail" },
+  ];
+
+  return (
+    <nav className="stepper-bar" aria-label="Progress">
+      {steps.map((s, i) => (
+        <Fragment key={s.n}>
+          {i > 0 && <span className="stepper-connector" aria-hidden="true" />}
+          <button
+            type="button"
+            className={[
+              "stepper-step",
+              step === s.n ? "active" : "",
+              step > s.n ? "done" : "",
+            ].filter(Boolean).join(" ")}
+            disabled={s.n === 3 && pickedCount === 0}
+            aria-current={step === s.n ? "step" : undefined}
+            onClick={() => onStepChange(s.n)}
+          >
+            <span className="stepper-badge">
+              {step > s.n ? (
+                <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M1.5 5.5L5 9L11.5 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              ) : s.n}
+            </span>
+            <span className="stepper-label">{s.label}</span>
+          </button>
+        </Fragment>
+      ))}
+    </nav>
   );
 }
 
@@ -298,41 +380,33 @@ function loadTheme(): Theme {
 }
 
 function loadProfiles(): Profile[] {
-  // Check hash first!
   const hashState = readHashState();
   if (hashState && Object.keys(hashState.grades).length > 0) {
     return [{
       id: `shared-${Date.now()}`,
-      name: "Shared Profile",
-      grades: hashState.grades
+      name: "My Profile",
+      grades: hashState.grades,
     }];
   }
-
   try {
     const saved = localStorage.getItem("jupas-staging-profiles");
     if (saved) return JSON.parse(saved) as Profile[];
   } catch (e) {
     console.error("Failed to load profiles", e);
   }
-  // Fallback to legacy single-grade storage or empty
   const legacyGrades = localStorage.getItem("jupas-staging-grades");
   const grades = legacyGrades ? JSON.parse(legacyGrades) : {};
-  return [{ id: "default", name: "Profile 1", grades }];
+  return [{ id: "default", name: "My Profile", grades }];
 }
 
 function loadInitialPickedCodes(): string[] {
   const hashState = readHashState();
-  if (hashState && hashState.pickedCodes.length > 0) {
-    return hashState.pickedCodes;
-  }
+  if (hashState && hashState.pickedCodes.length > 0) return hashState.pickedCodes;
   return [];
 }
 
 function loadActiveProfileId(profiles: Profile[]): string {
-  // If we just loaded a shared profile, make it active
-  if (profiles.length === 1 && profiles[0].id.startsWith("shared-")) {
-    return profiles[0].id;
-  }
+  if (profiles.length === 1 && profiles[0].id.startsWith("shared-")) return profiles[0].id;
   const saved = localStorage.getItem("jupas-staging-active-profile-id");
   if (saved && profiles.some((p) => p.id === saved)) return saved;
   return profiles[0].id;
@@ -342,5 +416,22 @@ function visibleGrades(grades: StudentGrades): StudentGrades {
   return Object.fromEntries(Object.entries(grades).filter(([key]) => !key.includes(":subject")));
 }
 
-export default App;
+function ArrowIcon({ direction = "right" }: { direction?: "left" | "right" }) {
+  const transform = direction === "left" ? "scale(-1,1)" : undefined;
+  return (
+    <svg
+      width="18" height="14" viewBox="0 0 18 14"
+      fill="none" xmlns="http://www.w3.org/2000/svg"
+      style={{ display: "inline-block", verticalAlign: "middle", transform }}
+      aria-hidden="true"
+    >
+      <path
+        d="M1 7H17M11 1L17 7L11 13"
+        stroke="currentColor" strokeWidth="2"
+        strokeLinecap="round" strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
+export default App;

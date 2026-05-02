@@ -1,35 +1,30 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { CAT_A_SUBJECTS, CAT_C_GRADES, CAT_C_SUBJECTS, CORE_SUBJECTS, CSD_GRADES, DSE_GRADES, M12_SUBJECT } from "../lib/subjects";
-import type { Profile, StudentGrades } from "../types/jupas";
-import { ProfileSwitcher } from "./ProfileSwitcher";
-import { ShareButton } from "./ShareButton";
+import type { StudentGrades } from "../types/jupas";
 
 type Props = {
-  initiallyCollapsed?: boolean;
   grades: StudentGrades;
   onChange: (grades: StudentGrades) => void;
-  profiles: Profile[];
-  activeProfileId: string;
-  onProfileSelect: (id: string) => void;
-  onProfileAdd: () => void;
-  onProfileRename: (id: string, name: string) => void;
-  onProfileDelete: (id: string) => void;
+  onReset: () => void;
 };
 
 const ELECTIVE_SLOTS = ["elective-1", "elective-2", "elective-3", "elective-4"];
 
-export const GradeInput = memo(({
-  initiallyCollapsed = false,
-  grades,
-  onChange,
-  profiles,
-  activeProfileId,
-  onProfileSelect,
-  onProfileAdd,
-  onProfileRename,
-  onProfileDelete,
-}: Props) => {
-  const [collapsed, setCollapsed] = useState(initiallyCollapsed);
+export const GradeInput = memo(({ grades, onChange, onReset }: Props) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [isStuck, setIsStuck] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStuck(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
   const slotSubjects = ELECTIVE_SLOTS.map((slot) => grades[`${slot}:subject`] || "");
 
   function setGrade(subject: string, grade: string) {
@@ -53,10 +48,8 @@ export const GradeInput = memo(({
   }
 
   function reset() {
-    onChange({});
+    onReset();
     setCollapsed(false);
-    
-    // Smooth scroll back to the Grade Input panel on mobile if collapsed
     if (window.matchMedia?.("(max-width: 920px)").matches) {
       document.querySelector(".grade-panel")?.scrollIntoView({ block: "start", behavior: "smooth" });
     }
@@ -68,7 +61,8 @@ export const GradeInput = memo(({
 
   return (
     <section className={collapsed ? "panel grade-panel mobile-collapsed" : "panel grade-panel"} aria-label="DSE grades">
-      <div className="panel-heading">
+      <div ref={sentinelRef} aria-hidden="true" className="sticky-sentinel" />
+      <div className={isStuck ? "panel-heading is-stuck" : "panel-heading"}>
         <div className="step-title-content">
           <p className="eyebrow">Step 1</p>
           <h2>Your DSE Grades</h2>
@@ -77,23 +71,12 @@ export const GradeInput = memo(({
           <button className="ghost-button mobile-collapse-toggle" type="button" onClick={() => setCollapsed(!collapsed)}>
             {collapsed ? "Edit" : "Hide"}
           </button>
-          <button className="ghost-button" type="button" onClick={reset}>Reset</button>
         </div>
         <GradeTitleSummary grades={grades} />
       </div>
 
       <div className="grade-panel-body">
-        <div className="profile-action-row">
-          <ProfileSwitcher
-            profiles={profiles}
-            activeProfileId={activeProfileId}
-            onSelect={onProfileSelect}
-            onAdd={onProfileAdd}
-            onRename={onProfileRename}
-            onDelete={onProfileDelete}
-          />
-          <ShareButton />
-        </div>
+        <h3 className="grade-section-title">Core Subjects</h3>
         <div className="grade-grid">
           {CORE_SUBJECTS.map((subject) => (
             <div className="field" key={subject}>
@@ -114,6 +97,8 @@ export const GradeInput = memo(({
             />
           </div>
         </div>
+
+        <hr className="grade-section-divider" />
 
         <div className="elective-block">
           <h3>Electives</h3>

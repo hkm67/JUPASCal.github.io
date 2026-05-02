@@ -26,36 +26,31 @@ export function FiltersBar({ filters, open, institutions, total, shown, selected
         <div className="filters-title">
           <p className="eyebrow">Step 2</p>
           <h2>Compare Programmes</h2>
-          <p>{shown} of {total} programmes shown</p>
         </div>
         <div className="filters-controls">
-          <label className="search-field">
-            <span>Programme search</span>
-            <input
-              value={filters.query}
-              placeholder="science, sci, business, JS1001..."
-              onChange={(event) => onFiltersChange({ ...filters, query: event.target.value })}
-            />
-          </label>
-          <button
-            className={open ? "filter-toggle active" : "filter-toggle"}
-            type="button"
-            aria-expanded={open}
-            aria-controls="programme-filter-panel"
-            onClick={() => onOpenChange(!open)}
-          >
-            Filters{activeFilterCount ? ` ${activeFilterCount}` : ""}
-          </button>
-          {selectedCount ? (
-            <span className="selection-actions">
-              <button className="reset-selected-button" type="button" onClick={onResetSelected}>
-                Reset
-              </button>
-              <button className="review-selected-button" type="button" onClick={onReviewSelected}>
-                Review {selectedCount}
-              </button>
-            </span>
-          ) : null}
+          <div className="search-row">
+            <label className="search-field">
+              <span>Programme search</span>
+              <input
+                value={filters.query}
+                placeholder="Science, sci, business, JS1001..."
+                onChange={(event) => onFiltersChange({ ...filters, query: event.target.value })}
+              />
+            </label>
+            <button
+              className={open ? "filter-toggle active" : "filter-toggle"}
+              type="button"
+              aria-expanded={open}
+              aria-controls="programme-filter-panel"
+              onClick={() => onOpenChange(!open)}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"/>
+              </svg>
+              {activeFilterCount ? <span className="filter-badge">{activeFilterCount}</span> : null}
+            </button>
+          </div>
+          <p className="search-count">{shown} of {total} programmes shown</p>
         </div>
       </div>
 

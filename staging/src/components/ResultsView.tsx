@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { institutionLabel } from "../lib/institutions";
 import { bandLabel, formatDelta, formatPercent } from "../lib/results";
 import type { SortKey } from "../lib/results";
@@ -20,22 +20,13 @@ type Props = {
 };
 
 export function ResultsView({ results, selectedCodes, selectedResults, activeCode, reviewRequest, sortKey, sortDirection, onFocus, onPick, onUnpick, onReviewSelected, onSortChange }: Props) {
-  const [mobileCollapsed, setMobileCollapsed] = useState(false);
-
-  useEffect(() => {
-    setMobileCollapsed(false);
-  }, [results]);
-
   const prevReviewRequest = useRef(0);
 
   useEffect(() => {
     if (reviewRequest > prevReviewRequest.current) {
       prevReviewRequest.current = reviewRequest;
-      if (selectedResults.length) {
-        setMobileCollapsed(true);
-      }
     }
-  }, [reviewRequest, selectedResults.length]);
+  }, [reviewRequest]);
 
   function togglePick(code: string) {
     if (selectedCodes.includes(code)) {
@@ -49,11 +40,10 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
     if (!selectedResults.length) return;
     onFocus(activeCode && selectedCodes.includes(activeCode) ? activeCode : selectedResults[0].programme.jupas_code);
     onReviewSelected();
-    setMobileCollapsed(true);
   }
 
   return (
-    <section className={mobileCollapsed && selectedResults.length ? "results-panel mobile-collapsed" : "results-panel"} aria-label="Programme results">
+    <section className="results-panel" aria-label="Programme results">
       <div className="table-shell">
         <table className="results-table">
           <thead>
@@ -77,10 +67,12 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
               >
                 <td>
                   <span className="programme-cell-head">
-                    <strong>{result.programme.jupas_code}</strong>
                     <PickButton picked={selectedCodes.includes(result.programme.jupas_code)} onClick={() => togglePick(result.programme.jupas_code)} />
+                    <span className="programme-cell-text">
+                      <strong>{result.programme.jupas_code}</strong>
+                      <span>{result.programme.name_en}</span>
+                    </span>
                   </span>
-                  <span>{result.programme.name_en}</span>
                 </td>
                 <td>{institutionLabel(result.programme.institution)}</td>
                 <td><StatusBadge pass={result.eligibility.eligible} /></td>
@@ -95,44 +87,14 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
         </table>
       </div>
 
-      {selectedResults.length ? (
-        <div className="selected-programme-summary">
-          <div>
-            <span className="card-kicker">{selectedResults.length} programme{selectedResults.length === 1 ? "" : "s"} selected</span>
-            <div className="selected-programme-list">
-              {selectedResults.map((result) => (
-                <button
-                  className={activeCode === result.programme.jupas_code ? "selected-programme-pill active" : "selected-programme-pill"}
-                  key={result.programme.jupas_code}
-                  type="button"
-                  onClick={() => onFocus(result.programme.jupas_code)}
-                >
-                  <span>{institutionLabel(result.programme.institution)} · {result.programme.jupas_code}</span>
-                  <strong>{result.programme.name_en}</strong>
-                </button>
-              ))}
-            </div>
-            <small>Swipe or use Prev/Next in Step 3 to compare details.</small>
-          </div>
-          <button className="ghost-button" type="button" onClick={() => setMobileCollapsed(false)}>Edit</button>
-        </div>
-      ) : null}
-
-      {selectedResults.length ? (
-        <div className="selection-tray">
-          <div>
-            <strong>{selectedResults.length} selected</strong>
-            <span>{selectedResults.map((result) => result.programme.jupas_code).join(" · ")}</span>
-          </div>
-          <button type="button" onClick={reviewSelected}>Review selected</button>
-        </div>
-      ) : null}
 
       <div className="result-cards">
         {results.map((result) => (
-          <div
+          <button
+            type="button"
             className={activeCode === result.programme.jupas_code ? "mobile-card selected" : selectedCodes.includes(result.programme.jupas_code) ? "mobile-card picked" : "mobile-card"}
             key={result.programme.jupas_code}
+            onClick={() => togglePick(result.programme.jupas_code)}
           >
             <span className="card-topline">
               <span className="card-focus-button">
@@ -158,7 +120,7 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
               <BenchmarkChip result={result} benchmarkKey="median" label="Median" />
               <BenchmarkChip result={result} benchmarkKey="uq" label="UQ" />
             </span>
-          </div>
+          </button>
         ))}
       </div>
     </section>
@@ -176,7 +138,11 @@ function PickButton({ picked, onClick }: { picked: boolean; onClick: () => void 
         onClick();
       }}
     >
-      {picked ? "✓" : ""}
+      {picked ? (
+        <svg width="11" height="9" viewBox="0 0 11 9" fill="none" aria-hidden="true">
+          <path d="M1 4L4 7.5L10 1" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      ) : null}
     </button>
   );
 }

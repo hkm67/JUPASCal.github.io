@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#1d5c4a"/>
+  <g transform="translate(4, 5)">
+    <!-- mortarboard cap top -->
+    <polygon points="12,3 24,9 12,15 0,9" fill="white"/>
+    <!-- left tassel cord -->
+    <rect x="0.5" y="9" width="2" height="8" rx="1" fill="white"/>
+    <circle cx="1.5" cy="17.5" r="1.5" fill="white"/>
+    <!-- right side body under cap -->
+    <path d="M18,11.5 L18,18 Q12,21 6,18 L6,11.5" fill="white" opacity="0.85"/>
+  </g>
+</svg>
