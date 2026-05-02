@@ -90,11 +90,18 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
 
       <div className="result-cards">
         {results.map((result) => (
-          <button
-            type="button"
+          <div
+            role="button"
+            tabIndex={0}
             className={activeCode === result.programme.jupas_code ? "mobile-card selected" : selectedCodes.includes(result.programme.jupas_code) ? "mobile-card picked" : "mobile-card"}
             key={result.programme.jupas_code}
             onClick={() => togglePick(result.programme.jupas_code)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                togglePick(result.programme.jupas_code);
+              }
+            }}
           >
             <span className="card-topline">
               <span className="card-focus-button">
@@ -120,7 +127,7 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
               <BenchmarkChip result={result} benchmarkKey="median" label="Median" />
               <BenchmarkChip result={result} benchmarkKey="uq" label="UQ" />
             </span>
-          </button>
+          </div>
         ))}
       </div>
     </section>
