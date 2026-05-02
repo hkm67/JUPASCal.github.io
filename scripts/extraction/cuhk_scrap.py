@@ -15,10 +15,7 @@ For the 2026 calculator:
 
 import json
 import requests
-import urllib3
 import pandas as pd
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 URL         = "https://admission.cuhk.edu.hk/wp-content/uploads/data.json"
 OUTPUT_JSON = "Reference(2026)/CUHK/CUHK_2026_Data.json"
@@ -26,7 +23,7 @@ OUTPUT_EXCEL= "Reference(2026)/CUHK/CUHK_2026_Data.xlsx"
 
 
 def fetch_data():
-    resp = requests.get(URL, verify=False, timeout=30)
+    resp = requests.get(URL, timeout=30)
     resp.raise_for_status()
     return resp.json()
 

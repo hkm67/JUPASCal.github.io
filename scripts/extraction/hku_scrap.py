@@ -37,13 +37,11 @@ import re
 import json
 import warnings
 import requests
-import urllib3
 import pdfplumber
 import pandas as pd
 from bs4 import BeautifulSoup
 
 warnings.filterwarnings("ignore")
-urllib3.disable_warnings()
 
 API_URL      = "https://admissions.hku.hk/api/hkdse/admission_standard"
 PDF_PATH     = "Reference(2026)/HKU/HKU-JUPAS-Admissions-Information-2026.pdf"
@@ -127,7 +125,7 @@ def parse_subject_weight(html):
 
 
 def fetch_and_parse_api():
-    resp = requests.get(API_URL, verify=False, timeout=30)
+    resp = requests.get(API_URL, timeout=30)
     resp.raise_for_status()
     raw = resp.json()
 
