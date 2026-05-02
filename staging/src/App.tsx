@@ -7,7 +7,7 @@ import { ResultsView } from "./components/ResultsView";
 import { ShareView } from "./components/ShareView";
 import { ShareButton } from "./components/ShareButton";
 import { buildProgrammeResult, filterResults, sortResults, type Filters, type SortKey } from "./lib/results";
-import { readHashState, writeHashState } from "./lib/hashState";
+import { readHashState, sanitizeGrades, writeHashState } from "./lib/hashState";
 import type { Profile, Programme, ProgrammeResult, StudentGrades } from "./types/jupas";
 
 const DATA_URL = "/data/processed/JUPAS_2026_Unified_Data.json";
@@ -390,13 +390,32 @@ function loadProfiles(): Profile[] {
   }
   try {
     const saved = localStorage.getItem("jupas-staging-profiles");
-    if (saved) return JSON.parse(saved) as Profile[];
+    if (saved) {
+      const profiles = sanitizeProfiles(JSON.parse(saved));
+      if (profiles.length) return profiles;
+    }
   } catch (e) {
     console.error("Failed to load profiles", e);
   }
-  const legacyGrades = localStorage.getItem("jupas-staging-grades");
-  const grades = legacyGrades ? JSON.parse(legacyGrades) : {};
+  let grades: StudentGrades = {};
+  try {
+    const legacyGrades = localStorage.getItem("jupas-staging-grades");
+    grades = legacyGrades ? sanitizeGrades(JSON.parse(legacyGrades)) : {};
+  } catch (e) {
+    console.error("Failed to load legacy grades", e);
+  }
   return [{ id: "default", name: "My Profile", grades }];
+}
+
+function sanitizeProfiles(rawProfiles: unknown): Profile[] {
+  if (!Array.isArray(rawProfiles)) return [];
+  return rawProfiles.slice(0, 8).flatMap((profile, index) => {
+    if (!profile || typeof profile !== "object" || Array.isArray(profile)) return [];
+    const candidate = profile as Partial<Profile>;
+    const id = typeof candidate.id === "string" && candidate.id.trim() ? candidate.id.trim().slice(0, 80) : `profile-${index + 1}`;
+    const name = typeof candidate.name === "string" && candidate.name.trim() ? candidate.name.trim().slice(0, 60) : `My Profile ${index + 1}`;
+    return [{ id, name, grades: sanitizeGrades(candidate.grades) }];
+  });
 }
 
 function loadInitialPickedCodes(): string[] {

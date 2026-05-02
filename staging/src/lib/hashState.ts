@@ -1,5 +1,12 @@
 import type { StudentGrades } from "../types/jupas";
 
+const MAX_HASH_LENGTH = 4096;
+const MAX_SUBJECT_LENGTH = 120;
+const MAX_GRADE_LENGTH = 8;
+const MAX_PICKED_PROGRAMMES = 20;
+const VALID_GRADES = new Set(["5**", "5*", "5", "4", "3", "2", "1", "A", "B", "C", "D", "E", "U"]);
+const PROGRAMME_CODE_PATTERN = /^JS\d{4}$/;
+
 // Map long subject names to short keys for the URL
 const SUBJECT_MAP: Record<string, string> = {
   "Chinese Language": "chi",
@@ -38,6 +45,39 @@ function decodeGrade(grade: string): string {
   return grade.toUpperCase();
 }
 
+function sanitizeGrade(grade: unknown): string | undefined {
+  if (typeof grade !== "string" || grade.length > MAX_GRADE_LENGTH) return undefined;
+  const decoded = decodeGrade(grade.trim());
+  return VALID_GRADES.has(decoded) ? decoded : undefined;
+}
+
+function sanitizeSubject(subject: unknown): string | undefined {
+  if (typeof subject !== "string") return undefined;
+  const trimmed = subject.trim();
+  if (!trimmed || trimmed.length > MAX_SUBJECT_LENGTH) return undefined;
+  return trimmed;
+}
+
+function sanitizePickedCodes(codes: unknown): string[] {
+  if (!Array.isArray(codes)) return [];
+  return codes
+    .filter((code): code is string => typeof code === "string")
+    .map((code) => code.trim().toUpperCase())
+    .filter((code) => PROGRAMME_CODE_PATTERN.test(code))
+    .slice(0, MAX_PICKED_PROGRAMMES);
+}
+
+export function sanitizeGrades(rawGrades: unknown): StudentGrades {
+  if (!rawGrades || typeof rawGrades !== "object" || Array.isArray(rawGrades)) return {};
+  const grades: StudentGrades = {};
+  for (const [rawSubject, rawGrade] of Object.entries(rawGrades)) {
+    const subject = sanitizeSubject(rawSubject);
+    const grade = sanitizeGrade(rawGrade);
+    if (subject && grade) grades[subject] = grade;
+  }
+  return grades;
+}
+
 export function writeHashState(grades: StudentGrades, pickedCodes: string[]) {
   const p = new URLSearchParams();
   
@@ -61,14 +101,15 @@ export function writeHashState(grades: StudentGrades, pickedCodes: string[]) {
 export function readHashState(): { grades: StudentGrades; pickedCodes: string[] } | null {
   const hash = window.location.hash.slice(1);
   if (!hash) return null;
+  if (hash.length > MAX_HASH_LENGTH) return null;
   
   try {
     // Check if it's the old bulky JSON hash
     if (hash.startsWith("%7B")) {
       const decoded = JSON.parse(decodeURIComponent(hash));
       return {
-        grades: decoded.grades || {},
-        pickedCodes: decoded.pickedCodes || []
+        grades: sanitizeGrades(decoded?.grades),
+        pickedCodes: sanitizePickedCodes(decoded?.pickedCodes)
       };
     }
     
@@ -81,12 +122,13 @@ export function readHashState(): { grades: StudentGrades; pickedCodes: string[] 
     
     for (const [key, val] of p.entries()) {
       if (key === "p") {
-        pickedCodes = val.split(",");
+        pickedCodes = sanitizePickedCodes(val.split(","));
         continue;
       }
       
-      const subject = REVERSE_MAP[key] || key;
-      const grade = decodeGrade(val);
+      const subject = sanitizeSubject(REVERSE_MAP[key] || key);
+      const grade = sanitizeGrade(val);
+      if (!subject || !grade) continue;
       grades[subject] = grade;
       
       // Try to intelligently assign to elective slots if it's not a core subject
