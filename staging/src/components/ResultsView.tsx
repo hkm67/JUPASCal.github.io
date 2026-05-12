@@ -10,6 +10,7 @@ type Props = {
   selectedResults: ProgrammeResult[];
   activeCode?: string;
   reviewRequest: number;
+  compact: boolean;
   sortKey: SortKey;
   sortDirection: "asc" | "desc";
   onFocus: (code: string) => void;
@@ -19,7 +20,7 @@ type Props = {
   onSortChange: (sortKey: SortKey) => void;
 };
 
-export function ResultsView({ results, selectedCodes, selectedResults, activeCode, reviewRequest, sortKey, sortDirection, onFocus, onPick, onUnpick, onReviewSelected, onSortChange }: Props) {
+export function ResultsView({ results, selectedCodes, selectedResults, activeCode, reviewRequest, compact, sortKey, sortDirection, onFocus, onPick, onUnpick, onReviewSelected, onSortChange }: Props) {
   const prevReviewRequest = useRef(0);
 
   useEffect(() => {
@@ -88,7 +89,7 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
       </div>
 
 
-      <div className="result-cards">
+      <div className={compact ? "result-cards compact-results" : "result-cards"}>
         {results.map((result) => (
           <div
             role="button"
@@ -115,6 +116,12 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
               <strong>{result.programme.name_en}</strong>
               {result.programme.name_zh ? <small className="card-zh">{result.programme.name_zh}</small> : null}
             </div>
+            <span className="compact-score-strip">
+              <b>{result.calculation.totalScore.toFixed(2)}</b>
+              <CompactBenchmark result={result} benchmarkKey="lq" label="LQ" />
+              <CompactBenchmark result={result} benchmarkKey="median" label="M" />
+              <CompactBenchmark result={result} benchmarkKey="uq" label="UQ" />
+            </span>
             <span className="card-score-row">
               <span>
                 <em>Your score</em>
@@ -205,6 +212,17 @@ function BenchmarkChip({ result, benchmarkKey, label }: { result: ProgrammeResul
       <em>{label}</em>
       <strong>{comparison ? comparison.score.toFixed(2) : "-"}</strong>
       <b>{comparison ? formatDelta(comparison.delta) : "-"}</b>
+    </span>
+  );
+}
+
+function CompactBenchmark({ result, benchmarkKey, label }: { result: ProgrammeResult; benchmarkKey: BenchmarkKey; label: string }) {
+  const comparison = result.comparisons.find((item) => item.key === benchmarkKey);
+  const positive = comparison ? comparison.delta >= 0 : false;
+  return (
+    <span className={!comparison ? "compact-benchmark muted" : positive ? "compact-benchmark positive" : "compact-benchmark negative"}>
+      <em>{label}</em>
+      <strong>{comparison ? formatDelta(comparison.delta) : "-"}</strong>
     </span>
   );
 }

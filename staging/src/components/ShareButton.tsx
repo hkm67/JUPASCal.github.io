@@ -1,17 +1,25 @@
 import { memo, useState } from "react";
+import { buildShareUrl } from "../lib/hashState";
+import type { StudentGrades } from "../types/jupas";
 
-export const ShareButton = memo(() => {
+type Props = {
+  grades: StudentGrades;
+  pickedCodes: string[];
+};
+
+export const ShareButton = memo(({ grades, pickedCodes }: Props) => {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
+    const shareUrl = buildShareUrl(grades, pickedCodes);
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy URL: ", err);
     }
-    window.open(window.location.href, "_blank", "noopener,noreferrer");
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
   };
 
   return (

@@ -1,68 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JUPAS Cal 2026 — Unofficial Score Calculator</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-    <header>
-        <h1>JUPAS Cal 2026</h1>
-        <p>Unofficial Annual Score Calculator for HK DSE Applicants</p>
-    </header>
-
-    <div class="main-container">
-        <!-- Accordion Stack -->
-        <aside class="accordion-sidebar">
-            
-            <!-- 1. Grade Input Accordion -->
-            <div class="accordion-item" id="grade-accordion">
-                <div class="accordion-header" onclick="JUPAS_UI.toggleAccordion('grade-accordion')">
-                    <h3>1. Input Your DSE Grades</h3>
-                    <span class="icon">▼</span>
-                </div>
-                <div class="accordion-content">
-                    <div id="subject-inputs">
-                        <p>Loading inputs...</p>
-                    </div>
-                    <div class="sidebar-actions">
-                        <button id="confirm-grades-button" class="btn-confirm">Confirm Grades</button>
-                        <button id="save-button" class="btn-save">Save</button>
-                        <button id="reset-button" class="btn-reset">Reset</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. Programme Selection Accordion -->
-            <div class="accordion-item" id="prog-accordion">
-                <div class="accordion-header" onclick="JUPAS_UI.toggleAccordion('prog-accordion')">
-                    <h3>2. Select a Programme</h3>
-                    <span class="icon">▼</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="programme-explorer">
-                        <input type="text" id="search-input" placeholder="Search by Code, Name, or Institution...">
-                        <div id="programme-list">
-                            <!-- Populated by JUPAS_UI -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </aside>
-
-        <!-- 3. Main Display: Results -->
-        <main class="content-area" id="result-display">
-            <div class="placeholder-msg">
-                <p>Please enter your grades and select a programme to begin calculation.</p>
-            </div>
-        </main>
-    </div>
-
-    <!-- Application Logic -->
-    <script src="js/calculator.js"></script>
-    <script src="js/ui.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>JUPAS Cal 2026</title>
+    <script type="module" crossorigin src="./assets/index-Ds9nb0xI.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Bchj2aqD.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>

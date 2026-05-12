@@ -1,3 +1,5 @@
+import { AppHeader } from "./AppHeader";
+import { buildEditUrlFromCurrentHash } from "../lib/hashState";
 import { institutionLabel } from "../lib/institutions";
 import { bandLabel, formatDelta, formatPercent } from "../lib/results";
 import type { ProgrammeResult } from "../types/jupas";
@@ -8,22 +10,26 @@ type Props = {
 };
 
 export function ShareView({ profileName, results }: Props) {
+  function handleEdit() {
+    window.history.replaceState(null, "", buildEditUrlFromCurrentHash());
+    window.location.reload();
+  }
+
   function handleCreate() {
     window.location.href = window.location.origin + window.location.pathname;
   }
 
   return (
     <div className="share-view">
-      <header className="hero">
-        <div>
-          <p className="eyebrow">Unofficial 2026 admissions score calculator</p>
-          <h1>JUPAS Cal staging prototype</h1>
-          <p>Enter DSE grades once, compare all programmes, then inspect eligibility, benchmark position, and the calculation audit trail.</p>
-        </div>
-      </header>
+      <AppHeader />
       <div className="panel share-profile-card">
-        <p className="eyebrow">Shared results</p>
-        <strong>{profileName}</strong>
+        <div>
+          <p className="eyebrow">Shared results</p>
+          <strong>{profileName}</strong>
+        </div>
+        <button type="button" className="ghost-button" onClick={handleEdit}>
+          Edit this profile
+        </button>
       </div>
 
       <div className="share-results-list">
@@ -106,9 +112,14 @@ export function ShareView({ profileName, results }: Props) {
 
       <div className="share-cta">
         <p>Want to calculate your own JUPAS admission score?</p>
-        <button type="button" className="stepper-next-btn" onClick={handleCreate}>
-          Create your profile
-        </button>
+        <div className="share-cta-actions">
+          <button type="button" className="ghost-button" onClick={handleEdit}>
+            Edit shared profile
+          </button>
+          <button type="button" className="stepper-next-btn" onClick={handleCreate}>
+            Start fresh
+          </button>
+        </div>
       </div>
     </div>
   );

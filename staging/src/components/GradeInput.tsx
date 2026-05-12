@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState } from "react";
-import { CAT_A_SUBJECTS, CAT_C_GRADES, CAT_C_SUBJECTS, CORE_SUBJECTS, CSD_GRADES, DSE_GRADES, M12_SUBJECT } from "../lib/subjects";
+import { CAT_A_SUBJECTS, CAT_C_GRADES, CAT_C_SUBJECTS, CORE_SUBJECTS, CSD_GRADES, DSE_GRADES, M12_SUBJECT, shortSubjectName } from "../lib/subjects";
 import type { StudentGrades } from "../types/jupas";
 
 type Props = {
@@ -65,7 +65,7 @@ export const GradeInput = memo(({ grades, onChange, onReset }: Props) => {
       <div className={isStuck ? "panel-heading is-stuck" : "panel-heading"}>
         <div className="step-title-content">
           <p className="eyebrow">Step 1</p>
-          <h2>Your DSE Grades</h2>
+          <h2>Input Your DSE Grades</h2>
         </div>
         <div className="grade-actions">
           <button className="ghost-button mobile-collapse-toggle" type="button" onClick={() => setCollapsed(!collapsed)}>
@@ -134,7 +134,7 @@ export const GradeInput = memo(({ grades, onChange, onReset }: Props) => {
               onChange={(event) => setElective("cat-c", event.target.value, grades[grades["cat-c:subject"]] || "")}
             >
               <option value="">Category C language</option>
-              {CAT_C_SUBJECTS.map((subject) => <option key={subject} value={subject}>{subject}</option>)}
+              {CAT_C_SUBJECTS.map((subject) => <option key={subject} value={subject}>{shortSubjectName(subject)}</option>)}
             </select>
             <GradeButtons
               value={grades["cat-c:subject"] ? grades[grades["cat-c:subject"]] || "" : ""}

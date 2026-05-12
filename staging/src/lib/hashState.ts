@@ -1,11 +1,20 @@
 import type { StudentGrades } from "../types/jupas";
+import { CAT_A_SUBJECTS, CAT_C_SUBJECTS, CORE_SUBJECTS, M12_SUBJECT } from "./subjects";
 
 const MAX_HASH_LENGTH = 4096;
-const MAX_SUBJECT_LENGTH = 120;
+const MAX_SUBJECT_LENGTH = 180;
 const MAX_GRADE_LENGTH = 8;
 const MAX_PICKED_PROGRAMMES = 20;
 const VALID_GRADES = new Set(["5**", "5*", "5", "4", "3", "2", "1", "A", "B", "C", "D", "E", "U"]);
 const PROGRAMME_CODE_PATTERN = /^JS\d{4}$/;
+const SLOT_SUBJECT_PATTERN = /^(elective-[1-4]|cat-c):subject$/;
+const VALID_SUBJECTS = new Set([...CORE_SUBJECTS, M12_SUBJECT, ...CAT_A_SUBJECTS, ...CAT_C_SUBJECTS]);
+
+export type HashState = {
+  grades: StudentGrades;
+  pickedCodes: string[];
+  sharing: boolean;
+};
 
 // Map long subject names to short keys for the URL
 const SUBJECT_MAP: Record<string, string> = {
@@ -25,6 +34,26 @@ const SUBJECT_MAP: Record<string, string> = {
   "Chinese History": "chist",
   "Information and Communication Technology": "ict",
   "Business, Accounting and Financial Studies": "bafs",
+  "Design and Applied Technology": "dat",
+  "Health Management and Social Care": "hmsc",
+  "Tourism and Hospitality Studies": "ths",
+  "Chinese Literature": "clit",
+  "Literature in English": "elit",
+  "Technology and Living (Food Science and Technology)": "tl",
+  "Visual Arts": "va",
+  "Music": "music",
+  "Physical Education": "pe",
+  "Ethics and Religious Studies": "ers",
+  "Integrated Science": "is",
+  "Combined Science: Biology + Chemistry": "cs-bc",
+  "Combined Science: Biology + Physics": "cs-bp",
+  "Combined Science: Physics + Chemistry": "cs-pc",
+  "French: Advanced Diploma of French Language Studies / Diploma of French Language Studies": "fr",
+  "German: Goethe-Certificate": "de",
+  "Japanese: Japanese-Language Proficiency Test": "jp",
+  "Korean: Test of Proficiency in Korean II": "kr",
+  "Spanish: Diploma of Spanish as a Foreign Language": "es",
+  "Urdu: Urdu (International)": "ur",
 };
 
 // Create a reverse map for parsing
@@ -58,6 +87,11 @@ function sanitizeSubject(subject: unknown): string | undefined {
   return trimmed;
 }
 
+function sanitizeSelectedSubject(subject: unknown): string | undefined {
+  const sanitized = sanitizeSubject(subject);
+  return sanitized && VALID_SUBJECTS.has(sanitized) ? sanitized : undefined;
+}
+
 function sanitizePickedCodes(codes: unknown): string[] {
   if (!Array.isArray(codes)) return [];
   return codes
@@ -72,33 +106,60 @@ export function sanitizeGrades(rawGrades: unknown): StudentGrades {
   const grades: StudentGrades = {};
   for (const [rawSubject, rawGrade] of Object.entries(rawGrades)) {
     const subject = sanitizeSubject(rawSubject);
+    if (subject && SLOT_SUBJECT_PATTERN.test(subject)) {
+      const selectedSubject = sanitizeSelectedSubject(rawGrade);
+      if (selectedSubject) grades[subject] = selectedSubject;
+      continue;
+    }
     const grade = sanitizeGrade(rawGrade);
     if (subject && grade) grades[subject] = grade;
   }
   return grades;
 }
 
-export function writeHashState(grades: StudentGrades, pickedCodes: string[]) {
+function stateToParams(grades: StudentGrades, pickedCodes: string[], sharing = false): URLSearchParams {
   const p = new URLSearchParams();
-  
+
   // Add core and specific subjects
   for (const [subject, grade] of Object.entries(grades)) {
     if (!grade || subject.includes(":subject")) continue; // Skip slot mappings for hash
-    
+
     const key = SUBJECT_MAP[subject] || subject;
     p.set(key, encodeGrade(grade));
   }
-  
+
   if (pickedCodes.length > 0) {
     p.set("p", pickedCodes.join(","));
   }
-  
+
+  if (sharing) p.set("sharing", "true");
+  return p;
+}
+
+export function writeHashState(grades: StudentGrades, pickedCodes: string[]) {
+  const p = stateToParams(grades, pickedCodes);
   const newHash = p.toString();
   // Using replaceState to avoid cluttering browser history every time a grade changes
   window.history.replaceState(null, "", newHash ? `#${newHash}` : window.location.pathname + window.location.search);
 }
 
-export function readHashState(): { grades: StudentGrades; pickedCodes: string[] } | null {
+export function buildShareUrl(grades: StudentGrades, pickedCodes: string[]): string {
+  const p = stateToParams(grades, pickedCodes, true);
+  const base = `${window.location.origin}${window.location.pathname}${window.location.search}`;
+  const hash = p.toString();
+  return hash ? `${base}#${hash}` : base;
+}
+
+export function buildEditUrlFromCurrentHash(): string {
+  const hash = window.location.hash.slice(1);
+  const p = new URLSearchParams(hash);
+  p.delete("sharing");
+  const nextHash = p.toString();
+  const base = `${window.location.origin}${window.location.pathname}${window.location.search}`;
+  return nextHash ? `${base}#${nextHash}` : base;
+}
+
+export function readHashState(): HashState | null {
   const hash = window.location.hash.slice(1);
   if (!hash) return null;
   if (hash.length > MAX_HASH_LENGTH) return null;
@@ -109,7 +170,8 @@ export function readHashState(): { grades: StudentGrades; pickedCodes: string[] 
       const decoded = JSON.parse(decodeURIComponent(hash));
       return {
         grades: sanitizeGrades(decoded?.grades),
-        pickedCodes: sanitizePickedCodes(decoded?.pickedCodes)
+        pickedCodes: sanitizePickedCodes(decoded?.pickedCodes),
+        sharing: decoded?.sharing === true
       };
     }
     
@@ -117,6 +179,7 @@ export function readHashState(): { grades: StudentGrades; pickedCodes: string[] 
     const p = new URLSearchParams(hash);
     const grades: StudentGrades = {};
     let pickedCodes: string[] = [];
+    const sharing = p.get("sharing") === "true";
     
     let electiveCount = 1;
     
@@ -125,6 +188,7 @@ export function readHashState(): { grades: StudentGrades; pickedCodes: string[] 
         pickedCodes = sanitizePickedCodes(val.split(","));
         continue;
       }
+      if (key === "sharing") continue;
       
       const subject = sanitizeSubject(REVERSE_MAP[key] || key);
       const grade = sanitizeGrade(val);
@@ -143,7 +207,7 @@ export function readHashState(): { grades: StudentGrades; pickedCodes: string[] 
     }
     
     if (Object.keys(grades).length === 0 && pickedCodes.length === 0) return null;
-    return { grades, pickedCodes };
+    return { grades, pickedCodes, sharing };
   } catch (e) {
     console.error("Failed to parse hash", e);
     return null;

@@ -14,6 +14,7 @@ type Props = {
 
 export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeChange, onRemove }: Props) {
   const [auditOpen, setAuditOpen] = useState(false);
+  const [eligibilityOpen, setEligibilityOpen] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [isStuck, setIsStuck] = useState(false);
   const panelRef = useRef<HTMLElement | null>(null);
@@ -42,6 +43,10 @@ export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeCh
   useEffect(() => {
     setAuditOpen(false);
   }, [result?.programme.jupas_code]);
+
+  useEffect(() => {
+    setEligibilityOpen(result ? !result.eligibility.eligible : false);
+  }, [result?.eligibility.eligible, result?.programme.jupas_code]);
 
   const prevReviewRequest = useRef(0);
 
@@ -186,16 +191,30 @@ export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeCh
 
         <section>
           <h3>Eligibility Details</h3>
-          <div className="eligibility-grid">
-            {eligibility.details.map((detail) => (
-              <div className={detail.pass ? "eligibility-tile pass" : "eligibility-tile fail"} key={detail.label}>
-                <span>{detail.label}</span>
-                <strong>{detail.got || "N/A"}</strong>
-                <small>Need {detail.need || "-"}</small>
-                {detail.note ? <em>{detail.note}</em> : null}
+          <section className={eligibilityOpen ? "collapsible-section eligibility-section open" : "collapsible-section eligibility-section"}>
+            <button className="collapsible-trigger" type="button" onClick={() => setEligibilityOpen(!eligibilityOpen)}>
+              <span className="collapsible-title-group">
+                <span>{eligibility.eligible ? "Requirements passed" : "Requirements need attention"}</span>
+                <em>{eligibility.details.filter((detail) => detail.pass).length}/{eligibility.details.length} passed</em>
+              </span>
+              <svg className="collapsible-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="3,5 8,11 13,5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <div className="collapsible-body">
+              <div className="eligibility-grid">
+                {eligibility.details.map((detail) => (
+                  <div className={detail.pass ? "eligibility-row pass" : "eligibility-row fail"} key={detail.label}>
+                    <span className="eligibility-subject">{detail.label}</span>
+                    <strong className="eligibility-grade">{detail.got || "N/A"}</strong>
+                    <span className="eligibility-need">Need {detail.need || "-"}</span>
+                    {detail.note ? <em className="eligibility-note">{detail.note}</em> : null}
+                    <span className="eligibility-result">{detail.pass ? "OK" : "Check"}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          </section>
         </section>
 
         <hr className="grade-section-divider" />

@@ -9,15 +9,17 @@ type Props = {
   total: number;
   shown: number;
   selectedCount: number;
+  compactResults: boolean;
   onFiltersChange: (filters: Filters) => void;
   onOpenChange: (open: boolean) => void;
+  onCompactResultsChange: (compact: boolean) => void;
   onReviewSelected: () => void;
   onResetSelected: () => void;
 };
 
 const bands: Array<BenchmarkBand | "all"> = ["all", "above-uq", "above-median", "above-lq", "below-lq", "no-score"];
 
-export function FiltersBar({ filters, open, institutions, total, shown, selectedCount, onFiltersChange, onOpenChange, onReviewSelected, onResetSelected }: Props) {
+export function FiltersBar({ filters, open, institutions, total, shown, selectedCount, compactResults, onFiltersChange, onOpenChange, onCompactResultsChange, onReviewSelected, onResetSelected }: Props) {
   const activeFilterCount = filters.institutions.length + Number(filters.eligibleOnly) + Number(filters.band !== "all");
 
   return (
@@ -25,7 +27,8 @@ export function FiltersBar({ filters, open, institutions, total, shown, selected
       <div className="filters-topline">
         <div className="filters-title">
           <p className="eyebrow">Step 2</p>
-          <h2>Compare Programmes</h2>
+          <h2>Select Programme(s)</h2>
+          <p className="filters-title-count">{shown} of {total} programmes shown</p>
         </div>
         <div className="filters-controls">
           <div className="search-row">
@@ -37,6 +40,18 @@ export function FiltersBar({ filters, open, institutions, total, shown, selected
                 onChange={(event) => onFiltersChange({ ...filters, query: event.target.value })}
               />
             </label>
+            <button
+              className={compactResults ? "compact-toggle active" : "compact-toggle"}
+              type="button"
+              aria-pressed={compactResults}
+              title={compactResults ? "Show comfortable programme cards" : "Show compact programme rows"}
+              onClick={() => onCompactResultsChange(!compactResults)}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 4h10M3 8h10M3 12h10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+              </svg>
+              <span>Compact</span>
+            </button>
             <button
               className={open ? "filter-toggle active" : "filter-toggle"}
               type="button"
@@ -50,7 +65,6 @@ export function FiltersBar({ filters, open, institutions, total, shown, selected
               {activeFilterCount ? <span className="filter-badge">{activeFilterCount}</span> : null}
             </button>
           </div>
-          <p className="search-count">{shown} of {total} programmes shown</p>
         </div>
       </div>
 
@@ -65,7 +79,7 @@ export function FiltersBar({ filters, open, institutions, total, shown, selected
             type="button"
             onClick={() => onFiltersChange({ ...filters, institutions: [] })}
           >
-            All institutions
+            All
           </button>
           <div className="institution-pills">
             {institutions.map((institution) => (

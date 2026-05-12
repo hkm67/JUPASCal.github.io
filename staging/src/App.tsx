@@ -1,8 +1,9 @@
 import { Fragment, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { AboutPage } from "./components/AboutPage";
+import { AppHeader } from "./components/AppHeader";
 import { DetailPanel } from "./components/DetailPanel";
 import { FiltersBar } from "./components/FiltersBar";
 import { GradeInput } from "./components/GradeInput";
-import { ProfileBar } from "./components/ProfileSwitcher";
 import { ResultsView } from "./components/ResultsView";
 import { ShareView } from "./components/ShareView";
 import { ShareButton } from "./components/ShareButton";
@@ -20,11 +21,31 @@ const DEFAULT_FILTERS: Filters = {
 };
 
 const INITIAL_HASH_STATE = readHashState();
-const IS_SHARED_LINK = INITIAL_HASH_STATE !== null;
+const HAS_HASH_STATE = INITIAL_HASH_STATE !== null;
+const IS_SHARED_VIEW = INITIAL_HASH_STATE?.sharing === true && INITIAL_HASH_STATE.pickedCodes.length > 0;
 
 type Theme = "light" | "dark";
 
+function getRoute(): "home" | "about" {
+  return window.location.hash === "#about" ? "about" : "home";
+}
+
 function App() {
+  const [route, setRoute] = useState<"home" | "about">(() => getRoute());
+  useEffect(() => {
+    const onHashChange = () => setRoute(getRoute());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  if (route === "about") {
+    return <AboutPage />;
+  }
+
+  return <CalculatorApp />;
+}
+
+function CalculatorApp() {
   const [programmes, setProgrammes] = useState<Programme[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>(() => loadProfiles());
   const [activeProfileId, setActiveProfileId] = useState<string>(() => loadActiveProfileId(profiles));
@@ -33,15 +54,17 @@ function App() {
   const deferredGrades = useDeferredValue(grades);
   const [theme, setTheme] = useState<Theme>(() => loadTheme());
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
-  const [programmeFiltersOpen, setProgrammeFiltersOpen] = useState(!IS_SHARED_LINK);
+  const [programmeFiltersOpen, setProgrammeFiltersOpen] = useState(!HAS_HASH_STATE);
+  const [compactResults, setCompactResults] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("benchmark");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [pickedCodes, setPickedCodes] = useState<string[]>(() => loadInitialPickedCodes());
   const [activeCode, setActiveCode] = useState<string>();
-  const [reviewRequest, setReviewRequest] = useState(IS_SHARED_LINK ? 1 : 0);
+  const [reviewRequest, setReviewRequest] = useState(HAS_HASH_STATE ? 1 : 0);
   const [loadError, setLoadError] = useState<string>();
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(() => {
-    if (IS_SHARED_LINK && INITIAL_HASH_STATE) {
+    if (HAS_HASH_STATE && INITIAL_HASH_STATE) {
       if (INITIAL_HASH_STATE.pickedCodes.length > 0) return 3;
       if (Object.keys(INITIAL_HASH_STATE.grades).length > 0) return 2;
     }
@@ -56,7 +79,10 @@ function App() {
         return response.json() as Promise<Programme[]>;
       })
       .then((data) => {
-        if (!cancelled) setProgrammes(data);
+        if (!cancelled) {
+          setProgrammes(data);
+          setDataLoaded(true);
+        }
       })
       .catch((error: Error) => {
         if (!cancelled) setLoadError(error.message);
@@ -65,6 +91,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (IS_SHARED_VIEW) return;
     localStorage.setItem("jupas-staging-profiles", JSON.stringify(profiles));
     localStorage.setItem("jupas-staging-active-profile-id", activeProfileId);
     writeHashState(activeProfile.grades, pickedCodes);
@@ -156,7 +183,7 @@ function App() {
     }
   }
 
-  if (IS_SHARED_LINK && INITIAL_HASH_STATE && INITIAL_HASH_STATE.pickedCodes.length > 0 && programmes.length > 0 && pickedResults.length > 0) {
+  if (IS_SHARED_VIEW && INITIAL_HASH_STATE && programmes.length > 0 && pickedResults.length > 0) {
     return <ShareView profileName={activeProfile.name} results={pickedResults} />;
   }
 
@@ -172,6 +199,20 @@ function App() {
     );
   }
 
+  if (IS_SHARED_VIEW && !dataLoaded) {
+    return (
+      <main className="share-view">
+        <AppHeader />
+        <section className="panel share-profile-card">
+          <div>
+            <p className="eyebrow">Shared results</p>
+            <strong>Loading profile...</strong>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   const nextLabel =
     step === 1 ? "Compare Programmes" :
     step === 2 && pickedResults.length > 0 ? `Review ${pickedResults.length} selected` :
@@ -182,38 +223,20 @@ function App() {
     step === 3 ? "Compare" :
     null;
 
+  const showProgrammeLoading = step === 2 && !dataLoaded;
+
   return (
     <main className="app-shell">
-      <header className="hero">
-        <div>
-          <p className="eyebrow">Unofficial 2026 admissions score calculator</p>
-          <h1>JUPAS Cal staging prototype</h1>
-          <p>Enter DSE grades once, compare all programmes, then inspect eligibility, benchmark position, and the calculation audit trail.</p>
-        </div>
-        <div className="header-actions">
-          <span>{programmes.length || "..."} programmes</span>
-          <button
-            className={`theme-toggle${theme === "dark" ? " dark" : ""}`}
-            type="button"
-            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-            aria-pressed={theme === "dark"}
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          >
-            <span className="theme-toggle-label">{theme === "dark" ? "Dark" : "Light"}</span>
-            <span className="theme-toggle-track">
-              <span className="theme-toggle-thumb" />
-            </span>
-          </button>
-        </div>
-      </header>
-
-      <ProfileBar
+      <div className="glass-veil" aria-hidden="true" />
+      <AppHeader
+        theme={theme}
+        onThemeChange={setTheme}
         profiles={profiles}
         activeProfileId={activeProfileId}
-        onSelect={setActiveProfileId}
-        onAdd={addProfile}
-        onRename={renameProfile}
-        onDelete={deleteProfile}
+        onProfileSelect={setActiveProfileId}
+        onProfileAdd={addProfile}
+        onProfileRename={renameProfile}
+        onProfileDelete={deleteProfile}
       />
 
       <StepperBar step={step} pickedCount={pickedResults.length} onStepChange={setStep} />
@@ -224,49 +247,65 @@ function App() {
         </div>
 
         <div className={step === 2 ? "stepper-panel active" : "stepper-panel"}>
-          <section className="panel step2-panel" aria-label="Programme comparison">
-            <FiltersBar
-              filters={filters}
-              open={programmeFiltersOpen}
-              institutions={institutions}
-              total={allResults.length}
-              shown={filteredResults.length}
-              selectedCount={pickedResults.length}
-              onFiltersChange={setFilters}
-              onOpenChange={setProgrammeFiltersOpen}
-              onReviewSelected={reviewSelectedProgrammes}
-              onResetSelected={resetSelectedProgrammes}
-            />
-            <ResultsView
-              results={filteredResults}
-              selectedCodes={pickedCodes}
-              selectedResults={pickedResults}
-              activeCode={activeResult?.programme.jupas_code}
-              reviewRequest={reviewRequest}
-              onFocus={(code) => setActiveCode(code)}
-              onPick={(code) => {
-                setPickedCodes((current) => current.includes(code) ? current : [...current, code]);
-                setActiveCode(code);
-              }}
-              onUnpick={(code) => {
-                setPickedCodes((current) => current.filter((item) => item !== code));
-                if (activeCode === code) {
-                  setActiveCode(pickedCodes.find((item) => item !== code));
-                }
-              }}
-              onReviewSelected={reviewSelectedProgrammes}
-              sortKey={sortKey}
-              sortDirection={sortDirection}
-              onSortChange={(nextSortKey) => {
-                if (nextSortKey === sortKey) {
-                  setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-                  return;
-                }
-                setSortKey(nextSortKey);
-                setSortDirection(nextSortKey === "code" || nextSortKey === "institution" ? "asc" : "desc");
-              }}
-            />
-          </section>
+          {showProgrammeLoading ? (
+            <section className="panel programme-loading-panel" aria-live="polite" aria-busy="true">
+              <p className="eyebrow">Step 2</p>
+              <h2>Select Programme(s)</h2>
+              <p>Loading programme data...</p>
+              <div className="loading-bars" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </div>
+            </section>
+          ) : (
+            <section className="panel step2-panel" aria-label="Programme comparison">
+              <FiltersBar
+                filters={filters}
+                open={programmeFiltersOpen}
+                institutions={institutions}
+                total={allResults.length}
+                shown={filteredResults.length}
+                selectedCount={pickedResults.length}
+                compactResults={compactResults}
+                onFiltersChange={setFilters}
+                onOpenChange={setProgrammeFiltersOpen}
+                onCompactResultsChange={setCompactResults}
+                onReviewSelected={reviewSelectedProgrammes}
+                onResetSelected={resetSelectedProgrammes}
+              />
+              <ResultsView
+                results={filteredResults}
+                selectedCodes={pickedCodes}
+                selectedResults={pickedResults}
+                activeCode={activeResult?.programme.jupas_code}
+                reviewRequest={reviewRequest}
+                compact={compactResults}
+                onFocus={(code) => setActiveCode(code)}
+                onPick={(code) => {
+                  setPickedCodes((current) => current.includes(code) ? current : [...current, code]);
+                  setActiveCode(code);
+                }}
+                onUnpick={(code) => {
+                  setPickedCodes((current) => current.filter((item) => item !== code));
+                  if (activeCode === code) {
+                    setActiveCode(pickedCodes.find((item) => item !== code));
+                  }
+                }}
+                onReviewSelected={reviewSelectedProgrammes}
+                sortKey={sortKey}
+                sortDirection={sortDirection}
+                onSortChange={(nextSortKey) => {
+                  if (nextSortKey === sortKey) {
+                    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+                    return;
+                  }
+                  setSortKey(nextSortKey);
+                  setSortDirection(nextSortKey === "code" || nextSortKey === "institution" ? "asc" : "desc");
+                }}
+              />
+            </section>
+          )}
         </div>
 
         <div className={step === 3 ? "stepper-panel active" : "stepper-panel"}>
@@ -287,28 +326,34 @@ function App() {
       </div>
 
       <footer className="stepper-footer">
-        <div>
-          {backLabel ? (
-            <button
-              type="button"
-              className="ghost-button"
-              onClick={() => setStep((step - 1) as 1 | 2 | 3)}
-            >
-              Back
-            </button>
-          ) : <span />}
+        <div className="stepper-footer-left">
+          <button
+            type="button"
+            className="ghost-button"
+            disabled={!backLabel}
+            onClick={() => {
+              if (backLabel) setStep((step - 1) as 1 | 2 | 3);
+            }}
+          >
+            Back
+          </button>
         </div>
         <div className="stepper-footer-right">
-          {step === 1 && Object.keys(grades).length > 0 ? (
-            <button type="button" className="ghost-button" onClick={() => setGrades({})}>
-              Reset
-            </button>
-          ) : null}
-          {step === 2 && pickedResults.length > 0 ? (
-            <button type="button" className="ghost-button" onClick={resetSelectedProgrammes}>
-              Reset
-            </button>
-          ) : null}
+          <button
+            type="button"
+            className="ghost-button"
+            disabled={
+              (step === 1 && Object.keys(grades).length === 0) ||
+              (step === 2 && pickedResults.length === 0) ||
+              step === 3
+            }
+            onClick={() => {
+              if (step === 1) setGrades({});
+              if (step === 2) resetSelectedProgrammes();
+            }}
+          >
+            Reset
+          </button>
           {step < 3 ? (
             <button
               type="button"
@@ -319,7 +364,7 @@ function App() {
               {nextLabel} <ArrowIcon direction="right" />
             </button>
           ) : pickedResults.length > 0 ? (
-            <ShareButton />
+            <ShareButton grades={activeProfile.grades} pickedCodes={pickedCodes} />
           ) : null}
         </div>
       </footer>
@@ -337,9 +382,9 @@ function StepperBar({
   onStepChange: (step: 1 | 2 | 3) => void;
 }) {
   const steps: Array<{ n: 1 | 2 | 3; label: string }> = [
-    { n: 1, label: "Your Grades" },
-    { n: 2, label: "Compare" },
-    { n: 3, label: "Detail" },
+    { n: 1, label: "Grades" },
+    { n: 2, label: "Programme" },
+    { n: 3, label: "Details" },
   ];
 
   return (

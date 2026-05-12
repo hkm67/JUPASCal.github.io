@@ -46,13 +46,22 @@ export const DSE_GRADES = ["", "5**", "5*", "5", "4", "3", "2", "1", "U"];
 export const CSD_GRADES = ["", "A", "U"];
 export const CAT_C_GRADES = ["", "A", "B", "C", "D", "E", "U"];
 
+const SUBJECT_SHORT_NAMES: Record<string, string> = {
+  "Mathematics (Compulsory Part)": "Math",
+  "Mathematics Extended Part (Module 1 or 2)": "M1/M2",
+  "Mathematics Extended Part (Module 1)": "M1",
+  "Mathematics Extended Part (Module 2)": "M2",
+  "Citizenship and Social Development": "CSD",
+  "Business, Accounting and Financial Studies": "BAFS",
+  "Information and Communication Technology": "ICT",
+  "French: Advanced Diploma of French Language Studies / Diploma of French Language Studies": "French",
+  "German: Goethe-Certificate": "German",
+  "Japanese: Japanese-Language Proficiency Test": "Japanese",
+  "Korean: Test of Proficiency in Korean II": "Korean",
+  "Spanish: Diploma of Spanish as a Foreign Language": "Spanish",
+  "Urdu: Urdu (International)": "Urdu",
+};
+
 export function shortSubjectName(subject: string) {
-  return subject
-    .replace("Mathematics (Compulsory Part)", "Math")
-    .replace("Mathematics Extended Part (Module 1 or 2)", "M1/M2")
-    .replace("Mathematics Extended Part (Module 1)", "M1")
-    .replace("Mathematics Extended Part (Module 2)", "M2")
-    .replace("Citizenship and Social Development", "CSD")
-    .replace("Business, Accounting and Financial Studies", "BAFS")
-    .replace("Information and Communication Technology", "ICT");
+  return SUBJECT_SHORT_NAMES[subject] || subject;
 }
