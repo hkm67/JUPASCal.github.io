@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { BenchmarkBand } from "../types/jupas";
 import type { Filters } from "../lib/results";
 import { institutionLabel } from "../lib/institutions";
@@ -9,18 +10,21 @@ type Props = {
   total: number;
   shown: number;
   selectedCount: number;
+  selectedOnly: boolean;
   compactResults: boolean;
   onFiltersChange: (filters: Filters) => void;
   onOpenChange: (open: boolean) => void;
+  onSelectedOnlyChange: (selectedOnly: boolean) => void;
   onCompactResultsChange: (compact: boolean) => void;
   onReviewSelected: () => void;
   onResetSelected: () => void;
+  selectedOrder?: ReactNode;
 };
 
 const bands: Array<BenchmarkBand | "all"> = ["all", "above-uq", "above-median", "above-lq", "below-lq", "no-score"];
 
-export function FiltersBar({ filters, open, institutions, total, shown, selectedCount, compactResults, onFiltersChange, onOpenChange, onCompactResultsChange, onReviewSelected, onResetSelected }: Props) {
-  const activeFilterCount = filters.institutions.length + Number(filters.eligibleOnly) + Number(filters.band !== "all");
+export function FiltersBar({ filters, open, institutions, total, shown, selectedCount, selectedOnly, compactResults, onFiltersChange, onOpenChange, onSelectedOnlyChange, onCompactResultsChange, onReviewSelected, onResetSelected, selectedOrder }: Props) {
+  const activeFilterCount = filters.institutions.length + Number(filters.eligibleOnly) + Number(filters.band !== "all") + Number(selectedOnly);
 
   return (
     <div className={open ? "filters-sticky-group filters-open" : "filters-sticky-group"}>
@@ -67,6 +71,7 @@ export function FiltersBar({ filters, open, institutions, total, shown, selected
           </div>
         </div>
       </div>
+      {selectedOrder}
 
       <section
         id="programme-filter-panel"
@@ -96,15 +101,22 @@ export function FiltersBar({ filters, open, institutions, total, shown, selected
         </div>
 
         <div className="advanced-filters">
-          <label>
-            <input
-              type="checkbox"
-              checked={filters.eligibleOnly}
-              onChange={(event) => onFiltersChange({ ...filters, eligibleOnly: event.target.checked })}
-            />
+          <button
+            type="button"
+            className={selectedOnly ? "pill active" : "pill"}
+            disabled={selectedCount === 0}
+            onClick={() => onSelectedOnlyChange(!selectedOnly)}
+          >
+            Selected only
+          </button>
+          <button
+            type="button"
+            className={filters.eligibleOnly ? "pill active" : "pill"}
+            onClick={() => onFiltersChange({ ...filters, eligibleOnly: !filters.eligibleOnly })}
+          >
             Eligible only
-          </label>
-          <label>
+          </button>
+          <label className="score-range-filter">
             <span className="filter-label-text">Score range</span>
             <select value={filters.band} onChange={(event) => onFiltersChange({ ...filters, band: event.target.value as BenchmarkBand | "all" })}>
               {bands.map((band) => <option key={band} value={band}>{band === "all" ? "Any score range" : labelBand(band)}</option>)}

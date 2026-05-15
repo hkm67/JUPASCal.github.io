@@ -20,6 +20,7 @@ const DEFAULT_FILTERS: Filters = {
   band: "all",
 };
 
+const PRIORITY_SLOTS = ["A1", "A2", "A3", "B1", "B2", "B3"] as const;
 const INITIAL_HASH_STATE = readHashState();
 const HAS_HASH_STATE = INITIAL_HASH_STATE !== null;
 const IS_SHARED_VIEW = INITIAL_HASH_STATE?.sharing === true && INITIAL_HASH_STATE.pickedCodes.length > 0;
@@ -56,16 +57,20 @@ function CalculatorApp() {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [programmeFiltersOpen, setProgrammeFiltersOpen] = useState(!HAS_HASH_STATE);
   const [compactResults, setCompactResults] = useState(false);
+  const [selectedOnly, setSelectedOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("benchmark");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  const [pickedCodes, setPickedCodes] = useState<string[]>(() => loadInitialPickedCodes());
+  const [pickedCodes, setPickedCodes] = useState<(string | null)[]>(() => loadInitialPickedCodes());
   const [activeCode, setActiveCode] = useState<string>();
   const [reviewRequest, setReviewRequest] = useState(HAS_HASH_STATE ? 1 : 0);
   const [loadError, setLoadError] = useState<string>();
   const [dataLoaded, setDataLoaded] = useState(false);
+
+  const pickedCount = pickedCodes.filter((c) => c !== null).length;
+
   const [step, setStep] = useState<1 | 2 | 3>(() => {
     if (HAS_HASH_STATE && INITIAL_HASH_STATE) {
-      if (INITIAL_HASH_STATE.pickedCodes.length > 0) return 3;
+      if (INITIAL_HASH_STATE.pickedCodes.filter(Boolean).length > 0) return 3;
       if (Object.keys(INITIAL_HASH_STATE.grades).length > 0) return 2;
     }
     return 1;
@@ -102,6 +107,10 @@ function CalculatorApp() {
     localStorage.setItem("jupas-staging-theme", theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (pickedCodes.length === 0 && selectedOnly) setSelectedOnly(false);
+  }, [pickedCodes.length, selectedOnly]);
+
   const institutions = useMemo(() => {
     const byInstitution = new Map<string, number>();
     for (const programme of programmes) {
@@ -121,19 +130,30 @@ function CalculatorApp() {
   }, [programmes, deferredGrades]);
 
   const filteredResults = useMemo(() => {
-    return sortResults(filterResults(allResults, filters), sortKey, sortDirection);
-  }, [allResults, filters, sortDirection, sortKey]);
+    const selectedSet = new Set(pickedCodes.filter((c): c is string => c !== null));
+    const baseResults = selectedOnly
+      ? allResults.filter((result) => selectedSet.has(result.programme.jupas_code))
+      : filterResults(allResults, filters);
+    if (selectedOnly && filters.query.trim()) {
+      return sortResults(filterResults(baseResults, filters), sortKey, sortDirection);
+    }
+    if (selectedOnly && (filters.institutions.length > 0 || filters.eligibleOnly || filters.band !== "all")) {
+      return sortResults(filterResults(baseResults, filters), sortKey, sortDirection);
+    }
+    return sortResults(baseResults, sortKey, sortDirection);
+  }, [allResults, filters, pickedCodes, selectedOnly, sortDirection, sortKey]);
 
   const pickedResults = useMemo(() => {
     const byCode = new Map(allResults.map((r) => [r.programme.jupas_code, r]));
-    return pickedCodes.flatMap((code) => {
-      const result = byCode.get(code);
-      return result ? [result] : [];
+    return pickedCodes.map((code) => {
+      if (code === null) return null;
+      return byCode.get(code) || null;
     });
   }, [allResults, pickedCodes]);
 
   const activeResult = useMemo(() => {
-    return pickedResults.find((r) => r.programme.jupas_code === activeCode) || pickedResults[0];
+    const firstNonNull = pickedResults.find((r): r is ProgrammeResult => r !== null);
+    return pickedResults.find((r): r is ProgrammeResult => r !== null && r.programme.jupas_code === activeCode) || firstNonNull;
   }, [activeCode, pickedResults]);
 
   function setGrades(nextGrades: StudentGrades) {
@@ -162,8 +182,10 @@ function CalculatorApp() {
   }
 
   function reviewSelectedProgrammes() {
-    if (!pickedResults.length) return;
-    setActiveCode(pickedCodes[0]);
+    const nonNullResults = pickedResults.filter((r): r is ProgrammeResult => r !== null);
+    if (!nonNullResults.length) return;
+    const firstCode = pickedCodes.find((c) => c !== null);
+    if (firstCode) setActiveCode(firstCode);
     setProgrammeFiltersOpen(false);
     setStep(3);
     setReviewRequest((c) => c + 1);
@@ -172,18 +194,36 @@ function CalculatorApp() {
   function resetSelectedProgrammes() {
     setPickedCodes([]);
     setActiveCode(undefined);
+    setSelectedOnly(false);
     setProgrammeFiltersOpen(true);
   }
 
+  function pickProgramme(code: string) {
+    setPickedCodes((current) => {
+      if (current.includes(code)) return current;
+      const firstNullIndex = current.indexOf(null);
+      if (firstNullIndex !== -1) {
+        const next = [...current];
+        next[firstNullIndex] = code;
+        return next;
+      }
+      return [...current, code];
+    });
+    setActiveCode(code);
+  }
+
   function handleNext() {
-    if (step === 2 && pickedResults.length > 0) {
+    const nonNullCount = pickedCodes.filter((c) => c !== null).length;
+    if (step === 2 && nonNullCount > 0) {
       reviewSelectedProgrammes();
     } else if (step < 3) {
       setStep((step + 1) as 2 | 3);
     }
   }
 
-  if (IS_SHARED_VIEW && INITIAL_HASH_STATE && programmes.length > 0 && pickedResults.length > 0) {
+  const pickedResultsNonNull = useMemo(() => pickedResults.filter((r): r is ProgrammeResult => r !== null), [pickedResults]);
+
+  if (IS_SHARED_VIEW && INITIAL_HASH_STATE && programmes.length > 0 && pickedCount > 0) {
     return <ShareView profileName={activeProfile.name} results={pickedResults} />;
   }
 
@@ -215,7 +255,7 @@ function CalculatorApp() {
 
   const nextLabel =
     step === 1 ? "Compare Programmes" :
-    step === 2 && pickedResults.length > 0 ? `Review ${pickedResults.length} selected` :
+    step === 2 && pickedCount > 0 ? `Review ${pickedCount} selected` :
     "Programme Detail";
 
   const backLabel =
@@ -224,6 +264,88 @@ function CalculatorApp() {
     null;
 
   const showProgrammeLoading = step === 2 && !dataLoaded;
+  const canShare = pickedCount > 0;
+  const programmePicker = showProgrammeLoading ? (
+    <section className="panel programme-loading-panel" aria-live="polite" aria-busy="true">
+      <p className="eyebrow">Programme picker</p>
+      <h2>Select Programme(s)</h2>
+      <p>Loading programme data...</p>
+      <div className="loading-bars" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+    </section>
+  ) : (
+    <section className="panel step2-panel" aria-label="Programme comparison">
+      <FiltersBar
+        filters={filters}
+        open={programmeFiltersOpen}
+        institutions={institutions}
+        total={allResults.length}
+        shown={filteredResults.length}
+        selectedCount={pickedCount}
+        selectedOnly={selectedOnly}
+        compactResults={compactResults}
+        onFiltersChange={setFilters}
+        onOpenChange={setProgrammeFiltersOpen}
+        onSelectedOnlyChange={setSelectedOnly}
+        onCompactResultsChange={setCompactResults}
+        onReviewSelected={reviewSelectedProgrammes}
+        onResetSelected={resetSelectedProgrammes}
+        selectedOrder={
+          <PreferencePlanner
+            results={pickedResults}
+            activeCode={activeResult?.programme.jupas_code}
+            onActivate={setActiveCode}
+          />
+        }
+      />
+      <ResultsView
+        results={filteredResults}
+        selectedCodes={pickedCodes.filter((c): c is string => c !== null)}
+        selectedResults={pickedResultsNonNull}
+        activeCode={activeResult?.programme.jupas_code}
+        reviewRequest={reviewRequest}
+        compact={compactResults}
+        onFocus={(code) => setActiveCode(code)}
+        onPick={pickProgramme}
+        onUnpick={(code) => {
+          setPickedCodes((current) => {
+            const index = current.indexOf(code);
+            if (index === -1) return current;
+            const next = [...current];
+            next[index] = null;
+            
+            // Trim trailing nulls
+            let lastNonNull = -1;
+            for (let i = next.length - 1; i >= 0; i--) {
+              if (next[i] !== null) {
+                lastNonNull = i;
+                break;
+              }
+            }
+            return next.slice(0, lastNonNull + 1);
+          });
+          if (activeCode === code) {
+            const nextVal = pickedCodes.filter(c => c !== null).find((item) => item !== code);
+            setActiveCode(nextVal || undefined);
+          }
+        }}
+        onReviewSelected={reviewSelectedProgrammes}
+        sortKey={sortKey}
+        sortDirection={sortDirection}
+        onSortChange={(nextSortKey) => {
+          if (nextSortKey === sortKey) {
+            setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+            return;
+          }
+          setSortKey(nextSortKey);
+          setSortDirection(nextSortKey === "code" || nextSortKey === "institution" ? "asc" : "desc");
+        }}
+      />
+    </section>
+  );
 
   return (
     <main className="app-shell">
@@ -239,93 +361,103 @@ function CalculatorApp() {
         onProfileDelete={deleteProfile}
       />
 
-      <StepperBar step={step} pickedCount={pickedResults.length} onStepChange={setStep} />
-
-      <div className="stepper-content">
-        <div className={step === 1 ? "stepper-panel active" : "stepper-panel"}>
+      <section className={pickedCount > 0 ? "desktop-workspace detail-open" : "desktop-workspace"} aria-label="Desktop JUPAS planner">
+        <div className="desktop-grade-column">
           <GradeInput grades={grades} onChange={setGrades} onReset={() => setGrades({})} />
         </div>
-
-        <div className={step === 2 ? "stepper-panel active" : "stepper-panel"}>
-          {showProgrammeLoading ? (
-            <section className="panel programme-loading-panel" aria-live="polite" aria-busy="true">
-              <p className="eyebrow">Step 2</p>
-              <h2>Select Programme(s)</h2>
-              <p>Loading programme data...</p>
-              <div className="loading-bars" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-              </div>
-            </section>
+        <div className="desktop-programme-column">
+          {programmePicker}
+        </div>
+        <div className="desktop-detail-column" aria-hidden={pickedCount === 0}>
+          {pickedCount > 0 ? (
+            <DetailPanel
+              results={pickedResults}
+              activeCode={activeResult?.programme.jupas_code}
+              reviewRequest={reviewRequest}
+              onActiveCodeChange={setActiveCode}
+              onRemove={(code) => {
+                setPickedCodes((current) => {
+                  const index = current.indexOf(code);
+                  if (index === -1) return current;
+                  const next = [...current];
+                  next[index] = null;
+                  
+                  // Trim trailing nulls
+                  let lastNonNull = -1;
+                  for (let i = next.length - 1; i >= 0; i--) {
+                    if (next[i] !== null) {
+                      lastNonNull = i;
+                      break;
+                    }
+                  }
+                  return next.slice(0, lastNonNull + 1);
+                });
+                if (activeCode === code) {
+                  const nextVal = pickedCodes.filter(c => c !== null).find((item) => item !== code);
+                  setActiveCode(nextVal || undefined);
+                }
+              }}
+            />
           ) : (
-            <section className="panel step2-panel" aria-label="Programme comparison">
-              <FiltersBar
-                filters={filters}
-                open={programmeFiltersOpen}
-                institutions={institutions}
-                total={allResults.length}
-                shown={filteredResults.length}
-                selectedCount={pickedResults.length}
-                compactResults={compactResults}
-                onFiltersChange={setFilters}
-                onOpenChange={setProgrammeFiltersOpen}
-                onCompactResultsChange={setCompactResults}
-                onReviewSelected={reviewSelectedProgrammes}
-                onResetSelected={resetSelectedProgrammes}
-              />
-              <ResultsView
-                results={filteredResults}
-                selectedCodes={pickedCodes}
-                selectedResults={pickedResults}
-                activeCode={activeResult?.programme.jupas_code}
-                reviewRequest={reviewRequest}
-                compact={compactResults}
-                onFocus={(code) => setActiveCode(code)}
-                onPick={(code) => {
-                  setPickedCodes((current) => current.includes(code) ? current : [...current, code]);
-                  setActiveCode(code);
-                }}
-                onUnpick={(code) => {
-                  setPickedCodes((current) => current.filter((item) => item !== code));
-                  if (activeCode === code) {
-                    setActiveCode(pickedCodes.find((item) => item !== code));
-                  }
-                }}
-                onReviewSelected={reviewSelectedProgrammes}
-                sortKey={sortKey}
-                sortDirection={sortDirection}
-                onSortChange={(nextSortKey) => {
-                  if (nextSortKey === sortKey) {
-                    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-                    return;
-                  }
-                  setSortKey(nextSortKey);
-                  setSortDirection(nextSortKey === "code" || nextSortKey === "institution" ? "asc" : "desc");
-                }}
-              />
-            </section>
+            <aside className="panel desktop-empty-detail">
+              <p className="eyebrow">Comparison drawer</p>
+              <h2>Pick programmes to compare</h2>
+              <p>Use A1-A3 for dream, target, and safer choices. B1-B3 is useful for realistic backups and consultation.</p>
+            </aside>
           )}
         </div>
+      </section>
 
-        <div className={step === 3 ? "stepper-panel active" : "stepper-panel"}>
-          <DetailPanel
-            results={pickedResults}
-            activeCode={activeResult?.programme.jupas_code}
-            reviewRequest={reviewRequest}
-            onActiveCodeChange={setActiveCode}
-            onRemove={(code) => {
-              setPickedCodes((current) => current.filter((item) => item !== code));
-              if (activeCode === code) {
-                const next = pickedCodes.find((item) => item !== code);
-                setActiveCode(next);
-              }
-            }}
-          />
-        </div>
+      <div className="desktop-share-bar">
+        <span>{pickedResults.length ? `${pickedResults.length} programmes selected · first 6 map to A1-B3` : "Select programmes, then refine A1-B3 priority"}</span>
+        {canShare ? <ShareButton grades={activeProfile.grades} pickedCodes={pickedCodes} /> : null}
       </div>
 
-      <footer className="stepper-footer">
+      <div className="mobile-stepper-flow">
+        <StepperBar step={step} pickedCount={pickedResults.length} onStepChange={setStep} />
+
+        <div className="stepper-content">
+          <div className={step === 1 ? "stepper-panel active" : "stepper-panel"}>
+            <GradeInput grades={grades} onChange={setGrades} onReset={() => setGrades({})} />
+          </div>
+
+          <div className={step === 2 ? "stepper-panel active" : "stepper-panel"}>
+            {programmePicker}
+          </div>
+
+          <div className={step === 3 ? "stepper-panel active" : "stepper-panel"}>
+            <DetailPanel
+              results={pickedResults}
+              activeCode={activeResult?.programme.jupas_code}
+              reviewRequest={reviewRequest}
+              onActiveCodeChange={setActiveCode}
+              onRemove={(code) => {
+                setPickedCodes((current) => {
+                  const index = current.indexOf(code);
+                  if (index === -1) return current;
+                  const next = [...current];
+                  next[index] = null;
+                  
+                  // Trim trailing nulls
+                  let lastNonNull = -1;
+                  for (let i = next.length - 1; i >= 0; i--) {
+                    if (next[i] !== null) {
+                      lastNonNull = i;
+                      break;
+                    }
+                  }
+                  return next.slice(0, lastNonNull + 1);
+                });
+                if (activeCode === code) {
+                  const nextVal = pickedCodes.filter(c => c !== null).find((item) => item !== code);
+                  setActiveCode(nextVal || undefined);
+                }
+              }}
+            />
+          </div>
+        </div>
+
+        <footer className="stepper-footer">
         <div className="stepper-footer-left">
           <button
             type="button"
@@ -367,8 +499,50 @@ function CalculatorApp() {
             <ShareButton grades={activeProfile.grades} pickedCodes={pickedCodes} />
           ) : null}
         </div>
-      </footer>
+        </footer>
+      </div>
     </main>
+  );
+}
+
+function PreferencePlanner({
+  results,
+  activeCode,
+  onActivate,
+}: {
+  results: (ProgrammeResult | null)[];
+  activeCode?: string;
+  onActivate: (code: string) => void;
+}) {
+  const priorityResults = results.slice(0, PRIORITY_SLOTS.length);
+  const extraCount = Math.max(0, results.length - PRIORITY_SLOTS.length);
+
+  return (
+    <section className="preference-planner" aria-label="A1 to B3 preference planner">
+      <span className="preference-line-label">Selected</span>
+      <div className="preference-line" aria-label="Selected programme order">
+        {results.filter(Boolean).length === 0 ? <span className="preference-empty">None</span> : null}
+        {priorityResults.map((result, index) => (
+          <Fragment key={index}>
+            {index > 0 ? <span className="preference-separator" aria-hidden="true">|</span> : null}
+            {!result ? (
+              <span className="preference-text">
+                {PRIORITY_SLOTS[index]}·---
+              </span>
+            ) : (
+              <button
+                type="button"
+                className={result.programme.jupas_code === activeCode ? "preference-text active" : "preference-text filled"}
+                onClick={() => onActivate(result.programme.jupas_code)}
+              >
+                {PRIORITY_SLOTS[index]}·{result.programme.jupas_code}
+              </button>
+            )}
+          </Fragment>
+        ))}
+        {extraCount ? <span className="preference-extra">| +{extraCount} more</span> : null}
+      </div>
+    </section>
   );
 }
 
@@ -463,7 +637,7 @@ function sanitizeProfiles(rawProfiles: unknown): Profile[] {
   });
 }
 
-function loadInitialPickedCodes(): string[] {
+function loadInitialPickedCodes(): (string | null)[] {
   const hashState = readHashState();
   if (hashState && hashState.pickedCodes.length > 0) return hashState.pickedCodes;
   return [];

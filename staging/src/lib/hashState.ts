@@ -12,7 +12,7 @@ const VALID_SUBJECTS = new Set([...CORE_SUBJECTS, M12_SUBJECT, ...CAT_A_SUBJECTS
 
 export type HashState = {
   grades: StudentGrades;
-  pickedCodes: string[];
+  pickedCodes: (string | null)[];
   sharing: boolean;
 };
 
@@ -92,13 +92,25 @@ function sanitizeSelectedSubject(subject: unknown): string | undefined {
   return sanitized && VALID_SUBJECTS.has(sanitized) ? sanitized : undefined;
 }
 
-function sanitizePickedCodes(codes: unknown): string[] {
+function sanitizePickedCodes(codes: unknown): (string | null)[] {
   if (!Array.isArray(codes)) return [];
-  return codes
-    .filter((code): code is string => typeof code === "string")
-    .map((code) => code.trim().toUpperCase())
-    .filter((code) => PROGRAMME_CODE_PATTERN.test(code))
+  const sanitized = codes
+    .map((code) => {
+      if (typeof code !== "string") return null;
+      const trimmed = code.trim().toUpperCase();
+      return PROGRAMME_CODE_PATTERN.test(trimmed) ? trimmed : null;
+    })
     .slice(0, MAX_PICKED_PROGRAMMES);
+  
+  // Trim trailing nulls
+  let lastNonNull = -1;
+  for (let i = sanitized.length - 1; i >= 0; i--) {
+    if (sanitized[i] !== null) {
+      lastNonNull = i;
+      break;
+    }
+  }
+  return sanitized.slice(0, lastNonNull + 1);
 }
 
 export function sanitizeGrades(rawGrades: unknown): StudentGrades {
@@ -117,7 +129,7 @@ export function sanitizeGrades(rawGrades: unknown): StudentGrades {
   return grades;
 }
 
-function stateToParams(grades: StudentGrades, pickedCodes: string[], sharing = false): URLSearchParams {
+function stateToParams(grades: StudentGrades, pickedCodes: (string | null)[], sharing = false): URLSearchParams {
   const p = new URLSearchParams();
 
   // Add core and specific subjects
@@ -129,21 +141,21 @@ function stateToParams(grades: StudentGrades, pickedCodes: string[], sharing = f
   }
 
   if (pickedCodes.length > 0) {
-    p.set("p", pickedCodes.join(","));
+    p.set("p", pickedCodes.map((c) => c || "").join(","));
   }
 
   if (sharing) p.set("sharing", "true");
   return p;
 }
 
-export function writeHashState(grades: StudentGrades, pickedCodes: string[]) {
+export function writeHashState(grades: StudentGrades, pickedCodes: (string | null)[]) {
   const p = stateToParams(grades, pickedCodes);
   const newHash = p.toString();
   // Using replaceState to avoid cluttering browser history every time a grade changes
   window.history.replaceState(null, "", newHash ? `#${newHash}` : window.location.pathname + window.location.search);
 }
 
-export function buildShareUrl(grades: StudentGrades, pickedCodes: string[]): string {
+export function buildShareUrl(grades: StudentGrades, pickedCodes: (string | null)[]): string {
   const p = stateToParams(grades, pickedCodes, true);
   const base = `${window.location.origin}${window.location.pathname}${window.location.search}`;
   const hash = p.toString();
@@ -178,7 +190,7 @@ export function readHashState(): HashState | null {
     // Parse the compact hash
     const p = new URLSearchParams(hash);
     const grades: StudentGrades = {};
-    let pickedCodes: string[] = [];
+    let pickedCodes: (string | null)[] = [];
     const sharing = p.get("sharing") === "true";
     
     let electiveCount = 1;

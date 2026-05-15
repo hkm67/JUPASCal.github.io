@@ -22,6 +22,7 @@ type Props = {
 
 export function ResultsView({ results, selectedCodes, selectedResults, activeCode, reviewRequest, compact, sortKey, sortDirection, onFocus, onPick, onUnpick, onReviewSelected, onSortChange }: Props) {
   const prevReviewRequest = useRef(0);
+  const slotByCode = new Map(selectedCodes.map((code, index) => [code, prioritySlot(index)]));
 
   useEffect(() => {
     if (reviewRequest > prevReviewRequest.current) {
@@ -63,6 +64,7 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
             {results.map((result) => (
               <tr
                 key={result.programme.jupas_code}
+                data-code={result.programme.jupas_code}
                 className={activeCode === result.programme.jupas_code ? "selected" : selectedCodes.includes(result.programme.jupas_code) ? "picked" : ""}
                 onClick={() => onFocus(result.programme.jupas_code)}
               >
@@ -70,7 +72,10 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
                   <span className="programme-cell-head">
                     <PickButton picked={selectedCodes.includes(result.programme.jupas_code)} onClick={() => togglePick(result.programme.jupas_code)} />
                     <span className="programme-cell-text">
-                      <strong>{result.programme.jupas_code}</strong>
+                      <strong>
+                        {slotByCode.get(result.programme.jupas_code) ? <SlotBadge slot={slotByCode.get(result.programme.jupas_code)!} /> : null}
+                        {result.programme.jupas_code}
+                      </strong>
                       <span>{result.programme.name_en}</span>
                     </span>
                   </span>
@@ -94,6 +99,7 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
           <div
             role="button"
             tabIndex={0}
+            data-code={result.programme.jupas_code}
             className={activeCode === result.programme.jupas_code ? "mobile-card selected" : selectedCodes.includes(result.programme.jupas_code) ? "mobile-card picked" : "mobile-card"}
             key={result.programme.jupas_code}
             onClick={() => togglePick(result.programme.jupas_code)}
@@ -106,6 +112,7 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
           >
             <span className="card-topline">
               <span className="card-focus-button">
+                {slotByCode.get(result.programme.jupas_code) ? <SlotBadge slot={slotByCode.get(result.programme.jupas_code)!} /> : null}
                 <span className="card-code">{result.programme.jupas_code}</span>
                 <span>{institutionLabel(result.programme.institution)}</span>
               </span>
@@ -139,6 +146,19 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
       </div>
     </section>
   );
+}
+
+function prioritySlot(index: number) {
+  if (index < 3) return `A${index + 1}`;
+  if (index < 6) return `B${index - 2}`;
+  if (index < 10) return `C${index - 5}`;
+  if (index < 15) return `D${index - 9}`;
+  if (index < 20) return `E${index - 14}`;
+  return `#${index + 1}`;
+}
+
+function SlotBadge({ slot }: { slot: string }) {
+  return <span className="selected-slot-badge">{slot}</span>;
 }
 
 function PickButton({ picked, onClick }: { picked: boolean; onClick: () => void }) {

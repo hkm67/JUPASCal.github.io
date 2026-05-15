@@ -4,7 +4,7 @@ import type { StudentGrades } from "../types/jupas";
 
 type Props = {
   grades: StudentGrades;
-  pickedCodes: string[];
+  pickedCodes: (string | null)[];
 };
 
 export const ShareButton = memo(({ grades, pickedCodes }: Props) => {
@@ -27,9 +27,9 @@ export const ShareButton = memo(({ grades, pickedCodes }: Props) => {
       className="stepper-next-btn"
       type="button"
       onClick={handleShare}
-      title="Copy shareable link to clipboard"
+      title="Copy share page link and open the share view"
     >
-      {copied ? "Copied!" : "Share Result"}
+      {copied ? "Link copied" : "Share"}
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ display: "inline-block", verticalAlign: "middle", marginLeft: 6 }}>
         <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         <polyline points="16 6 12 2 8 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

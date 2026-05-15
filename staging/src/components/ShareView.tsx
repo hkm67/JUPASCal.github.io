@@ -6,10 +6,16 @@ import type { ProgrammeResult } from "../types/jupas";
 
 type Props = {
   profileName: string;
-  results: ProgrammeResult[];
+  results: (ProgrammeResult | null)[];
 };
 
 export function ShareView({ profileName, results }: Props) {
+  const topResults = results.slice(0, 6);
+  const resultsNonNull = results.filter((r): r is ProgrammeResult => r !== null);
+  const topResultsNonNull = topResults.filter((r): r is ProgrammeResult => r !== null);
+  const eligibleCount = resultsNonNull.filter((result) => result.eligibility.eligible).length;
+  const bestResult = [...resultsNonNull].sort((a, b) => b.calculation.totalScore - a.calculation.totalScore)[0];
+
   function handleEdit() {
     window.history.replaceState(null, "", buildEditUrlFromCurrentHash());
     window.location.reload();
@@ -24,22 +30,82 @@ export function ShareView({ profileName, results }: Props) {
       <AppHeader />
       <div className="panel share-profile-card">
         <div>
-          <p className="eyebrow">Shared results</p>
+          <p className="eyebrow">Shared JUPAS plan</p>
           <strong>{profileName}</strong>
+          <span>{resultsNonNull.length} choices · {eligibleCount} currently eligible</span>
         </div>
         <button type="button" className="ghost-button" onClick={handleEdit}>
           Edit this profile
         </button>
       </div>
 
-      <div className="share-results-list">
-        {results.map((result) => {
+      <section className="share-section">
+        <div className="share-section-heading">
+          <p className="eyebrow">For Instagram / social</p>
+          <h1>JUPAS Recap Card</h1>
+        </div>
+        <div className="recap-card" aria-label="Social sharing recap card">
+          <div className="recap-card-top">
+            <span>JUPAS Cal 2026</span>
+            <b>A1-B3</b>
+          </div>
+          <div className="recap-hero">
+            <p>{profileName}</p>
+            <strong>{bestResult ? bestResult.calculation.totalScore.toFixed(2) : "-"}</strong>
+            <span>{bestResult ? `${bestResult.programme.jupas_code} · strongest calculated score` : "No programme selected"}</span>
+          </div>
+          <div className="recap-slots">
+            {["A1", "A2", "A3", "B1", "B2", "B3"].map((slot, index) => {
+              const result = topResults[index];
+              return (
+                <div className={result ? "recap-slot filled" : "recap-slot"} key={slot}>
+                  <span>{slot}</span>
+                  {result ? (
+                    <>
+                      <strong>{result.programme.jupas_code}</strong>
+                      <em>{institutionLabel(result.programme.institution)}</em>
+                      <b>{result.calculation.totalScore.toFixed(1)}</b>
+                    </>
+                  ) : (
+                    <em>Open</em>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <p className="recap-footnote">Estimated score comparison only. Final admission depends on official requirements, ranking, interviews, places, and competition.</p>
+        </div>
+      </section>
+
+      <section className="share-section advisor-section">
+        <div className="share-section-heading">
+          <p className="eyebrow">For teacher / youth worker consultation</p>
+          <h1>Advisor Brief</h1>
+        </div>
+        <div className="advisor-summary">
+          <div>
+            <span>Total choices</span>
+            <strong>{resultsNonNull.length}</strong>
+          </div>
+          <div>
+            <span>Eligibility</span>
+            <strong>{eligibleCount}/{resultsNonNull.length} pass listed requirements</strong>
+          </div>
+          <div>
+            <span>Benchmark basis</span>
+            <strong>2025 scores · 2026 requirements</strong>
+          </div>
+        </div>
+
+        <div className="share-results-list">
+          {results.map((result, index) => {
+          if (!result) return null;
           const { programme, calculation, eligibility } = result;
           return (
             <div className="panel share-result-card" key={programme.jupas_code}>
               <div className="detail-header-main">
                 <div className="detail-header-text">
-                  <p className="eyebrow">{institutionLabel(programme.institution)} · {programme.jupas_code}</p>
+                  <p className="eyebrow">{prioritySlot(index)} · {institutionLabel(programme.institution)} · {programme.jupas_code}</p>
                   <h2>{programme.name_en}</h2>
                   {programme.name_zh ? <p className="zh-name">{programme.name_zh}</p> : null}
                 </div>
@@ -107,8 +173,9 @@ export function ShareView({ profileName, results }: Props) {
               </section>
             </div>
           );
-        })}
-      </div>
+          })}
+        </div>
+      </section>
 
       <div className="share-cta">
         <p>Want to calculate your own JUPAS admission score?</p>
@@ -123,4 +190,8 @@ export function ShareView({ profileName, results }: Props) {
       </div>
     </div>
   );
+}
+
+function prioritySlot(index: number) {
+  return ["A1", "A2", "A3", "B1", "B2", "B3"][index] || `Choice ${index + 1}`;
 }

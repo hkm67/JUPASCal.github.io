@@ -5,7 +5,7 @@ import { shortSubjectName } from "../lib/subjects";
 import type { ProgrammeResult } from "../types/jupas";
 
 type Props = {
-  results: ProgrammeResult[];
+  results: (ProgrammeResult | null)[];
   activeCode?: string;
   reviewRequest: number;
   onActiveCodeChange: (code: string) => void;
@@ -19,7 +19,8 @@ export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeCh
   const [isStuck, setIsStuck] = useState(false);
   const panelRef = useRef<HTMLElement | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
-  const result = results.find((item) => item.programme.jupas_code === activeCode) || results[0];
+  const resultsNonNull = results.filter((r): r is ProgrammeResult => r !== null);
+  const result = resultsNonNull.find((item) => item.programme.jupas_code === activeCode) || resultsNonNull[0];
 
   useEffect(() => {
     const panel = panelRef.current;
@@ -38,7 +39,7 @@ export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeCh
       window.removeEventListener("scroll", update);
     };
   }, []);
-  const activeIndex = result ? results.findIndex((item) => item.programme.jupas_code === result.programme.jupas_code) : -1;
+  const activeIndex = result ? resultsNonNull.findIndex((item) => item.programme.jupas_code === result.programme.jupas_code) : -1;
 
   useEffect(() => {
     setAuditOpen(false);
@@ -79,35 +80,43 @@ export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeCh
   const { programme, calculation, eligibility } = result;
 
   function moveActive(direction: 1 | -1) {
-    if (results.length <= 1 || activeIndex < 0) return;
-    const nextIndex = (activeIndex + direction + results.length) % results.length;
-    onActiveCodeChange(results[nextIndex].programme.jupas_code);
+    if (resultsNonNull.length <= 1 || activeIndex < 0) return;
+    const nextIndex = (activeIndex + direction + resultsNonNull.length) % resultsNonNull.length;
+    onActiveCodeChange(resultsNonNull[nextIndex].programme.jupas_code);
   }
 
   return (
     <div className="detail-layout">
       <nav className="programme-menu" aria-label="Selected programmes">
-        <p className="programme-menu-heading">Programme List ({results.length})</p>
+        <p className="programme-menu-heading">Programme List ({resultsNonNull.length})</p>
         {results.map((r, i) => (
-          <Fragment key={r.programme.jupas_code}>
+          <Fragment key={i}>
             {i > 0 && <hr className="programme-menu-divider" />}
-            <button
-              type="button"
-              className={r.programme.jupas_code === result.programme.jupas_code ? "programme-menu-item active" : "programme-menu-item"}
-              onClick={() => onActiveCodeChange(r.programme.jupas_code)}
-            >
-              <span className="programme-menu-code">{r.programme.jupas_code}</span>
-              <span className="programme-menu-name">{r.programme.name_en}</span>
-              <span className="programme-menu-bottom">
-                <b className="programme-menu-score-value">{r.calculation.totalScore.toFixed(2)}</b>
-                <span className="programme-menu-tags">
-                  <span className={r.eligibility.eligible ? "status pass mini" : "status fail mini"}>
-                    {r.eligibility.eligible ? "Eligible" : "Ineligible"}
+            {!r ? (
+              <div className="programme-menu-item empty-slot" data-code={`empty-${i}`}>
+                <span className="programme-menu-code"><span className="selected-slot-badge">{prioritySlot(i)}</span>---</span>
+                <span className="programme-menu-name muted">Empty Slot</span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                data-code={r.programme.jupas_code}
+                className={r.programme.jupas_code === result.programme.jupas_code ? "programme-menu-item active" : "programme-menu-item"}
+                onClick={() => onActiveCodeChange(r.programme.jupas_code)}
+              >
+                <span className="programme-menu-code"><span className="selected-slot-badge">{prioritySlot(i)}</span>{r.programme.jupas_code}</span>
+                <span className="programme-menu-name">{r.programme.name_en}</span>
+                <span className="programme-menu-bottom">
+                  <b className="programme-menu-score-value">{r.calculation.totalScore.toFixed(2)}</b>
+                  <span className="programme-menu-tags">
+                    <span className={r.eligibility.eligible ? "status pass mini" : "status fail mini"}>
+                      {r.eligibility.eligible ? "Eligible" : "Ineligible"}
+                    </span>
+                    <span className={`band mini ${r.band}`}>{bandLabel(r.band)}</span>
                   </span>
-                  <span className={`band mini ${r.band}`}>{bandLabel(r.band)}</span>
                 </span>
-              </span>
-            </button>
+              </button>
+            )}
           </Fragment>
         ))}
       </nav>
@@ -132,7 +141,7 @@ export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeCh
               <polyline points="8,1 2,7 8,13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <span>{activeIndex + 1} / {results.length}</span>
+          <span><em>{prioritySlot(activeIndex)}</em>{activeIndex + 1} / {results.length}</span>
           <button className="ghost-button" type="button" disabled={results.length <= 1} onClick={() => moveActive(1)} aria-label="Next">
             <svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <line x1="2" y1="7" x2="20" y2="7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
@@ -143,8 +152,8 @@ export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeCh
         <div className={isStuck ? "detail-header is-stuck" : "detail-header"}>
           <div className="detail-header-main">
             <div className="detail-header-text">
-              <p className="eyebrow">{institutionLabel(programme.institution)} · {programme.jupas_code}</p>
-              <h2>{programme.name_en}</h2>
+              <p className="eyebrow">{prioritySlot(activeIndex)} · {institutionLabel(programme.institution)} · {programme.jupas_code}</p>
+              <h2 title={programme.name_en}>{programme.name_en}</h2>
               {programme.name_zh ? <p className="zh-name">{programme.name_zh}</p> : null}
             </div>
             <button className="remove-button" type="button" onClick={() => onRemove(programme.jupas_code)} aria-label="Remove programme">
@@ -276,6 +285,15 @@ export function DetailPanel({ results, activeCode, reviewRequest, onActiveCodeCh
       </aside>
     </div>
   );
+}
+
+function prioritySlot(index: number) {
+  if (index < 3) return `A${index + 1}`;
+  if (index < 6) return `B${index - 2}`;
+  if (index < 10) return `C${index - 5}`;
+  if (index < 15) return `D${index - 9}`;
+  if (index < 20) return `E${index - 14}`;
+  return `Choice ${index + 1}`;
 }
 
 function FormulaBlock({
