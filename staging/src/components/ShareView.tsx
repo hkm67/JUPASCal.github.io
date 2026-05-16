@@ -78,7 +78,7 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
     window.setTimeout(() => setToast(null), ms);
   }
 
-  async function handleNativeShare(intent?: "instagram" | "threads") {
+  async function handleNativeShare() {
     setShareState("sharing");
     try {
       const dataUrl = await renderRecapPng();
@@ -118,9 +118,8 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
         link.click();
       }
       try { await navigator.clipboard.writeText(shareUrl); } catch { /* ignore */ }
-      const appName = intent === "instagram" ? "Instagram" : intent === "threads" ? "Threads" : "the app";
       showToast(
-        `Image saved + link copied. Open ${appName} and attach the image.`,
+        "Image saved + link copied. Open your target app and attach the image.",
         "info",
         3600,
       );
@@ -141,6 +140,152 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
 
   function openIntent(url: string) {
     window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function isMobileLike(): boolean {
+    if (typeof navigator === "undefined") return false;
+    return /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+  }
+
+  async function copyImageToClipboard(blob: Blob): Promise<boolean> {
+    try {
+      if (typeof ClipboardItem === "undefined" || !navigator.clipboard?.write) return false;
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // Instagram Stories: best path is the native share sheet on mobile (the user
+  // picks "Instagram → Stories" and the image is attached natively). Web JS
+  // cannot satisfy Instagram's UIPasteboard contract for direct sticker prefill,
+  // so secondary path is clipboard-copy + image download + `instagram-stories://`
+  // deep link, which opens Instagram so the user can attach the saved image.
+  async function handleInstagramShare() {
+    setShareState("sharing");
+    try {
+      const dataUrl = await renderRecapPng();
+      if (!dataUrl) throw new Error("recap card not mounted");
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `${safeFileName}-jupas-recap.png`, { type: "image/png" });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: shareText });
+          showToast("Share sheet opened", "success");
+          setShareState("done");
+          window.setTimeout(() => setShareState("idle"), 1500);
+          return;
+        } catch (e) {
+          if ((e as Error)?.name === "AbortError") {
+            setShareState("idle");
+            return;
+          }
+          // fall through to deep-link path
+        }
+      }
+
+      const copied = await copyImageToClipboard(blob);
+      if (!copied) {
+        const a = document.createElement("a");
+        a.download = `${safeFileName}-jupas-recap.png`;
+        a.href = dataUrl;
+        a.click();
+      }
+
+      if (isMobileLike()) {
+        showToast(
+          copied
+            ? "Image copied — opening Instagram. Tap '+' to attach it."
+            : "Image saved — opening Instagram. Attach the saved image.",
+          "info",
+          4200,
+        );
+        // Direct navigation triggers the iOS "Open in Instagram?" prompt
+        // when the app is installed. If not, Safari simply shows an error
+        // but the page stays — no harm done.
+        window.location.href = "instagram-stories://share";
+      } else {
+        showToast(
+          copied
+            ? "Image copied. Open Instagram on your phone to post it."
+            : "Image saved. Open Instagram on your phone to post it.",
+          "info",
+          4200,
+        );
+        window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+      }
+      setShareState("done");
+      window.setTimeout(() => setShareState("idle"), 1500);
+    } catch (error) {
+      if ((error as Error)?.name === "AbortError") {
+        setShareState("idle");
+        return;
+      }
+      console.error("Failed to share to Instagram", error);
+      setShareState("error");
+      showToast("Couldn't share — try again", "error");
+      window.setTimeout(() => setShareState("idle"), 2400);
+    }
+  }
+
+  // Threads: the web intent URL `threads.net/intent/post` is a universal link
+  // — it routes to the Threads app on mobile (if installed) or web composer
+  // otherwise. We still copy/download the image since the intent URL accepts
+  // text only, so the user attaches the recap image themselves.
+  async function handleThreadsShare() {
+    setShareState("sharing");
+    try {
+      const dataUrl = await renderRecapPng();
+      if (!dataUrl) throw new Error("recap card not mounted");
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `${safeFileName}-jupas-recap.png`, { type: "image/png" });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], text: `${shareText}\n${shareUrl}` });
+          showToast("Share sheet opened", "success");
+          setShareState("done");
+          window.setTimeout(() => setShareState("idle"), 1500);
+          return;
+        } catch (e) {
+          if ((e as Error)?.name === "AbortError") {
+            setShareState("idle");
+            return;
+          }
+          // fall through to intent URL
+        }
+      }
+
+      const copied = await copyImageToClipboard(blob);
+      if (!copied) {
+        const a = document.createElement("a");
+        a.download = `${safeFileName}-jupas-recap.png`;
+        a.href = dataUrl;
+        a.click();
+      }
+      const intentUrl = `https://www.threads.net/intent/post?text=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`;
+      window.open(intentUrl, "_blank", "noopener,noreferrer");
+      showToast(
+        copied
+          ? "Threads opened — paste the image into your post."
+          : "Threads opened — attach the saved image to your post.",
+        "info",
+        4000,
+      );
+      setShareState("done");
+      window.setTimeout(() => setShareState("idle"), 1500);
+    } catch (error) {
+      if ((error as Error)?.name === "AbortError") {
+        setShareState("idle");
+        return;
+      }
+      console.error("Failed to share to Threads", error);
+      setShareState("error");
+      showToast("Couldn't share — try again", "error");
+      window.setTimeout(() => setShareState("idle"), 2400);
+    }
   }
 
   async function handleCopyLink() {
@@ -170,14 +315,6 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
         : downloadState === "error"
           ? "Failed — try again"
           : "Download image";
-  const shareLabel =
-    shareState === "sharing"
-      ? "Opening…"
-      : shareState === "done"
-        ? "Shared!"
-        : shareState === "error"
-          ? "Try again"
-          : "Share with image";
 
   return (
     <div className="share-view">
@@ -298,18 +435,18 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
           <button
             type="button"
             className="share-action icon-only threads"
-            onClick={() => handleNativeShare("threads")}
+            onClick={handleThreadsShare}
             aria-label="Share on Threads"
-            title="Threads (shares the recap card image via your device's share sheet)"
+            title="Threads (opens the Threads composer with the recap image)"
           >
             <ThreadsIcon />
           </button>
           <button
             type="button"
             className="share-action icon-only instagram"
-            onClick={() => handleNativeShare("instagram")}
+            onClick={handleInstagramShare}
             aria-label="Share on Instagram"
-            title="Instagram (shares the recap card image via your device's share sheet)"
+            title="Instagram (opens Instagram Stories on mobile, with the image ready to attach)"
           >
             <InstagramIcon />
           </button>
