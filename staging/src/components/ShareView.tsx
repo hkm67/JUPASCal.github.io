@@ -147,6 +147,14 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
     return /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
   }
 
+  function isIOS(): boolean {
+    if (typeof navigator === "undefined") return false;
+    // iPadOS 13+ reports as "MacIntel" with maxTouchPoints > 1, so we
+    // sniff that case too.
+    return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  }
+
   async function copyImageToClipboard(blob: Blob): Promise<boolean> {
     try {
       if (typeof ClipboardItem === "undefined" || !navigator.clipboard?.write) return false;
@@ -157,11 +165,11 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
     }
   }
 
-  // Instagram Stories: best path is the native share sheet on mobile (the user
-  // picks "Instagram → Stories" and the image is attached natively). Web JS
-  // cannot satisfy Instagram's UIPasteboard contract for direct sticker prefill,
-  // so secondary path is clipboard-copy + image download + `instagram-stories://`
-  // deep link, which opens Instagram so the user can attach the saved image.
+  // Instagram Stories: the iOS share-sheet path (`navigator.share({files})`)
+  // is the only web flow that delivers the image pre-attached — IG's
+  // direct-sticker prefill needs a native UIPasteboard payload that JS can't
+  // write. So we keep Web Share as the primary path, and only fall back to
+  // the deep-link if Web Share is unavailable.
   async function handleInstagramShare() {
     setShareState("sharing");
     try {
@@ -173,7 +181,7 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
           await navigator.share({ files: [file], title: shareText });
-          showToast("Share sheet opened", "success");
+          showToast("Tap Instagram in the share sheet to post it", "success", 2800);
           setShareState("done");
           window.setTimeout(() => setShareState("idle"), 1500);
           return;
@@ -186,8 +194,12 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
         }
       }
 
+      // Web Share unavailable — copy the image to clipboard and open
+      // Instagram. (On iOS Safari we deliberately skip the <a download>
+      // step, since iOS treats it as a navigation to the data URL and
+      // replaces the page with the image, blocking the deep link.)
       const copied = await copyImageToClipboard(blob);
-      if (!copied) {
+      if (!copied && !isMobileLike()) {
         const a = document.createElement("a");
         a.download = `${safeFileName}-jupas-recap.png`;
         a.href = dataUrl;
@@ -197,14 +209,11 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       if (isMobileLike()) {
         showToast(
           copied
-            ? "Image copied — opening Instagram. Tap '+' to attach it."
-            : "Image saved — opening Instagram. Attach the saved image.",
+            ? "Opening Instagram — paste the image, or pick it from Photos."
+            : "Opening Instagram — pick the recap image from Photos.",
           "info",
-          4200,
+          4400,
         );
-        // Direct navigation triggers the iOS "Open in Instagram?" prompt
-        // when the app is installed. If not, Safari simply shows an error
-        // but the page stays — no harm done.
         window.location.href = "instagram-stories://share";
       } else {
         showToast(
@@ -230,10 +239,11 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
     }
   }
 
-  // Threads: the web intent URL `threads.net/intent/post` is a universal link
-  // — it routes to the Threads app on mobile (if installed) or web composer
-  // otherwise. We still copy/download the image since the intent URL accepts
-  // text only, so the user attaches the recap image themselves.
+  // Threads: on iOS we bypass the share sheet entirely. Copy the image to
+  // clipboard, then deep-link directly into the Threads compose screen via
+  // the universal link — user long-presses in compose to paste the image.
+  // This trades a one-tap share-sheet pick for a direct app launch (which
+  // is what the user asked for).
   async function handleThreadsShare() {
     setShareState("sharing");
     try {
@@ -242,10 +252,28 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], `${safeFileName}-jupas-recap.png`, { type: "image/png" });
 
+      // iOS direct path: copy image + universal link → Threads app opens.
+      if (isIOS()) {
+        const copied = await copyImageToClipboard(blob);
+        const intentUrl = `https://www.threads.net/intent/post?text=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`;
+        showToast(
+          copied
+            ? "Threads opened — long-press in the post to paste the image."
+            : "Threads opened — attach the recap image to your post.",
+          "info",
+          4400,
+        );
+        window.location.href = intentUrl;
+        setShareState("done");
+        window.setTimeout(() => setShareState("idle"), 1500);
+        return;
+      }
+
+      // Other platforms: try Web Share with files first.
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
           await navigator.share({ files: [file], text: `${shareText}\n${shareUrl}` });
-          showToast("Share sheet opened", "success");
+          showToast("Tap Threads in the share sheet to post it", "success", 2800);
           setShareState("done");
           window.setTimeout(() => setShareState("idle"), 1500);
           return;
@@ -254,12 +282,12 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
             setShareState("idle");
             return;
           }
-          // fall through to intent URL
+          // fall through
         }
       }
 
       const copied = await copyImageToClipboard(blob);
-      if (!copied) {
+      if (!copied && !isMobileLike()) {
         const a = document.createElement("a");
         a.download = `${safeFileName}-jupas-recap.png`;
         a.href = dataUrl;
