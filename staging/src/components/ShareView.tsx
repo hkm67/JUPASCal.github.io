@@ -165,11 +165,29 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
     }
   }
 
-  // Instagram Stories: the iOS share-sheet path (`navigator.share({files})`)
-  // is the only web flow that delivers the image pre-attached — IG's
-  // direct-sticker prefill needs a native UIPasteboard payload that JS can't
-  // write. So we keep Web Share as the primary path, and only fall back to
-  // the deep-link if Web Share is unavailable.
+  // navigator.share() field-strip workaround for iOS Safari. WebKit has a
+  // long-standing bug (3+ yrs, surfaced on Apple Dev Forums for FB / WhatsApp
+  // / IG) where combining `files` with `title`/`text`/`url` strips the file
+  // and shares only the text. On iOS we MUST pass files alone.
+  async function shareFilesSafely(file: File, fallbackText: string): Promise<"shared" | "aborted" | "unsupported"> {
+    if (!navigator.canShare || !navigator.canShare({ files: [file] })) {
+      return "unsupported";
+    }
+    const payload: ShareData = isIOS() ? { files: [file] } : { files: [file], text: fallbackText };
+    try {
+      await navigator.share(payload);
+      return "shared";
+    } catch (e) {
+      if ((e as Error)?.name === "AbortError") return "aborted";
+      return "unsupported";
+    }
+  }
+
+  // Instagram Stories: only Web Share API can deliver the image
+  // pre-attached on web — IG's direct-prefill (UIPasteboard with custom
+  // UTType identifiers) is reachable only from native apps. So we use
+  // Web Share with iOS field-strip, and fall back to deep link + clipboard
+  // copy when Web Share isn't available (e.g. desktop).
   async function handleInstagramShare() {
     setShareState("sharing");
     try {
@@ -178,26 +196,22 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], `${safeFileName}-jupas-recap.png`, { type: "image/png" });
 
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({ files: [file], title: shareText });
-          showToast("Tap Instagram in the share sheet to post it", "success", 2800);
-          setShareState("done");
-          window.setTimeout(() => setShareState("idle"), 1500);
-          return;
-        } catch (e) {
-          if ((e as Error)?.name === "AbortError") {
-            setShareState("idle");
-            return;
-          }
-          // fall through to deep-link path
-        }
+      const result = await shareFilesSafely(file, `${shareText}\n${shareUrl}`);
+      if (result === "shared") {
+        showToast("Tap Instagram → Stories in the share sheet", "success", 2800);
+        setShareState("done");
+        window.setTimeout(() => setShareState("idle"), 1500);
+        return;
+      }
+      if (result === "aborted") {
+        setShareState("idle");
+        return;
       }
 
-      // Web Share unavailable — copy the image to clipboard and open
-      // Instagram. (On iOS Safari we deliberately skip the <a download>
-      // step, since iOS treats it as a navigation to the data URL and
-      // replaces the page with the image, blocking the deep link.)
+      // Web Share unsupported — copy the image to clipboard and open
+      // Instagram. (Skip the <a download> on mobile: iOS Safari treats
+      // it as a navigation to the data URL and replaces the page, which
+      // blocks the deep link from running.)
       const copied = await copyImageToClipboard(blob);
       if (!copied && !isMobileLike()) {
         const a = document.createElement("a");
@@ -209,8 +223,8 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       if (isMobileLike()) {
         showToast(
           copied
-            ? "Opening Instagram — paste the image, or pick it from Photos."
-            : "Opening Instagram — pick the recap image from Photos.",
+            ? "Opening Instagram — pick the recap image from your Photos."
+            : "Opening Instagram — pick the recap image from your Photos.",
           "info",
           4400,
         );
@@ -239,11 +253,11 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
     }
   }
 
-  // Threads: on iOS we bypass the share sheet entirely. Copy the image to
-  // clipboard, then deep-link directly into the Threads compose screen via
-  // the universal link — user long-presses in compose to paste the image.
-  // This trades a one-tap share-sheet pick for a direct app launch (which
-  // is what the user asked for).
+  // Threads: Web Share API path is the cleanest — picking Threads from the
+  // iOS share sheet delivers the image natively attached to a new post.
+  // (Pre-fix the share sheet appeared to work but was stripping the file
+  // due to the iOS Safari files+text WebKit bug.) Fallback uses the
+  // threads.net/intent/post universal link with clipboard image.
   async function handleThreadsShare() {
     setShareState("sharing");
     try {
@@ -252,38 +266,16 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], `${safeFileName}-jupas-recap.png`, { type: "image/png" });
 
-      // iOS direct path: copy image + universal link → Threads app opens.
-      if (isIOS()) {
-        const copied = await copyImageToClipboard(blob);
-        const intentUrl = `https://www.threads.net/intent/post?text=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`;
-        showToast(
-          copied
-            ? "Threads opened — long-press in the post to paste the image."
-            : "Threads opened — attach the recap image to your post.",
-          "info",
-          4400,
-        );
-        window.location.href = intentUrl;
+      const result = await shareFilesSafely(file, `${shareText}\n${shareUrl}`);
+      if (result === "shared") {
+        showToast("Tap Threads in the share sheet", "success", 2800);
         setShareState("done");
         window.setTimeout(() => setShareState("idle"), 1500);
         return;
       }
-
-      // Other platforms: try Web Share with files first.
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({ files: [file], text: `${shareText}\n${shareUrl}` });
-          showToast("Tap Threads in the share sheet to post it", "success", 2800);
-          setShareState("done");
-          window.setTimeout(() => setShareState("idle"), 1500);
-          return;
-        } catch (e) {
-          if ((e as Error)?.name === "AbortError") {
-            setShareState("idle");
-            return;
-          }
-          // fall through
-        }
+      if (result === "aborted") {
+        setShareState("idle");
+        return;
       }
 
       const copied = await copyImageToClipboard(blob);
@@ -297,7 +289,7 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       window.open(intentUrl, "_blank", "noopener,noreferrer");
       showToast(
         copied
-          ? "Threads opened — paste the image into your post."
+          ? "Threads opened — long-press in the post to paste the image."
           : "Threads opened — attach the saved image to your post.",
         "info",
         4000,
