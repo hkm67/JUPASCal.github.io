@@ -194,11 +194,18 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       const dataUrl = await renderRecapPng();
       if (!dataUrl) throw new Error("recap card not mounted");
       const blob = await (await fetch(dataUrl)).blob();
-      const file = new File([blob], `${safeFileName}-jupas-recap.png`, { type: "image/png" });
+      // Filename doubles as the prompt — iOS shows it at the top of the
+      // share sheet, so we name it after the destination app so the user
+      // immediately knows which icon to tap.
+      const file = new File([blob], `Share-to-Instagram-${safeFileName}.png`, { type: "image/png" });
 
       const result = await shareFilesSafely(file, `${shareText}\n${shareUrl}`);
       if (result === "shared") {
-        showToast("Tap Instagram → Stories in the share sheet", "success", 2800);
+        showToast(
+          "Pick Instagram in the share sheet — scroll right if needed",
+          "success",
+          5200,
+        );
         setShareState("done");
         window.setTimeout(() => setShareState("idle"), 1500);
         return;
@@ -215,7 +222,7 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       const copied = await copyImageToClipboard(blob);
       if (!copied && !isMobileLike()) {
         const a = document.createElement("a");
-        a.download = `${safeFileName}-jupas-recap.png`;
+        a.download = `Share-to-Instagram-${safeFileName}.png`;
         a.href = dataUrl;
         a.click();
       }
@@ -264,11 +271,17 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       const dataUrl = await renderRecapPng();
       if (!dataUrl) throw new Error("recap card not mounted");
       const blob = await (await fetch(dataUrl)).blob();
-      const file = new File([blob], `${safeFileName}-jupas-recap.png`, { type: "image/png" });
+      // Filename doubles as the prompt — iOS shows it at the top of the
+      // share sheet, so we name it after the destination app.
+      const file = new File([blob], `Share-to-Threads-${safeFileName}.png`, { type: "image/png" });
 
       const result = await shareFilesSafely(file, `${shareText}\n${shareUrl}`);
       if (result === "shared") {
-        showToast("Tap Threads in the share sheet", "success", 2800);
+        showToast(
+          "Pick Threads in the share sheet — scroll right if needed",
+          "success",
+          5200,
+        );
         setShareState("done");
         window.setTimeout(() => setShareState("idle"), 1500);
         return;
@@ -281,7 +294,7 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       const copied = await copyImageToClipboard(blob);
       if (!copied && !isMobileLike()) {
         const a = document.createElement("a");
-        a.download = `${safeFileName}-jupas-recap.png`;
+        a.download = `Share-to-Threads-${safeFileName}.png`;
         a.href = dataUrl;
         a.click();
       }
