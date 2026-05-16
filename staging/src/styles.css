@@ -6815,7 +6815,7 @@ select {
 .share-toast {
   position: fixed;
   left: 50%;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+  top: calc(env(safe-area-inset-top, 0px) + 16px);
   transform: translateX(-50%);
   z-index: 200;
   padding: 12px 20px;
@@ -6842,7 +6842,7 @@ select {
 @keyframes share-toast-in {
   from {
     opacity: 0;
-    transform: translate(-50%, 10px);
+    transform: translate(-50%, -10px);
   }
   to {
     opacity: 1;

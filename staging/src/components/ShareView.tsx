@@ -199,18 +199,25 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       // immediately knows which icon to tap.
       const file = new File([blob], `Share-to-Instagram-${safeFileName}.png`, { type: "image/png" });
 
+      // Show the prompt BEFORE invoking the share sheet — the sheet covers
+      // most of the screen, and once `await navigator.share()` resolves
+      // (after the user picks an app or dismisses), the user has already
+      // left the page. A pre-share toast at the top stays visible behind
+      // the sheet, where the user can actually read it.
+      const willShowSheet = navigator.canShare && navigator.canShare({ files: [file] });
+      if (willShowSheet && isMobileLike()) {
+        showToast("Pick Instagram in the share sheet — scroll right if needed", "success", 30000);
+      }
+
       const result = await shareFilesSafely(file, `${shareText}\n${shareUrl}`);
       if (result === "shared") {
-        showToast(
-          "Pick Instagram in the share sheet — scroll right if needed",
-          "success",
-          5200,
-        );
+        setToast(null);
         setShareState("done");
         window.setTimeout(() => setShareState("idle"), 1500);
         return;
       }
       if (result === "aborted") {
+        setToast(null);
         setShareState("idle");
         return;
       }
@@ -275,18 +282,22 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
       // share sheet, so we name it after the destination app.
       const file = new File([blob], `Share-to-Threads-${safeFileName}.png`, { type: "image/png" });
 
+      // Show the prompt BEFORE invoking the share sheet so it stays
+      // visible at the top of the screen while the sheet is open.
+      const willShowSheet = navigator.canShare && navigator.canShare({ files: [file] });
+      if (willShowSheet && isMobileLike()) {
+        showToast("Pick Threads in the share sheet — scroll right if needed", "success", 30000);
+      }
+
       const result = await shareFilesSafely(file, `${shareText}\n${shareUrl}`);
       if (result === "shared") {
-        showToast(
-          "Pick Threads in the share sheet — scroll right if needed",
-          "success",
-          5200,
-        );
+        setToast(null);
         setShareState("done");
         window.setTimeout(() => setShareState("idle"), 1500);
         return;
       }
       if (result === "aborted") {
+        setToast(null);
         setShareState("idle");
         return;
       }
