@@ -12,6 +12,7 @@ type Props = {
   selectedCount: number;
   selectedOnly: boolean;
   compactResults: boolean;
+  showStepEyebrow?: boolean;
   onFiltersChange: (filters: Filters) => void;
   onOpenChange: (open: boolean) => void;
   onSelectedOnlyChange: (selectedOnly: boolean) => void;
@@ -23,14 +24,14 @@ type Props = {
 
 const bands: Array<BenchmarkBand | "all"> = ["all", "above-uq", "above-median", "above-lq", "below-lq", "no-score"];
 
-export function FiltersBar({ filters, open, institutions, total, shown, selectedCount, selectedOnly, compactResults, onFiltersChange, onOpenChange, onSelectedOnlyChange, onCompactResultsChange, onReviewSelected, onResetSelected, selectedOrder }: Props) {
+export function FiltersBar({ filters, open, institutions, total, shown, selectedCount, selectedOnly, compactResults, showStepEyebrow = true, onFiltersChange, onOpenChange, onSelectedOnlyChange, onCompactResultsChange, onReviewSelected, onResetSelected, selectedOrder }: Props) {
   const activeFilterCount = filters.institutions.length + Number(filters.eligibleOnly) + Number(filters.band !== "all") + Number(selectedOnly);
 
   return (
     <div className={open ? "filters-sticky-group filters-open" : "filters-sticky-group"}>
       <div className="filters-topline">
         <div className="filters-title">
-          <p className="eyebrow">Step 2</p>
+          {showStepEyebrow ? <p className="eyebrow">Step 2</p> : null}
           <h2>Select Programme(s)</h2>
           <p className="filters-title-count">{shown} of {total} programmes shown</p>
         </div>

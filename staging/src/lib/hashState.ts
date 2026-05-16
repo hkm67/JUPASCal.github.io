@@ -14,6 +14,7 @@ export type HashState = {
   grades: StudentGrades;
   pickedCodes: (string | null)[];
   sharing: boolean;
+  showScores?: boolean;
 };
 
 // Map long subject names to short keys for the URL
@@ -129,7 +130,7 @@ export function sanitizeGrades(rawGrades: unknown): StudentGrades {
   return grades;
 }
 
-function stateToParams(grades: StudentGrades, pickedCodes: (string | null)[], sharing = false): URLSearchParams {
+function stateToParams(grades: StudentGrades, pickedCodes: (string | null)[], sharing = false, showScores = false): URLSearchParams {
   const p = new URLSearchParams();
 
   // Add core and specific subjects
@@ -145,6 +146,7 @@ function stateToParams(grades: StudentGrades, pickedCodes: (string | null)[], sh
   }
 
   if (sharing) p.set("sharing", "true");
+  if (showScores) p.set("showscore", "1");
   return p;
 }
 
@@ -155,17 +157,28 @@ export function writeHashState(grades: StudentGrades, pickedCodes: (string | nul
   window.history.replaceState(null, "", newHash ? `#${newHash}` : window.location.pathname + window.location.search);
 }
 
-export function buildShareUrl(grades: StudentGrades, pickedCodes: (string | null)[]): string {
-  const p = stateToParams(grades, pickedCodes, true);
+export function buildShareUrl(grades: StudentGrades, pickedCodes: (string | null)[], showScores = false): string {
+  const p = stateToParams(grades, pickedCodes, true, showScores);
   const base = `${window.location.origin}${window.location.pathname}${window.location.search}`;
   const hash = p.toString();
   return hash ? `${base}#${hash}` : base;
+}
+
+export function setShowScoresInHash(showScores: boolean) {
+  const hash = window.location.hash.slice(1);
+  const p = new URLSearchParams(hash);
+  if (showScores) p.set("showscore", "1");
+  else p.delete("showscore");
+  const nextHash = p.toString();
+  const url = nextHash ? `#${nextHash}` : window.location.pathname + window.location.search;
+  window.history.replaceState(null, "", url);
 }
 
 export function buildEditUrlFromCurrentHash(): string {
   const hash = window.location.hash.slice(1);
   const p = new URLSearchParams(hash);
   p.delete("sharing");
+  p.delete("showscore");
   const nextHash = p.toString();
   const base = `${window.location.origin}${window.location.pathname}${window.location.search}`;
   return nextHash ? `${base}#${nextHash}` : base;
@@ -183,7 +196,8 @@ export function readHashState(): HashState | null {
       return {
         grades: sanitizeGrades(decoded?.grades),
         pickedCodes: sanitizePickedCodes(decoded?.pickedCodes),
-        sharing: decoded?.sharing === true
+        sharing: decoded?.sharing === true,
+        showScores: decoded?.showScores === true,
       };
     }
     
@@ -200,8 +214,8 @@ export function readHashState(): HashState | null {
         pickedCodes = sanitizePickedCodes(val.split(","));
         continue;
       }
-      if (key === "sharing") continue;
-      
+      if (key === "sharing" || key === "showscore") continue;
+
       const subject = sanitizeSubject(REVERSE_MAP[key] || key);
       const grade = sanitizeGrade(val);
       if (!subject || !grade) continue;
@@ -219,7 +233,7 @@ export function readHashState(): HashState | null {
     }
     
     if (Object.keys(grades).length === 0 && pickedCodes.length === 0) return null;
-    return { grades, pickedCodes, sharing };
+    return { grades, pickedCodes, sharing, showScores: p.get("showscore") === "1" };
   } catch (e) {
     console.error("Failed to parse hash", e);
     return null;

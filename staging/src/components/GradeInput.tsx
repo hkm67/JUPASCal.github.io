@@ -69,7 +69,7 @@ export const GradeInput = memo(({ grades, onChange, onReset }: Props) => {
         </div>
         <div className="grade-actions">
           <button className="ghost-button mobile-collapse-toggle" type="button" onClick={() => setCollapsed(!collapsed)}>
-            {collapsed ? "Edit" : "Hide"}
+            {collapsed ? "Edit" : "Done"}
           </button>
         </div>
         <GradeTitleSummary grades={grades} />
@@ -145,9 +145,14 @@ export const GradeInput = memo(({ grades, onChange, onReset }: Props) => {
             />
           </div>
         </div>
-        <button className="done-button" type="button" onClick={finishMobileEntry}>
-          Done
-        </button>
+        <div className="grade-footer-actions">
+          <button className="grade-reset-button" type="button" onClick={reset}>
+            Reset grades
+          </button>
+          <button className="done-button" type="button" onClick={finishMobileEntry}>
+            Done
+          </button>
+        </div>
       </div>
     </section>
   );

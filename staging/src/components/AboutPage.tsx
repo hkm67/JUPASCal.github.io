@@ -54,6 +54,10 @@ export function AboutPage() {
             credits and contact details will be added here.
           </p>
         </section>
+
+        <footer className="about-version">
+          Version <code>{__APP_VERSION__}</code>
+        </footer>
       </article>
     </main>
   );

@@ -1,4 +1,5 @@
 import { Fragment, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useMediaQuery } from "./lib/useMediaQuery";
 import { AboutPage } from "./components/AboutPage";
 import { AppHeader } from "./components/AppHeader";
 import { DetailPanel } from "./components/DetailPanel";
@@ -7,11 +8,15 @@ import { GradeInput } from "./components/GradeInput";
 import { ResultsView } from "./components/ResultsView";
 import { ShareView } from "./components/ShareView";
 import { ShareButton } from "./components/ShareButton";
+import { PreferencePlanner } from "./components/PreferencePlanner";
+import { AdvisorEmptyState } from "./components/AdvisorEmptyState";
+import { StrategySummary } from "./components/StrategySummary";
 import { buildProgrammeResult, filterResults, sortResults, type Filters, type SortKey } from "./lib/results";
 import { readHashState, sanitizeGrades, writeHashState } from "./lib/hashState";
 import type { Profile, Programme, ProgrammeResult, StudentGrades } from "./types/jupas";
 
 const DATA_URL = "/data/processed/JUPAS_2026_Unified_Data.json";
+const VERSION_URL = "/data/processed/JUPAS_2026_Unified_Data.version";
 
 const DEFAULT_FILTERS: Filters = {
   query: "",
@@ -78,16 +83,57 @@ function CalculatorApp() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(DATA_URL)
-      .then((response) => {
-        if (!response.ok) throw new Error(`Data request failed: ${response.status}`);
-        return response.json() as Promise<Programme[]>;
-      })
-      .then((data) => {
-        if (!cancelled) {
-          setProgrammes(data);
+
+    // localStorage keys. Bump CACHE_KEY when the unified-data SHAPE changes
+    // (so old structures don't haunt us); the VERSION_KEY tracks the
+    // *content* hash so we can skip the heavy fetch when nothing changed.
+    const CACHE_KEY = "jupas-programmes-cache-v2";
+    const VERSION_KEY = "jupas-programmes-version-v2";
+
+    // 1. Instant first render from localStorage, if present.
+    let cachedVersion: string | null = null;
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      cachedVersion = localStorage.getItem(VERSION_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached) as Programme[];
+        if (Array.isArray(parsed) && parsed.length > 0 && !cancelled) {
+          setProgrammes(parsed);
           setDataLoaded(true);
         }
+      }
+    } catch {
+      // Cache corrupt or quota issue — fall through to network.
+    }
+
+    // 2. Fetch the tiny version sidecar first. If it matches what we already
+    //    have cached, we're done — skip the heavy JSON download entirely.
+    fetch(VERSION_URL)
+      .then((response) => (response.ok ? response.text() : Promise.resolve("")))
+      .then((serverVersion) => {
+        const trimmed = (serverVersion || "").trim();
+        if (cancelled) return;
+        if (trimmed && cachedVersion && trimmed === cachedVersion) {
+          // Cache is current — nothing more to do.
+          return;
+        }
+        return fetch(DATA_URL)
+          .then((response) => {
+            if (!response.ok) throw new Error(`Data request failed: ${response.status}`);
+            return response.text();
+          })
+          .then((rawText) => {
+            if (cancelled) return;
+            const data = JSON.parse(rawText) as Programme[];
+            setProgrammes(data);
+            setDataLoaded(true);
+            try {
+              localStorage.setItem(CACHE_KEY, rawText);
+              if (trimmed) localStorage.setItem(VERSION_KEY, trimmed);
+            } catch {
+              // Quota exceeded; skip caching this round.
+            }
+          });
       })
       .catch((error: Error) => {
         if (!cancelled) setLoadError(error.message);
@@ -162,16 +208,34 @@ function CalculatorApp() {
     );
   }
 
+  function uniqueProfileName(desired: string, ignoreId?: string): string {
+    const taken = new Set(
+      profiles.filter((p) => p.id !== ignoreId).map((p) => p.name.trim().toLowerCase()),
+    );
+    const base = desired.trim();
+    if (!taken.has(base.toLowerCase())) return base;
+    let n = 2;
+    while (taken.has(`${base} (${n})`.toLowerCase())) n++;
+    return `${base} (${n})`;
+  }
+
   function addProfile() {
+    const defaultName = uniqueProfileName(`My Profile ${profiles.length + 1}`);
+    const entered = window.prompt("Name this profile (e.g. student name or scenario)", defaultName);
+    if (entered === null) return; // User cancelled — abort.
+    const name = uniqueProfileName(entered.trim() || defaultName);
     const id = `profile-${Date.now()}`;
-    const newProfile: Profile = { id, name: `My Profile ${profiles.length + 1}`, grades: {} };
+    const newProfile: Profile = { id, name, grades: {} };
     setProfiles((prev) => [...prev, newProfile]);
     setActiveProfileId(id);
     setStep(1);
   }
 
   function renameProfile(id: string, name: string) {
-    setProfiles((prev) => prev.map((p) => (p.id === id ? { ...p, name } : p)));
+    const cleaned = name.trim();
+    if (!cleaned) return; // Reject empty rename — preserves existing name.
+    const unique = uniqueProfileName(cleaned, id);
+    setProfiles((prev) => prev.map((p) => (p.id === id ? { ...p, name: unique } : p)));
   }
 
   function deleteProfile(id: string) {
@@ -212,6 +276,21 @@ function CalculatorApp() {
     setActiveCode(code);
   }
 
+  function setSlotCode(slotIndex: number, code: string) {
+    const trimmed = code.trim().toUpperCase();
+    if (!trimmed) return;
+    setPickedCodes((current) => {
+      // If this code is already in another slot, do nothing (avoid duplicates).
+      const existingIndex = current.indexOf(trimmed);
+      if (existingIndex !== -1 && existingIndex !== slotIndex) return current;
+      const next = [...current];
+      while (next.length <= slotIndex) next.push(null);
+      next[slotIndex] = trimmed;
+      return next;
+    });
+    setActiveCode(trimmed);
+  }
+
   function handleNext() {
     const nonNullCount = pickedCodes.filter((c) => c !== null).length;
     if (step === 2 && nonNullCount > 0) {
@@ -223,8 +302,57 @@ function CalculatorApp() {
 
   const pickedResultsNonNull = useMemo(() => pickedResults.filter((r): r is ProgrammeResult => r !== null), [pickedResults]);
 
+  const isDesktop = useMediaQuery("(min-width: 921px)");
+
+  function reorderPickedCodes(fromIndex: number, toIndex: number) {
+    setPickedCodes((current) => {
+      const padded = [...current];
+      const maxIndex = Math.max(fromIndex, toIndex);
+      while (padded.length <= maxIndex) padded.push(null);
+      const [moved] = padded.splice(fromIndex, 1);
+      padded.splice(toIndex, 0, moved ?? null);
+      let lastNonNull = -1;
+      for (let i = padded.length - 1; i >= 0; i--) {
+        if (padded[i] !== null) {
+          lastNonNull = i;
+          break;
+        }
+      }
+      return padded.slice(0, lastNonNull + 1);
+    });
+  }
+
+  function removePickedCode(code: string) {
+    setPickedCodes((current) => {
+      const index = current.indexOf(code);
+      if (index === -1) return current;
+      const next = [...current];
+      next[index] = null;
+      let lastNonNull = -1;
+      for (let i = next.length - 1; i >= 0; i--) {
+        if (next[i] !== null) {
+          lastNonNull = i;
+          break;
+        }
+      }
+      return next.slice(0, lastNonNull + 1);
+    });
+    if (activeCode === code) {
+      const nextVal = pickedCodes.filter((c) => c !== null).find((item) => item !== code);
+      setActiveCode(nextVal || undefined);
+    }
+  }
+
   if (IS_SHARED_VIEW && INITIAL_HASH_STATE && programmes.length > 0 && pickedCount > 0) {
-    return <ShareView profileName={activeProfile.name} results={pickedResults} />;
+    return (
+      <ShareView
+        profileName={activeProfile.name}
+        results={pickedResults}
+        profiles={profiles}
+        activeProfileId={activeProfileId}
+        onProfileChange={setActiveProfileId}
+      />
+    );
   }
 
   if (loadError) {
@@ -265,6 +393,28 @@ function CalculatorApp() {
 
   const showProgrammeLoading = step === 2 && !dataLoaded;
   const canShare = pickedCount > 0;
+
+  const desktopPlannerNode = (
+    <PreferencePlanner
+      results={pickedResults}
+      activeCode={activeResult?.programme.jupas_code}
+      onActivate={setActiveCode}
+      onReorder={reorderPickedCodes}
+      onRemove={removePickedCode}
+      onSetSlotCode={setSlotCode}
+      programmes={programmes}
+      shareSlot={canShare ? <ShareButton grades={activeProfile.grades} pickedCodes={pickedCodes} /> : null}
+    />
+  );
+
+  const mobilePlannerNode = (
+    <PreferenceLine
+      results={pickedResults}
+      activeCode={activeResult?.programme.jupas_code}
+      onActivate={setActiveCode}
+    />
+  );
+
   const programmePicker = showProgrammeLoading ? (
     <section className="panel programme-loading-panel" aria-live="polite" aria-busy="true">
       <p className="eyebrow">Programme picker</p>
@@ -287,19 +437,14 @@ function CalculatorApp() {
         selectedCount={pickedCount}
         selectedOnly={selectedOnly}
         compactResults={compactResults}
+        showStepEyebrow={!isDesktop}
         onFiltersChange={setFilters}
         onOpenChange={setProgrammeFiltersOpen}
         onSelectedOnlyChange={setSelectedOnly}
         onCompactResultsChange={setCompactResults}
         onReviewSelected={reviewSelectedProgrammes}
         onResetSelected={resetSelectedProgrammes}
-        selectedOrder={
-          <PreferencePlanner
-            results={pickedResults}
-            activeCode={activeResult?.programme.jupas_code}
-            onActivate={setActiveCode}
-          />
-        }
+        selectedOrder={isDesktop ? undefined : mobilePlannerNode}
       />
       <ResultsView
         results={filteredResults}
@@ -347,74 +492,78 @@ function CalculatorApp() {
     </section>
   );
 
+  const header = (
+    <AppHeader
+      theme={theme}
+      onThemeChange={setTheme}
+      profiles={profiles}
+      activeProfileId={activeProfileId}
+      onProfileSelect={setActiveProfileId}
+      onProfileAdd={addProfile}
+      onProfileRename={renameProfile}
+      onProfileDelete={deleteProfile}
+    />
+  );
+
+  const detailPanelNode = pickedCount > 0 ? (
+    <DetailPanel
+      results={pickedResults}
+      activeCode={activeResult?.programme.jupas_code}
+      reviewRequest={reviewRequest}
+      onActiveCodeChange={setActiveCode}
+      onRemove={removePickedCode}
+    />
+  ) : null;
+
+  const mobileDetailNode = detailPanelNode ?? (
+    <aside className="panel desktop-empty-detail">
+      <p className="eyebrow">Comparison drawer</p>
+      <h2>Pick programmes to compare</h2>
+      <p>Use A1-A3 for dream, target, and safer choices. B1-B3 is useful for realistic backups and consultation.</p>
+    </aside>
+  );
+
+  const desktopRightColumn = pickedCount > 0 ? (
+    <>
+      <StrategySummary results={pickedResultsNonNull} />
+      {detailPanelNode}
+    </>
+  ) : (
+    <AdvisorEmptyState />
+  );
+
+  if (isDesktop) {
+    return (
+      <main className="app-shell layout-desktop">
+        <div className="glass-veil" aria-hidden="true" />
+        {header}
+
+        <section className="desktop-workspace" aria-label="Desktop JUPAS planner">
+          <div className="desktop-grade-column">
+            <GradeInput grades={grades} onChange={setGrades} onReset={() => setGrades({})} />
+          </div>
+          <div className="desktop-programme-column">
+            <div className="desktop-planner-wrap">
+              {desktopPlannerNode}
+            </div>
+            {programmePicker}
+          </div>
+          <div className="desktop-detail-column">
+            {desktopRightColumn}
+          </div>
+        </section>
+
+      </main>
+    );
+  }
+
   return (
-    <main className="app-shell">
+    <main className="app-shell layout-mobile">
       <div className="glass-veil" aria-hidden="true" />
-      <AppHeader
-        theme={theme}
-        onThemeChange={setTheme}
-        profiles={profiles}
-        activeProfileId={activeProfileId}
-        onProfileSelect={setActiveProfileId}
-        onProfileAdd={addProfile}
-        onProfileRename={renameProfile}
-        onProfileDelete={deleteProfile}
-      />
-
-      <section className={pickedCount > 0 ? "desktop-workspace detail-open" : "desktop-workspace"} aria-label="Desktop JUPAS planner">
-        <div className="desktop-grade-column">
-          <GradeInput grades={grades} onChange={setGrades} onReset={() => setGrades({})} />
-        </div>
-        <div className="desktop-programme-column">
-          {programmePicker}
-        </div>
-        <div className="desktop-detail-column" aria-hidden={pickedCount === 0}>
-          {pickedCount > 0 ? (
-            <DetailPanel
-              results={pickedResults}
-              activeCode={activeResult?.programme.jupas_code}
-              reviewRequest={reviewRequest}
-              onActiveCodeChange={setActiveCode}
-              onRemove={(code) => {
-                setPickedCodes((current) => {
-                  const index = current.indexOf(code);
-                  if (index === -1) return current;
-                  const next = [...current];
-                  next[index] = null;
-                  
-                  // Trim trailing nulls
-                  let lastNonNull = -1;
-                  for (let i = next.length - 1; i >= 0; i--) {
-                    if (next[i] !== null) {
-                      lastNonNull = i;
-                      break;
-                    }
-                  }
-                  return next.slice(0, lastNonNull + 1);
-                });
-                if (activeCode === code) {
-                  const nextVal = pickedCodes.filter(c => c !== null).find((item) => item !== code);
-                  setActiveCode(nextVal || undefined);
-                }
-              }}
-            />
-          ) : (
-            <aside className="panel desktop-empty-detail">
-              <p className="eyebrow">Comparison drawer</p>
-              <h2>Pick programmes to compare</h2>
-              <p>Use A1-A3 for dream, target, and safer choices. B1-B3 is useful for realistic backups and consultation.</p>
-            </aside>
-          )}
-        </div>
-      </section>
-
-      <div className="desktop-share-bar">
-        <span>{pickedResults.length ? `${pickedResults.length} programmes selected · first 6 map to A1-B3` : "Select programmes, then refine A1-B3 priority"}</span>
-        {canShare ? <ShareButton grades={activeProfile.grades} pickedCodes={pickedCodes} /> : null}
-      </div>
+      {header}
 
       <div className="mobile-stepper-flow">
-        <StepperBar step={step} pickedCount={pickedResults.length} onStepChange={setStep} />
+        <StepperBar step={step} pickedCount={pickedCount} onStepChange={setStep} />
 
         <div className="stepper-content">
           <div className={step === 1 ? "stepper-panel active" : "stepper-panel"}>
@@ -426,86 +575,59 @@ function CalculatorApp() {
           </div>
 
           <div className={step === 3 ? "stepper-panel active" : "stepper-panel"}>
-            <DetailPanel
-              results={pickedResults}
-              activeCode={activeResult?.programme.jupas_code}
-              reviewRequest={reviewRequest}
-              onActiveCodeChange={setActiveCode}
-              onRemove={(code) => {
-                setPickedCodes((current) => {
-                  const index = current.indexOf(code);
-                  if (index === -1) return current;
-                  const next = [...current];
-                  next[index] = null;
-                  
-                  // Trim trailing nulls
-                  let lastNonNull = -1;
-                  for (let i = next.length - 1; i >= 0; i--) {
-                    if (next[i] !== null) {
-                      lastNonNull = i;
-                      break;
-                    }
-                  }
-                  return next.slice(0, lastNonNull + 1);
-                });
-                if (activeCode === code) {
-                  const nextVal = pickedCodes.filter(c => c !== null).find((item) => item !== code);
-                  setActiveCode(nextVal || undefined);
-                }
-              }}
-            />
+            {mobileDetailNode}
           </div>
         </div>
 
         <footer className="stepper-footer">
-        <div className="stepper-footer-left">
-          <button
-            type="button"
-            className="ghost-button"
-            disabled={!backLabel}
-            onClick={() => {
-              if (backLabel) setStep((step - 1) as 1 | 2 | 3);
-            }}
-          >
-            Back
-          </button>
-        </div>
-        <div className="stepper-footer-right">
-          <button
-            type="button"
-            className="ghost-button"
-            disabled={
-              (step === 1 && Object.keys(grades).length === 0) ||
-              (step === 2 && pickedResults.length === 0) ||
-              step === 3
-            }
-            onClick={() => {
-              if (step === 1) setGrades({});
-              if (step === 2) resetSelectedProgrammes();
-            }}
-          >
-            Reset
-          </button>
-          {step < 3 ? (
+          <div className="stepper-footer-left">
             <button
               type="button"
-              className="stepper-next-btn"
-              onClick={handleNext}
-              disabled={step === 2 && pickedResults.length === 0}
+              className="ghost-button"
+              disabled={!backLabel}
+              onClick={() => {
+                if (backLabel) setStep((step - 1) as 1 | 2 | 3);
+              }}
             >
-              {nextLabel} <ArrowIcon direction="right" />
+              Back
             </button>
-          ) : pickedResults.length > 0 ? (
-            <ShareButton grades={activeProfile.grades} pickedCodes={pickedCodes} />
-          ) : null}
-        </div>
+          </div>
+          <div className="stepper-footer-right">
+            <button
+              type="button"
+              className="ghost-button"
+              disabled={
+                (step === 1 && Object.keys(grades).length === 0) ||
+                (step === 2 && pickedCount === 0) ||
+                step === 3
+              }
+              onClick={() => {
+                if (step === 1) setGrades({});
+                if (step === 2) resetSelectedProgrammes();
+              }}
+            >
+              Reset
+            </button>
+            {step < 3 ? (
+              <button
+                type="button"
+                className="stepper-next-btn"
+                onClick={handleNext}
+                disabled={step === 2 && pickedCount === 0}
+              >
+                {nextLabel} <ArrowIcon direction="right" />
+              </button>
+            ) : pickedCount > 0 ? (
+              <ShareButton grades={activeProfile.grades} pickedCodes={pickedCodes} />
+            ) : null}
+          </div>
         </footer>
       </div>
     </main>
   );
 }
 
-function PreferencePlanner({
+function PreferenceLine({
   results,
   activeCode,
   onActivate,
@@ -600,13 +722,40 @@ function loadTheme(): Theme {
 
 function loadProfiles(): Profile[] {
   const hashState = readHashState();
+  const local = loadLocalProfiles();
+
+  // Share mode: keep any locally-saved profiles so the viewer can switch
+  // between them in ShareView. If none exist, fall back to a synthetic
+  // profile built from the hash state (recipient case).
   if (hashState && Object.keys(hashState.grades).length > 0) {
+    if (local.length > 0) {
+      // Append a synthetic "Shared" profile only when the hash grades don't
+      // already match one of the local profiles (avoids duplicate rows).
+      const sharedGradesKey = JSON.stringify(hashState.grades);
+      const matchesLocal = local.some((p) => JSON.stringify(p.grades) === sharedGradesKey);
+      if (!matchesLocal) {
+        return [
+          ...local,
+          {
+            id: `shared-${Date.now()}`,
+            name: "Shared profile",
+            grades: hashState.grades,
+          },
+        ];
+      }
+      return local;
+    }
     return [{
       id: `shared-${Date.now()}`,
-      name: "My Profile",
+      name: "Shared profile",
       grades: hashState.grades,
     }];
   }
+
+  return local.length > 0 ? local : [{ id: "default", name: "My Profile", grades: {} }];
+}
+
+function loadLocalProfiles(): Profile[] {
   try {
     const saved = localStorage.getItem("jupas-staging-profiles");
     if (saved) {
@@ -623,7 +772,10 @@ function loadProfiles(): Profile[] {
   } catch (e) {
     console.error("Failed to load legacy grades", e);
   }
-  return [{ id: "default", name: "My Profile", grades }];
+  if (Object.keys(grades).length > 0) {
+    return [{ id: "default", name: "My Profile", grades }];
+  }
+  return [];
 }
 
 function sanitizeProfiles(rawProfiles: unknown): Profile[] {

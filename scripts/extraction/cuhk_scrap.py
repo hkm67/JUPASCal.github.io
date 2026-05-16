@@ -13,7 +13,9 @@ For the 2026 calculator:
   The 2026 formula/weights here are for reference / 2027 calculator.
 """
 
+import argparse
 import json
+import sys
 import requests
 import pandas as pd
 
@@ -22,8 +24,33 @@ OUTPUT_JSON = "Reference(2026)/CUHK/CUHK_2026_Data.json"
 OUTPUT_EXCEL= "Reference(2026)/CUHK/CUHK_2026_Data.xlsx"
 
 
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--insecure",
+    action="store_true",
+    help=(
+        "Disable TLS certificate verification. Use only as a fallback when the "
+        "CUHK admission feed's cert chain can't be verified in the current "
+        "environment (e.g. its Sectigo intermediate roots through an old AAA "
+        "Certificate Services anchor that's not in this machine's trust store). "
+        "The endpoint is a public CUHK feed, so unverified fetch is low-risk."
+    ),
+)
+ARGS = parser.parse_args()
+
+
 def fetch_data():
-    resp = requests.get(URL, timeout=30)
+    verify = not ARGS.insecure
+    if not verify:
+        print(
+            "WARNING: TLS verification disabled via --insecure. "
+            "Re-enable as soon as the trust store is fixed.",
+            file=sys.stderr,
+        )
+        # Suppress the InsecureRequestWarning noise but keep our explicit warning.
+        from urllib3.exceptions import InsecureRequestWarning
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    resp = requests.get(URL, timeout=30, verify=verify)
     resp.raise_for_status()
     return resp.json()
 

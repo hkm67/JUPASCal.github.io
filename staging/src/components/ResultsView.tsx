@@ -66,10 +66,14 @@ export function ResultsView({ results, selectedCodes, selectedResults, activeCod
                 key={result.programme.jupas_code}
                 data-code={result.programme.jupas_code}
                 className={activeCode === result.programme.jupas_code ? "selected" : selectedCodes.includes(result.programme.jupas_code) ? "picked" : ""}
-                onClick={() => onFocus(result.programme.jupas_code)}
+                onClick={() => {
+                  togglePick(result.programme.jupas_code);
+                  onFocus(result.programme.jupas_code);
+                }}
+                style={{ cursor: "pointer" }}
               >
                 <td>
-                  <span className="programme-cell-head">
+                  <span className="programme-cell-head" onClick={(event) => event.stopPropagation()}>
                     <PickButton picked={selectedCodes.includes(result.programme.jupas_code)} onClick={() => togglePick(result.programme.jupas_code)} />
                     <span className="programme-cell-text">
                       <strong>

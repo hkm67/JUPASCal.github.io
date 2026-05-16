@@ -85,7 +85,17 @@ for count, program in enumerate(university_data):
     soup_programme = BeautifulSoup(response_programme.content, 'html.parser')
 
     quota_div = soup_programme.find('div', class_='programInfo_block programInfo_block-firstyear')
-    quota = re.sub(r'\D', '', quota_div.text.strip()) if quota_div else ''
+    quota = ''
+    if quota_div:
+        # Only the first integer AFTER the "First Year Intake" label is the
+        # intake quota. Stripping all non-digits concatenates breakdown numbers
+        # (e.g. "JS6200 & JS6999" or "around 37, 49, ...") into a bogus value.
+        m = re.search(
+            r'First Year Intake(?:\s*\([^)]*\))?\s*:?\s*(\d+)',
+            quota_div.get_text(' ', strip=True),
+            flags=re.IGNORECASE,
+        )
+        quota = m.group(1) if m else ''
 
     title = soup_programme.find('p', class_='strokeBar_title', string="Statistics")
 

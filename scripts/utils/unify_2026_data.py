@@ -44,6 +44,7 @@ POLYU_WEIGHTS_2026 = "Reference(2026)/PolyU/PolyU_2026_Weights.json"
 
 OVERVIEW_FILE = "data/raw/2026 JUPAS Program Overview.csv"
 OFFER_TABLE_FILE = "data/raw/2026 JUPAS Offer Table.csv"
+JUPAS_DETAIL_FILE = "data/raw/jupas_programme_details_2026.json"
 OUTPUT_FILE = "data/processed/JUPAS_2026_Unified_Data.json"
 CUHK_GRADES_FILE = "Reference(2026)/CUHK/cuhk_grades_2025.json"
 SUBJECT_MAPPING_FILE = "data/raw/subject_mapping.json"
@@ -636,6 +637,15 @@ def unify_data():
         for code, group in df_offer.groupby('JUPAS'):
             offer_stats_map[str(code)] = group.to_dict('records')
     print(f"Loaded offer statistics for {len(offer_stats_map)} programmes.")
+
+    # Load JUPAS-site programme details (used as a baseline fallback layer for
+    # every programme — see scripts/extraction/jupas_detail_scrap.py).
+    jupas_detail_map = {}
+    if os.path.exists(JUPAS_DETAIL_FILE):
+        with open(JUPAS_DETAIL_FILE, encoding="utf-8") as f:
+            for rec in json.load(f):
+                jupas_detail_map[rec["jupas_code"]] = rec
+    print(f"Loaded JUPAS detail records for {len(jupas_detail_map)} programmes.")
 
     # Load PolyU structured weights
     polyu_weights_2026 = {}
@@ -1453,13 +1463,75 @@ def unify_data():
 
             obj = apply_baselines(obj)
             obj["offer_statistics"] = offer_stats_map.get(code, [])
+            # Backfill quota from offer_statistics if not set at top level
+            if obj.get("quota") in (None, "", 0):
+                for row in obj["offer_statistics"]:
+                    q = row.get("Quota")
+                    if isinstance(q, (int, float)) and q > 0:
+                        obj["quota"] = int(q)
+                        break
+
+            # JUPAS-site baseline fallback layer.
+            # Every field overlaid here is "what JUPAS publicly publishes" —
+            # used to fill gaps where the per-school feed lags or is missing.
+            jd = jupas_detail_map.get(code)
+            if jd:
+                # Names: overlay if per-school is blank
+                if not obj.get("name_en"):
+                    obj["name_en"] = jd.get("name_en") or obj.get("name_en")
+                if not obj.get("name_zh"):
+                    obj["name_zh"] = jd.get("name_zh") or obj.get("name_zh")
+
+                # Quota: prefer numeric JUPAS quota when per-school has a
+                # verbose string (e.g. PolyU's "30 (JUPAS and Non-JUPAS)") or
+                # no value at all.
+                existing_quota = obj.get("quota")
+                if isinstance(existing_quota, str) or existing_quota in (None, "", 0):
+                    if jd.get("quota"):
+                        obj["quota"] = jd["quota"]
+
+                # Always carry the JUPAS-side fields as a separate namespace so
+                # the calculator can show them without overwriting any
+                # institutional-source field.
+                obj["jupas_url"] = jd.get("url")
+
+                # short_description: trim to ~280 chars to keep the unified
+                # JSON small (full text wasn't shown anywhere in the UI).
+                short_desc = (jd.get("short_description") or "").strip()
+                if len(short_desc) > 280:
+                    short_desc = short_desc[:280].rsplit(" ", 1)[0] + "…"
+                obj["short_description"] = short_desc
+
+                obj["programme_websites"] = jd.get("programme_websites") or []
+                obj["tuition_fee_first_year"] = jd.get("tuition_fee_first_year") or ""
+                # Skip tuition_fee_full_text — not surfaced in UI; the first-year
+                # number is the only datum we render. Drops ~108 KB.
+                obj["contacts_text"] = jd.get("contacts_text") or ""
+                obj["study_level"] = jd.get("study_level") or ""
+
+                # jupas_requirements: drop raw_text dump (4 KB per programme,
+                # ~1.7 MB across all programmes). The structured tables
+                # (programme_core/electives/notes) are what the UI uses.
+                requirements = dict(jd.get("requirements") or {})
+                requirements.pop("raw_text", None)
+                obj["jupas_requirements"] = requirements
             unified_map[code] = obj
 
-    # 5. Export Unified Master File
+    # 5. Export Unified Master File — minified to shrink wire size.
     final_unified = list(unified_map.values())
+    payload = json.dumps(final_unified, ensure_ascii=False, separators=(",", ":"))
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-        json.dump(final_unified, f, ensure_ascii=False, indent=2)
+        f.write(payload)
+    # Sidecar version file — short content hash. The frontend fetches this
+    # tiny file first and skips the full JSON re-download when the hash
+    # matches the cached copy.
+    import hashlib
+    version_hash = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:12]
+    version_path = OUTPUT_FILE.replace(".json", ".version")
+    with open(version_path, 'w', encoding='utf-8') as f:
+        f.write(version_hash)
     print(f"Unified data for {len(final_unified)} programmes saved to {OUTPUT_FILE}")
+    print(f"Version hash {version_hash} written to {version_path}")
 
 if __name__ == "__main__":
     unify_data()

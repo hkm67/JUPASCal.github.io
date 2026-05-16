@@ -96,6 +96,30 @@ export type Programme = {
   offer_statistics?: OfferStatistic[];
   quota?: number | null;
   remarks?: string | null;
+
+  // JUPAS-site baseline (populated by scripts/extraction/jupas_detail_scrap.py)
+  jupas_url?: string | null;
+  short_description?: string | null;
+  programme_websites?: string[] | null;
+  tuition_fee_first_year?: string | null;
+  tuition_fee_full_text?: string | null;
+  contacts_text?: string | null;
+  study_level?: string | null;
+  jupas_requirements?: JupasRequirements | null;
+};
+
+export type JupasRequirement = {
+  subject: string;
+  min_level: string;
+};
+
+export type JupasRequirements = {
+  programme_core?: JupasRequirement[];
+  programme_electives?: JupasRequirement[];
+  general_core?: JupasRequirement[];
+  general_electives?: JupasRequirement[];
+  notes?: string[];
+  raw_text?: string;
 };
 
 export type CandidateScore = {

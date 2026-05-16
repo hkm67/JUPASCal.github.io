@@ -283,6 +283,23 @@
     "subject_weights_raw": "Chi Lang (x2)\nChi Literature (x2)"
   },
   {
+    "code": "JS9555",
+    "school": "School of Education & Languages",
+    "formula": "Best 5",
+    "score_median": 23.0,
+    "score_lq": 22.0,
+    "data_year_scores": 2025,
+    "data_year_weightings": 2025,
+    "scores_source": "af_2025_JUPAS.pdf p42-44 (JUPAS combined, HKMU section)",
+    "weightings_source": "af_2025_JUPAS.pdf p42-44 (HKMU section, weights used for 2025 scores)",
+    "name": "Bachelor of Language Studies with Honours in Bilingual Studies with Applied Drama",
+    "subject_weights": {
+      "Chi Lang": 2.0,
+      "Eng Lang": 2.0
+    },
+    "subject_weights_raw": "Chi Lang (x2)\nEng Lang (x2)"
+  },
+  {
     "code": "JS9560",
     "school": "School of Education & Languages",
     "formula": "Best 5",
@@ -399,21 +416,5 @@
     "name": "Bachelor of Science with Honours in Building Engineering and Management",
     "subject_weights": {},
     "subject_weights_raw": ""
-  },
-  {
-    "code": "JS9775",
-    "school": "School of Science and Technology",
-    "formula": "Best 5",
-    "score_median": null,
-    "score_lq": null,
-    "data_year_scores": null,
-    "data_year_weightings": null,
-    "scores_source": "No 2025 scores yet — programme new for 2026 entry",
-    "weightings_source": "Awaiting first cycle of admission data",
-    "name": "Bachelor of Applied Science with Honours in Robotics and Automation Engineering",
-    "name_zh": "機器人和自動化工程榮譽應用理學士",
-    "subject_weights": {},
-    "subject_weights_raw": "",
-    "_source_note": "Stub entry from JUPAS site (https://www.jupas.edu.hk/en/programme/hkmu/JS9775) — populate score fields when HKMU PDF/JUPAS publishes them"
   }
 ]
