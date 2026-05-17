@@ -121,15 +121,41 @@ function CalculatorApp() {
   // the URL arrived with `sharing=true`. Toggles via Share/Edit buttons.
   const [shareViewMode, setShareViewMode] = useState<boolean>(IS_SHARED_VIEW);
 
-  // Sync share view with browser back/forward navigation. popstate fires
-  // for the user's nav actions but not for pushState/replaceState we
-  // trigger ourselves, which is fine — we update the state manually there.
+  // Watch the URL hash for runtime changes — user pasting a different URL
+  // into the address bar (fires `hashchange`) or hitting the back/forward
+  // buttons (`popstate`). Each external URL change creates a TRANSIENT
+  // preview profile so the DOM matches the URL, without ever mutating the
+  // user's local profiles. To keep / edit the preview the user must hit
+  // "Save as profile" in the banner / share view; to drop it they hit
+  // "Discard". Our own writes use replaceState / pushState which do NOT
+  // fire `hashchange`, so this listener never reacts to internally-driven
+  // URL updates.
   useEffect(() => {
-    const onPopState = () => {
-      setShareViewMode(readHashState()?.sharing === true);
+    const onUrlChange = () => {
+      const state = readHashState();
+      const hasContent = !!state && (
+        Object.keys(state.grades).length > 0 || state.pickedCodes.length > 0
+      );
+      if (!hasContent) {
+        // Empty hash → drop any preview, exit share view.
+        setPreviewProfile(null);
+        setShareViewMode(false);
+        return;
+      }
+      setPreviewProfile({
+        id: "__preview__",
+        name: state!.sharing ? "Shared plan" : "URL preview",
+        grades: state!.grades,
+        pickedCodes: state!.pickedCodes,
+      });
+      setShareViewMode(state!.sharing === true);
     };
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    window.addEventListener("hashchange", onUrlChange);
+    window.addEventListener("popstate", onUrlChange);
+    return () => {
+      window.removeEventListener("hashchange", onUrlChange);
+      window.removeEventListener("popstate", onUrlChange);
+    };
   }, []);
 
   const pickedCount = pickedCodes.filter((c) => c !== null).length;
@@ -238,12 +264,12 @@ function CalculatorApp() {
     setPreviewProfile(null);
   }
 
-  function saveSharedAsProfile() {
-    // Copy the preview profile into the user's local profile list and
-    // make it active. Stays in share view until the user clicks Edit.
+  function savePreviewAsProfile() {
+    // Promote the preview into a real profile. Works for both received
+    // shares (sharing=true URL) and pasted deep-link URLs (no flag).
     if (!previewProfile) return;
     const newId = `profile-${Date.now()}`;
-    const newName = uniqueProfileName(previewProfile.name === "Shared plan" ? "Imported plan" : previewProfile.name);
+    const newName = uniqueProfileName("Imported plan");
     const newProfile: Profile = {
       id: newId,
       name: newName,
@@ -253,7 +279,14 @@ function CalculatorApp() {
     setProfiles((prev) => [...prev, newProfile]);
     setActiveProfileId(newId);
     setPreviewProfile(null);
-    // Switch to calculator view so the new profile is editable.
+    setShareViewMode(false);
+  }
+
+  function discardPreview() {
+    // Throw away the pasted URL state and return to the user's saved
+    // active profile. The localStorage effect will rewrite the URL to
+    // the active profile's calc URL on the next render.
+    setPreviewProfile(null);
     setShareViewMode(false);
   }
 
@@ -476,7 +509,7 @@ function CalculatorApp() {
         onProfileChange={sharedViewActive ? undefined : setActiveProfileId}
         onExitShareMode={exitShareMode}
         isReceivedShare={sharedViewActive}
-        onSaveAsProfile={sharedViewActive ? saveSharedAsProfile : undefined}
+        onSaveAsProfile={sharedViewActive ? savePreviewAsProfile : undefined}
       />
     );
   }
@@ -659,11 +692,31 @@ function CalculatorApp() {
     <AdvisorEmptyState />
   );
 
+  const previewBanner = sharedViewActive && !shareViewMode ? (
+    <div className="preview-banner" role="status" aria-live="polite">
+      <div className="preview-banner-text">
+        <strong>Viewing the URL you pasted</strong>
+        <span>
+          Your saved profiles aren't touched. Save this as a new profile to keep it, or discard it to return to your data.
+        </span>
+      </div>
+      <div className="preview-banner-actions">
+        <button type="button" className="ghost-button" onClick={savePreviewAsProfile}>
+          Save as profile
+        </button>
+        <button type="button" className="ghost-button" onClick={discardPreview}>
+          Discard
+        </button>
+      </div>
+    </div>
+  ) : null;
+
   if (isDesktop) {
     return (
       <main className="app-shell layout-desktop">
         <div className="glass-veil" aria-hidden="true" />
         {header}
+        {previewBanner}
 
         <section className="desktop-workspace" aria-label="Desktop JUPAS planner">
           <div className="desktop-grade-column">
@@ -688,6 +741,7 @@ function CalculatorApp() {
     <main className="app-shell layout-mobile">
       <div className="glass-veil" aria-hidden="true" />
       {header}
+      {previewBanner}
 
       <div className="mobile-stepper-flow">
         <StepperBar step={step} pickedCount={pickedCount} onStepChange={setStep} />
