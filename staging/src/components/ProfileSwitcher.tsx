@@ -50,9 +50,13 @@ type Props = {
   onAdd: () => void;
   onRename: (id: string, name: string) => void;
   onDelete: (id: string) => void;
+  // Clear all locally-saved profiles, picks, and grades; reloads to a
+  // fresh first-visit state. Wired from App.tsx — keeps the wording
+  // layman ("Start fresh") so non-technical users understand it.
+  onResetAll?: () => void;
 };
 
-export const ProfileBar = memo(({ profiles, activeProfileId, onSelect, onAdd, onRename, onDelete }: Props) => {
+export const ProfileBar = memo(({ profiles, activeProfileId, onSelect, onAdd, onRename, onDelete, onResetAll }: Props) => {
   const [moreOpen, setMoreOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
@@ -77,6 +81,14 @@ export const ProfileBar = memo(({ profiles, activeProfileId, onSelect, onAdd, on
   function handleDelete() {
     setMoreOpen(false);
     if (confirm(`Delete "${activeProfile?.name}"?`)) onDelete(activeProfileId);
+  }
+
+  function handleResetAll() {
+    setMoreOpen(false);
+    if (!onResetAll) return;
+    if (confirm("Start fresh? This deletes all your profiles, grades, and picks on this device. You can't undo this.")) {
+      onResetAll();
+    }
   }
 
   return (
@@ -136,6 +148,17 @@ export const ProfileBar = memo(({ profiles, activeProfileId, onSelect, onAdd, on
               >
                 Delete
               </button>
+              {onResetAll ? (
+                <button
+                  className="profile-more-item profile-more-item--danger"
+                  type="button"
+                  role="menuitem"
+                  onClick={handleResetAll}
+                  title="Wipe all locally-saved profiles, grades, and picks on this device"
+                >
+                  Start fresh (clear everything)
+                </button>
+              ) : null}
             </div>
           )}
         </div>
@@ -146,7 +169,7 @@ export const ProfileBar = memo(({ profiles, activeProfileId, onSelect, onAdd, on
   );
 });
 
-export const ProfileChip = memo(({ profiles, activeProfileId, onSelect, onAdd, onRename, onDelete }: Props) => {
+export const ProfileChip = memo(({ profiles, activeProfileId, onSelect, onAdd, onRename, onDelete, onResetAll }: Props) => {
   const [open, setOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -188,6 +211,14 @@ export const ProfileChip = memo(({ profiles, activeProfileId, onSelect, onAdd, o
   function handleDelete() {
     setOpen(false);
     if (confirm(`Delete "${active?.name}"?`)) onDelete(activeProfileId);
+  }
+
+  function handleResetAll() {
+    setOpen(false);
+    if (!onResetAll) return;
+    if (confirm("Start fresh? This deletes all your profiles, grades, and picks on this device. You can't undo this.")) {
+      onResetAll();
+    }
   }
 
   return (
@@ -249,6 +280,17 @@ export const ProfileChip = memo(({ profiles, activeProfileId, onSelect, onAdd, o
             >
               Delete current
             </button>
+            {onResetAll ? (
+              <button
+                type="button"
+                role="menuitem"
+                className="profile-chip-item is-danger"
+                onClick={handleResetAll}
+                title="Wipe all locally-saved profiles, grades, and picks on this device"
+              >
+                Start fresh (clear everything)
+              </button>
+            ) : null}
           </div>
         )}
       </div>

@@ -20,6 +20,7 @@ type Props = {
   onProfileAdd?: () => void;
   onProfileRename?: (id: string, name: string) => void;
   onProfileDelete?: (id: string) => void;
+  onResetAll?: () => void;
 };
 
 export function AppHeader({
@@ -31,6 +32,7 @@ export function AppHeader({
   onProfileAdd,
   onProfileRename,
   onProfileDelete,
+  onResetAll,
 }: Props) {
   const canToggleTheme = theme !== undefined && onThemeChange !== undefined;
   const isDark = theme === "dark";
@@ -66,6 +68,7 @@ export function AppHeader({
             onAdd={onProfileAdd}
             onRename={onProfileRename}
             onDelete={onProfileDelete}
+            onResetAll={onResetAll}
           />
         ) : null}
 

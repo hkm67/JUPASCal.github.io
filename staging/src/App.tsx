@@ -358,6 +358,16 @@ function CalculatorApp() {
     if (activeProfileId === id) setActiveProfileId(nextProfiles[0].id);
   }
 
+  function resetAllData() {
+    // Wipe everything user-personal. Keep the programmes-cache + theme
+    // since those aren't profile data and re-downloading the JSON is
+    // wasteful. Reload to a clean app state.
+    localStorage.removeItem("jupas-staging-profiles");
+    localStorage.removeItem("jupas-staging-active-profile-id");
+    localStorage.removeItem("jupas-staging-grades"); // legacy pre-multi-profile key
+    window.location.href = window.location.origin + window.location.pathname;
+  }
+
   function reviewSelectedProgrammes() {
     const nonNullResults = pickedResults.filter((r): r is ProgrammeResult => r !== null);
     if (!nonNullResults.length) return;
@@ -618,6 +628,7 @@ function CalculatorApp() {
       onProfileAdd={addProfile}
       onProfileRename={renameProfile}
       onProfileDelete={deleteProfile}
+      onResetAll={resetAllData}
     />
   );
 
