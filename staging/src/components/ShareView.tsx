@@ -27,8 +27,9 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
   const recapRef = useRef<HTMLDivElement | null>(null);
   const [downloadState, setDownloadState] = useState<"idle" | "rendering" | "done" | "error">("idle");
 
-  function handleEdit() {
-    window.history.replaceState(null, "", buildEditUrlFromCurrentHash());
+  async function handleEdit() {
+    const editUrl = await buildEditUrlFromCurrentHash();
+    window.history.replaceState(null, "", editUrl);
     window.location.reload();
   }
 

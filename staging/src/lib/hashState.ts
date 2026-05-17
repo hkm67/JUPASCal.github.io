@@ -9,6 +9,11 @@ const VALID_GRADES = new Set(["5**", "5*", "5", "4", "3", "2", "1", "A", "B", "C
 const PROGRAMME_CODE_PATTERN = /^JS\d{4}$/;
 const SLOT_SUBJECT_PATTERN = /^(elective-[1-4]|cat-c):subject$/;
 const VALID_SUBJECTS = new Set([...CORE_SUBJECTS, M12_SUBJECT, ...CAT_A_SUBJECTS, ...CAT_C_SUBJECTS]);
+const CAT_C_SET = new Set<string>(CAT_C_SUBJECTS);
+
+// Compressed-format prefix. Plain tight URLSearchParams hashes have no prefix
+// and look like `chi=5**&eng=5*&p=1001,2002&...`. We pick whichever is shorter.
+const COMPRESSED_PREFIX = "a=";
 
 export type HashState = {
   grades: StudentGrades;
@@ -17,7 +22,6 @@ export type HashState = {
   showScores?: boolean;
 };
 
-// Map long subject names to short keys for the URL
 const SUBJECT_MAP: Record<string, string> = {
   "Chinese Language": "chi",
   "English Language": "eng",
@@ -57,28 +61,24 @@ const SUBJECT_MAP: Record<string, string> = {
   "Urdu: Urdu (International)": "ur",
 };
 
-// Create a reverse map for parsing
 const REVERSE_MAP: Record<string, string> = Object.fromEntries(
   Object.entries(SUBJECT_MAP).map(([k, v]) => [v, k])
 );
 
-function encodeGrade(grade: string): string {
-  // Convert 5** to 5s, 5* to 5s, so it's URL friendly without encoding
-  if (grade === "5**") return "5ss";
-  if (grade === "5*") return "5s";
-  return grade.toLowerCase();
-}
-
-function decodeGrade(grade: string): string {
-  if (grade === "5ss") return "5**";
-  if (grade === "5s") return "5*";
-  return grade.toUpperCase();
-}
+// Single-char grade encoding. `5**`/`5*` get bumped to `7`/`6` so the codes
+// stay one URL-safe char without `*` (which some receivers re-encode).
+const GRADE_TO_CHAR: Record<string, string> = {
+  "5**": "7", "5*": "6", "5": "5", "4": "4", "3": "3", "2": "2", "1": "1",
+  "A": "A", "B": "B", "C": "C", "D": "D", "E": "E", "U": "U",
+};
+const CHAR_TO_GRADE: Record<string, string> = Object.fromEntries(
+  Object.entries(GRADE_TO_CHAR).map(([k, v]) => [v, k])
+);
 
 function sanitizeGrade(grade: unknown): string | undefined {
   if (typeof grade !== "string" || grade.length > MAX_GRADE_LENGTH) return undefined;
-  const decoded = decodeGrade(grade.trim());
-  return VALID_GRADES.has(decoded) ? decoded : undefined;
+  const upper = grade.trim().toUpperCase();
+  return VALID_GRADES.has(upper) ? upper : undefined;
 }
 
 function sanitizeSubject(subject: unknown): string | undefined {
@@ -102,8 +102,7 @@ function sanitizePickedCodes(codes: unknown): (string | null)[] {
       return PROGRAMME_CODE_PATTERN.test(trimmed) ? trimmed : null;
     })
     .slice(0, MAX_PICKED_PROGRAMMES);
-  
-  // Trim trailing nulls
+
   let lastNonNull = -1;
   for (let i = sanitized.length - 1; i >= 0; i--) {
     if (sanitized[i] !== null) {
@@ -130,112 +129,278 @@ export function sanitizeGrades(rawGrades: unknown): StudentGrades {
   return grades;
 }
 
-function stateToParams(grades: StudentGrades, pickedCodes: (string | null)[], sharing = false, showScores = false): URLSearchParams {
+// --- base64url helpers (no padding) ---
+
+function bytesToBase64Url(bytes: Uint8Array): string {
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function base64UrlToBytes(value: string): Uint8Array {
+  const padded = value.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (value.length % 4)) % 4);
+  const binary = atob(padded);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+// --- tight URLSearchParams-style wire ---
+
+function buildTightHash(state: HashState): string {
+  // We omit `elective-N:subject` / `cat-c:subject` entries from the wire; the
+  // decoder reinfers them by Cat-C set membership + encounter order, matching
+  // the legacy behavior. Saves ~5 chars per elective slot.
   const p = new URLSearchParams();
-
-  // Add core and specific subjects
-  for (const [subject, grade] of Object.entries(grades)) {
-    if (!grade || subject.includes(":subject")) continue; // Skip slot mappings for hash
-
+  for (const [subject, value] of Object.entries(state.grades)) {
+    if (!value) continue;
+    if (SLOT_SUBJECT_PATTERN.test(subject)) continue;
     const key = SUBJECT_MAP[subject] || subject;
-    p.set(key, encodeGrade(grade));
+    const gradeChar = GRADE_TO_CHAR[value] || value;
+    p.set(key, gradeChar);
   }
-
-  if (pickedCodes.length > 0) {
-    p.set("p", pickedCodes.map((c) => c || "").join(","));
+  if (state.pickedCodes.length) {
+    const trimmed = state.pickedCodes.map((c) => (c ? c.replace(/^JS/, "") : ""));
+    while (trimmed.length && !trimmed[trimmed.length - 1]) trimmed.pop();
+    if (trimmed.length) p.set("p", trimmed.join(","));
   }
-
-  if (sharing) p.set("sharing", "true");
-  if (showScores) p.set("showscore", "1");
-  return p;
+  if (state.sharing) p.set("s", "1");
+  if (state.showScores) p.set("v", "1");
+  // URLSearchParams.toString() percent-encodes commas (`%2C`). Commas are
+  // valid in URL fragments and survive round-tripping, so we restore them to
+  // shave ~2 chars per pick. `,` would otherwise eat 3 chars (`%2C`).
+  return p.toString().replace(/%2C/g, ",");
 }
 
-export function writeHashState(grades: StudentGrades, pickedCodes: (string | null)[]) {
-  const p = stateToParams(grades, pickedCodes);
-  const newHash = p.toString();
-  // Using replaceState to avoid cluttering browser history every time a grade changes
-  window.history.replaceState(null, "", newHash ? `#${newHash}` : window.location.pathname + window.location.search);
-}
+function parseHashState(hash: string): HashState | null {
+  if (!hash || hash.length > MAX_HASH_LENGTH) return null;
 
-export function buildShareUrl(grades: StudentGrades, pickedCodes: (string | null)[], showScores = false): string {
-  const p = stateToParams(grades, pickedCodes, true, showScores);
-  const base = `${window.location.origin}${window.location.pathname}${window.location.search}`;
-  const hash = p.toString();
-  return hash ? `${base}#${hash}` : base;
-}
-
-export function setShowScoresInHash(showScores: boolean) {
-  const hash = window.location.hash.slice(1);
-  const p = new URLSearchParams(hash);
-  if (showScores) p.set("showscore", "1");
-  else p.delete("showscore");
-  const nextHash = p.toString();
-  const url = nextHash ? `#${nextHash}` : window.location.pathname + window.location.search;
-  window.history.replaceState(null, "", url);
-}
-
-export function buildEditUrlFromCurrentHash(): string {
-  const hash = window.location.hash.slice(1);
-  const p = new URLSearchParams(hash);
-  p.delete("sharing");
-  p.delete("showscore");
-  const nextHash = p.toString();
-  const base = `${window.location.origin}${window.location.pathname}${window.location.search}`;
-  return nextHash ? `${base}#${nextHash}` : base;
-}
-
-export function readHashState(): HashState | null {
-  const hash = window.location.hash.slice(1);
-  if (!hash) return null;
-  if (hash.length > MAX_HASH_LENGTH) return null;
-  
-  try {
-    // Check if it's the old bulky JSON hash
-    if (hash.startsWith("%7B")) {
+  // Legacy: raw JSON in hash, URL-encoded.
+  if (hash.startsWith("%7B")) {
+    try {
       const decoded = JSON.parse(decodeURIComponent(hash));
-      return {
+      const state: HashState = {
         grades: sanitizeGrades(decoded?.grades),
         pickedCodes: sanitizePickedCodes(decoded?.pickedCodes),
         sharing: decoded?.sharing === true,
         showScores: decoded?.showScores === true,
       };
+      if (Object.keys(state.grades).length === 0 && state.pickedCodes.length === 0) return null;
+      return state;
+    } catch {
+      return null;
     }
-    
-    // Parse the compact hash
+  }
+
+  // Both old URLSearchParams (e.g. `chi=5ss&p=JS1001,JS2002&sharing=true`) and
+  // the new tight format share this parser. Differences are accepted leniently
+  // — we coerce JS-prefixed/unprefixed codes, multi-char/single-char grades,
+  // and explicit/inferred slot subjects.
+  try {
     const p = new URLSearchParams(hash);
     const grades: StudentGrades = {};
     let pickedCodes: (string | null)[] = [];
-    const sharing = p.get("sharing") === "true";
-    
-    let electiveCount = 1;
-    
+    const sharing = p.get("s") === "1" || p.get("sharing") === "true";
+    const showScores = p.get("v") === "1" || p.get("showscore") === "1";
+    const nonCoreSubjects: string[] = [];
+
+    const CORE_SUBJECT_NAMES = new Set([
+      "Chinese Language",
+      "English Language",
+      "Mathematics (Compulsory Part)",
+      "Citizenship and Social Development",
+      "Mathematics Extended Part (Module 1)",
+      "Mathematics Extended Part (Module 2)",
+      "Mathematics Extended Part (Module 1 or 2)",
+    ]);
+
     for (const [key, val] of p.entries()) {
       if (key === "p") {
-        pickedCodes = sanitizePickedCodes(val.split(","));
+        const codes = val.split(",").map((c) => {
+          const trimmed = c.trim().toUpperCase();
+          if (!trimmed) return null;
+          return trimmed.startsWith("JS") ? trimmed : `JS${trimmed}`;
+        });
+        pickedCodes = sanitizePickedCodes(codes);
         continue;
       }
-      if (key === "sharing" || key === "showscore") continue;
+      if (key === "s" || key === "v" || key === "sharing" || key === "showscore") continue;
 
       const subject = sanitizeSubject(REVERSE_MAP[key] || key);
-      const grade = sanitizeGrade(val);
-      if (!subject || !grade) continue;
+      if (!subject) continue;
+
+      // Grade decoding: try single-char, then legacy `5ss`/`5s`, then raw.
+      let rawGrade: string | undefined;
+      if (CHAR_TO_GRADE[val]) rawGrade = CHAR_TO_GRADE[val];
+      else if (val === "5ss") rawGrade = "5**";
+      else if (val === "5s") rawGrade = "5*";
+      else rawGrade = val;
+      const grade = sanitizeGrade(rawGrade);
+      if (!grade) continue;
+
       grades[subject] = grade;
-      
-      // Try to intelligently assign to elective slots if it's not a core subject
-      if (!["Chinese Language", "English Language", "Mathematics (Compulsory Part)", "Citizenship and Social Development", "Mathematics Extended Part (Module 1)", "Mathematics Extended Part (Module 2)", "Mathematics Extended Part (Module 1 or 2)"].includes(subject)) {
-        if (electiveCount <= 4) {
-           grades[`elective-${electiveCount}:subject`] = subject;
-           electiveCount++;
-        } else if (!grades["cat-c:subject"]) {
-           grades["cat-c:subject"] = subject;
-        }
+      if (!CORE_SUBJECT_NAMES.has(subject)) nonCoreSubjects.push(subject);
+    }
+
+    // Reinfer slot subjects: Cat-C subjects go to cat-c:subject, the rest fill
+    // elective-1..4 in encounter order.
+    let electiveCount = 1;
+    for (const subject of nonCoreSubjects) {
+      if (CAT_C_SET.has(subject)) {
+        if (!grades["cat-c:subject"]) grades["cat-c:subject"] = subject;
+        continue;
+      }
+      if (electiveCount > 4) continue;
+      const slot = `elective-${electiveCount}:subject`;
+      if (!grades[slot]) {
+        grades[slot] = subject;
+        electiveCount++;
       }
     }
-    
+
     if (Object.keys(grades).length === 0 && pickedCodes.length === 0) return null;
-    return { grades, pickedCodes, sharing, showScores: p.get("showscore") === "1" };
-  } catch (e) {
-    console.error("Failed to parse hash", e);
+    return { grades, pickedCodes, sharing, showScores };
+  } catch {
     return null;
   }
+}
+
+// --- compression pipeline ---
+
+async function compress(input: string): Promise<Uint8Array> {
+  const cs = new CompressionStream("deflate-raw");
+  const writer = cs.writable.getWriter();
+  writer.write(new TextEncoder().encode(input));
+  writer.close();
+  const buf = await new Response(cs.readable).arrayBuffer();
+  return new Uint8Array(buf);
+}
+
+async function decompress(bytes: Uint8Array): Promise<string> {
+  const ds = new DecompressionStream("deflate-raw");
+  const writer = ds.writable.getWriter();
+  writer.write(bytes as unknown as BufferSource);
+  writer.close();
+  const buf = await new Response(ds.readable).arrayBuffer();
+  return new TextDecoder().decode(buf);
+}
+
+async function encodeHash(state: HashState): Promise<string> {
+  const tight = buildTightHash(state);
+  if (!tight) return "";
+  try {
+    const compressed = COMPRESSED_PREFIX + bytesToBase64Url(await compress(tight));
+    return compressed.length < tight.length ? compressed : tight;
+  } catch {
+    return tight;
+  }
+}
+
+async function decodeHash(hash: string): Promise<HashState | null> {
+  if (!hash) return null;
+  if (hash.length > MAX_HASH_LENGTH) return null;
+  if (hash.startsWith(COMPRESSED_PREFIX) && !hash.includes("&")) {
+    try {
+      const bytes = base64UrlToBytes(hash.slice(COMPRESSED_PREFIX.length));
+      const tight = await decompress(bytes);
+      return parseHashState(tight);
+    } catch (e) {
+      console.error("Failed to decode compressed hash", e);
+      return null;
+    }
+  }
+  return parseHashState(hash);
+}
+
+// --- module-level cache + sync read ---
+
+let cachedState: HashState | null = null;
+let cachedHash: string | null = null;
+
+export async function preloadHashState(): Promise<HashState | null> {
+  const hash = window.location.hash.slice(1);
+  cachedHash = hash;
+  cachedState = await decodeHash(hash);
+  return cachedState;
+}
+
+export function readHashState(): HashState | null {
+  const current = window.location.hash.slice(1);
+  if (current !== cachedHash) {
+    if (!current) {
+      cachedHash = "";
+      cachedState = null;
+      return null;
+    }
+    // Plain tight URLSearchParams hashes decode synchronously. Compressed
+    // hashes can't; fall back to the last cached value until the next preload
+    // or write cycle hydrates the cache. In practice the compressed branch
+    // here is unreachable because hash writes always go through scheduleWrite.
+    if (!(current.startsWith(COMPRESSED_PREFIX) && !current.includes("&"))) {
+      cachedHash = current;
+      cachedState = parseHashState(current);
+    }
+  }
+  return cachedState;
+}
+
+// --- writers ---
+// Serialized async write — each call bumps a version counter so a rapid
+// sequence of grade edits doesn't produce out-of-order URLs.
+
+let writeVersion = 0;
+let writeChain: Promise<void> = Promise.resolve();
+
+function scheduleWrite(state: HashState | null) {
+  const myVersion = ++writeVersion;
+  writeChain = writeChain.then(async () => {
+    if (myVersion !== writeVersion) return;
+    let hash = "";
+    if (state) {
+      try {
+        hash = await encodeHash(state);
+      } catch (e) {
+        console.error("Failed to encode hash", e);
+        return;
+      }
+    }
+    if (myVersion !== writeVersion) return;
+    cachedHash = hash;
+    cachedState = state;
+    const url = hash ? `#${hash}` : window.location.pathname + window.location.search;
+    window.history.replaceState(null, "", url);
+  });
+}
+
+export function writeHashState(grades: StudentGrades, pickedCodes: (string | null)[]) {
+  const hasContent = Object.keys(grades).length > 0 || pickedCodes.some(Boolean);
+  if (!hasContent) {
+    scheduleWrite(null);
+    return;
+  }
+  scheduleWrite({ grades, pickedCodes, sharing: false, showScores: false });
+}
+
+export async function buildShareUrl(
+  grades: StudentGrades,
+  pickedCodes: (string | null)[],
+  showScores = false,
+): Promise<string> {
+  const hash = await encodeHash({ grades, pickedCodes, sharing: true, showScores });
+  const base = `${window.location.origin}${window.location.pathname}${window.location.search}`;
+  return hash ? `${base}#${hash}` : base;
+}
+
+export function setShowScoresInHash(showScores: boolean) {
+  const current = cachedState;
+  if (!current) return;
+  scheduleWrite({ ...current, showScores });
+}
+
+export async function buildEditUrlFromCurrentHash(): Promise<string> {
+  const current = cachedState;
+  const base = `${window.location.origin}${window.location.pathname}${window.location.search}`;
+  if (!current) return base;
+  const hash = await encodeHash({ ...current, sharing: false, showScores: false });
+  return hash ? `${base}#${hash}` : base;
 }

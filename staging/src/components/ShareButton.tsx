@@ -11,7 +11,7 @@ export const ShareButton = memo(({ grades, pickedCodes }: Props) => {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
-    const shareUrl = buildShareUrl(grades, pickedCodes);
+    const shareUrl = await buildShareUrl(grades, pickedCodes);
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
