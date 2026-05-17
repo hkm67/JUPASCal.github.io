@@ -115,6 +115,43 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
     window.setTimeout(() => setToast(null), ms);
   }
 
+  // Resilient clipboard write. `navigator.clipboard.writeText` is gated by
+  // permission/UA-policy on Firefox + Brave and can reject even from a
+  // user-gesture handler. Falls back to the legacy execCommand path which
+  // doesn't need permissions. Returns true iff the text actually landed
+  // in the clipboard.
+  async function copyTextToClipboard(text: string): Promise<boolean> {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch {
+      // Fall through to execCommand fallback below.
+    }
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "0";
+      ta.style.left = "0";
+      ta.style.width = "1px";
+      ta.style.height = "1px";
+      ta.style.opacity = "0";
+      ta.style.pointerEvents = "none";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+
   async function handleNativeShare() {
     setShareState("sharing");
     try {
@@ -146,20 +183,18 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
         window.setTimeout(() => setShareState("idle"), 1500);
         return;
       }
-      // Fallback B: download the recap PNG so the user can post it manually,
-      // and copy the link so paste works in the target app.
-      if (dataUrl) {
-        const link = document.createElement("a");
-        link.download = `${safeFileName}-jupas-recap.png`;
-        link.href = dataUrl;
-        link.click();
+      // Fallback B (desktop without Web Share API): just copy the link.
+      // Don't auto-download — the user has a dedicated Download button if
+      // they want the image. And report copy status honestly: previously
+      // this toast claimed "link copied" regardless of whether the
+      // clipboard write actually succeeded, which is the bug Firefox /
+      // Brave users were seeing.
+      const ok = await copyTextToClipboard(shareUrl);
+      if (ok) {
+        showToast("Link copied — paste anywhere to share", "success");
+      } else {
+        showToast("Couldn't copy — copy the link from the address bar", "error", 3600);
       }
-      try { await navigator.clipboard.writeText(shareUrl); } catch { /* ignore */ }
-      showToast(
-        "Image saved + link copied. Open your target app and attach the image.",
-        "info",
-        3600,
-      );
       setShareState("done");
       window.setTimeout(() => setShareState("idle"), 1500);
     } catch (error) {
@@ -370,14 +405,14 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
   }
 
   async function handleCopyLink() {
-    try {
-      await navigator.clipboard.writeText(shareUrl);
+    const ok = await copyTextToClipboard(shareUrl);
+    if (ok) {
       setCopyState("done");
       showToast("Link copied to clipboard", "success");
       window.setTimeout(() => setCopyState("idle"), 1500);
-    } catch {
+    } else {
       setCopyState("idle");
-      showToast("Couldn't copy — your browser blocked the clipboard.", "error");
+      showToast("Couldn't copy — copy it from the address bar instead", "error", 3200);
     }
   }
 
