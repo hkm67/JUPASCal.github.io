@@ -12,11 +12,16 @@ type Props = {
   profiles?: Profile[];
   activeProfileId?: string;
   onProfileChange?: (id: string) => void;
+  // Optional soft-exit callback. When provided, "Edit this profile"
+  // flips the parent app's shareViewMode without a page reload.
+  // Falls back to the legacy URL-rewrite + reload path otherwise (used
+  // when a recipient lands on the standalone share URL on cold start).
+  onExitShareMode?: () => void;
 };
 
 const PRIORITY_SLOTS = ["A1", "A2", "A3", "B1", "B2", "B3"];
 
-export function ShareView({ profileName, results, profiles, activeProfileId, onProfileChange }: Props) {
+export function ShareView({ profileName, results, profiles, activeProfileId, onProfileChange, onExitShareMode }: Props) {
   const resultsNonNull = results.filter((r): r is ProgrammeResult => r !== null);
   const eligibleCount = resultsNonNull.filter((r) => r.eligibility.eligible).length;
   const aboveMedianCount = resultsNonNull.filter(
@@ -28,6 +33,13 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
   const [downloadState, setDownloadState] = useState<"idle" | "rendering" | "done" | "error">("idle");
 
   async function handleEdit() {
+    // Soft path: parent owns view-mode state, just flip it.
+    if (onExitShareMode) {
+      onExitShareMode();
+      return;
+    }
+    // Legacy path: cold-start recipient view where parent didn't pass the
+    // callback. Rewrite the URL to drop the sharing flag and reload.
     const editUrl = await buildEditUrlFromCurrentHash();
     window.history.replaceState(null, "", editUrl);
     window.location.reload();

@@ -1,33 +1,36 @@
 import { memo, useState } from "react";
-import { buildShareUrl } from "../lib/hashState";
-import type { StudentGrades } from "../types/jupas";
 
 type Props = {
-  grades: StudentGrades;
-  pickedCodes: (string | null)[];
+  // App owns the share URL building + URL update + view-mode toggle. The
+  // button itself only handles the "Link copied" affordance and triggers
+  // the parent callback.
+  onShare: () => Promise<string>;
 };
 
-export const ShareButton = memo(({ grades, pickedCodes }: Props) => {
+export const ShareButton = memo(({ onShare }: Props) => {
   const [copied, setCopied] = useState(false);
 
-  const handleShare = async () => {
-    const shareUrl = await buildShareUrl(grades, pickedCodes);
+  const handleClick = async () => {
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      const shareUrl = await onShare();
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error("Failed to copy URL: ", err);
+      }
     } catch (err) {
-      console.error("Failed to copy URL: ", err);
+      console.error("Failed to enter share mode: ", err);
     }
-    window.open(shareUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
     <button
       className="stepper-next-btn"
       type="button"
-      onClick={handleShare}
-      title="Copy share page link and open the share view"
+      onClick={handleClick}
+      title="Copy share page link and switch to the share view"
     >
       {copied ? "Link copied" : "Share"}
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ display: "inline-block", verticalAlign: "middle", marginLeft: 6 }}>

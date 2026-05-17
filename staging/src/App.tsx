@@ -12,7 +12,7 @@ import { PreferencePlanner } from "./components/PreferencePlanner";
 import { AdvisorEmptyState } from "./components/AdvisorEmptyState";
 import { StrategySummary } from "./components/StrategySummary";
 import { buildProgrammeResult, filterResults, sortResults, type Filters, type SortKey } from "./lib/results";
-import { readHashState, sanitizeGrades, writeHashState } from "./lib/hashState";
+import { buildShareUrl, readHashState, sanitizeGrades, writeHashState } from "./lib/hashState";
 import type { Profile, Programme, ProgrammeResult, StudentGrades } from "./types/jupas";
 
 const DATA_URL = "/data/processed/JUPAS_2026_Unified_Data.json";
@@ -70,6 +70,21 @@ function CalculatorApp() {
   const [reviewRequest, setReviewRequest] = useState(HAS_HASH_STATE ? 1 : 0);
   const [loadError, setLoadError] = useState<string>();
   const [dataLoaded, setDataLoaded] = useState(false);
+  // Share view is a soft view-switch (no page reload). State is initialised
+  // from the URL on first load (so direct shared-URL visits land in the
+  // share view) and toggled by ShareButton / ShareView's Edit affordance.
+  const [shareViewMode, setShareViewMode] = useState<boolean>(IS_SHARED_VIEW);
+
+  // Sync share view with browser back/forward navigation. popstate fires for
+  // the user's nav actions but not for pushState/replaceState we trigger
+  // ourselves, which is fine — we update the state manually in those paths.
+  useEffect(() => {
+    const onPopState = () => {
+      setShareViewMode(readHashState()?.sharing === true);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   const pickedCount = pickedCodes.filter((c) => c !== null).length;
 
@@ -142,11 +157,29 @@ function CalculatorApp() {
   }, []);
 
   useEffect(() => {
-    if (IS_SHARED_VIEW) return;
+    // Skip persistence while previewing the share view — the URL there is
+    // a share URL (sharing=true) and we don't want to (a) overwrite the
+    // user's own localStorage with a recipient's grades, or (b) re-write
+    // the URL hash and clobber the share URL the user just generated.
+    if (shareViewMode) return;
     localStorage.setItem("jupas-staging-profiles", JSON.stringify(profiles));
     localStorage.setItem("jupas-staging-active-profile-id", activeProfileId);
     writeHashState(activeProfile.grades, pickedCodes);
-  }, [profiles, activeProfileId, pickedCodes, activeProfile.grades]);
+  }, [profiles, activeProfileId, pickedCodes, activeProfile.grades, shareViewMode]);
+
+  async function enterShareMode(): Promise<string> {
+    const url = await buildShareUrl(activeProfile.grades, pickedCodes);
+    window.history.pushState(null, "", url);
+    setShareViewMode(true);
+    return url;
+  }
+
+  function exitShareMode() {
+    setShareViewMode(false);
+    // The localStorage effect will run on the next render with
+    // shareViewMode=false and writeHashState() will replace the share
+    // URL with a plain calc URL.
+  }
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -343,7 +376,7 @@ function CalculatorApp() {
     }
   }
 
-  if (IS_SHARED_VIEW && INITIAL_HASH_STATE && programmes.length > 0 && pickedCount > 0) {
+  if (shareViewMode && programmes.length > 0 && pickedCount > 0) {
     return (
       <ShareView
         profileName={activeProfile.name}
@@ -351,6 +384,7 @@ function CalculatorApp() {
         profiles={profiles}
         activeProfileId={activeProfileId}
         onProfileChange={setActiveProfileId}
+        onExitShareMode={exitShareMode}
       />
     );
   }
@@ -367,7 +401,7 @@ function CalculatorApp() {
     );
   }
 
-  if (IS_SHARED_VIEW && !dataLoaded) {
+  if (shareViewMode && !dataLoaded) {
     return (
       <main className="share-view">
         <AppHeader />
@@ -403,7 +437,7 @@ function CalculatorApp() {
       onRemove={removePickedCode}
       onSetSlotCode={setSlotCode}
       programmes={programmes}
-      shareSlot={canShare ? <ShareButton grades={activeProfile.grades} pickedCodes={pickedCodes} /> : null}
+      shareSlot={canShare ? <ShareButton onShare={enterShareMode} /> : null}
     />
   );
 
@@ -618,7 +652,7 @@ function CalculatorApp() {
                 {nextLabel} <ArrowIcon direction="right" />
               </button>
             ) : pickedCount > 0 ? (
-              <ShareButton grades={activeProfile.grades} pickedCodes={pickedCodes} />
+              <ShareButton onShare={enterShareMode} />
             ) : null}
           </div>
         </footer>
