@@ -41,11 +41,28 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
 
   async function renderRecapPng(): Promise<string | null> {
     if (!recapRef.current) return null;
+    const node = recapRef.current;
+    const width = node.offsetWidth;
+    const height = node.offsetHeight;
+    // Override `margin: 0 auto` on the clone — html-to-image renders the clone
+    // inside a fresh foreignObject parent where auto margins resolve to a
+    // different value, shifting the card off-centre in the captured canvas.
+    // Also explicitly size the clone so `width: min(440px, 100%)` doesn't
+    // re-evaluate against the foreignObject's containing block.
     // No backgroundColor → PNG keeps transparent pixels outside the card's
     // rounded corners, so the saved image doesn't show a black/white frame.
-    return toPng(recapRef.current, {
+    return toPng(node, {
       pixelRatio: 2,
       cacheBust: true,
+      width,
+      height,
+      style: {
+        margin: "0",
+        width: `${width}px`,
+        height: `${height}px`,
+        transform: "none",
+        transformOrigin: "top left",
+      },
     });
   }
 
