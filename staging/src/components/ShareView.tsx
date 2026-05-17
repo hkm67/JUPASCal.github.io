@@ -17,11 +17,18 @@ type Props = {
   // Falls back to the legacy URL-rewrite + reload path otherwise (used
   // when a recipient lands on the standalone share URL on cold start).
   onExitShareMode?: () => void;
+  // True when the share view is rendering a received share URL (preview
+  // profile), not the user's own active profile. Changes header copy and
+  // surfaces the "Save as my profile" CTA. The profile switcher is hidden
+  // in this mode since it doesn't make sense to switch among someone
+  // else's profiles.
+  isReceivedShare?: boolean;
+  onSaveAsProfile?: () => void;
 };
 
 const PRIORITY_SLOTS = ["A1", "A2", "A3", "B1", "B2", "B3"];
 
-export function ShareView({ profileName, results, profiles, activeProfileId, onProfileChange, onExitShareMode }: Props) {
+export function ShareView({ profileName, results, profiles, activeProfileId, onProfileChange, onExitShareMode, isReceivedShare, onSaveAsProfile }: Props) {
   const resultsNonNull = results.filter((r): r is ProgrammeResult => r !== null);
   const eligibleCount = resultsNonNull.filter((r) => r.eligibility.eligible).length;
   const aboveMedianCount = resultsNonNull.filter(
@@ -396,7 +403,9 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
 
       <header className="share-header">
         <div className="share-header-text">
-          <p className="eyebrow">Shared JUPAS plan · 2026</p>
+          <p className="eyebrow">
+            {isReceivedShare ? "Shared with you · viewing preview" : "Shared JUPAS plan · 2026"}
+          </p>
           <h1>{profileName}</h1>
           <p className="share-header-stats">
             {total
@@ -405,7 +414,7 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
           </p>
         </div>
         <div className="share-header-actions">
-          {profiles && profiles.length > 1 && onProfileChange ? (
+          {!isReceivedShare && profiles && profiles.length > 1 && onProfileChange ? (
             <label className="share-profile-switch">
               <span>Profile</span>
               <select
@@ -418,8 +427,13 @@ export function ShareView({ profileName, results, profiles, activeProfileId, onP
               </select>
             </label>
           ) : null}
+          {isReceivedShare && onSaveAsProfile ? (
+            <button type="button" className="ghost-button" onClick={onSaveAsProfile}>
+              Save as my profile
+            </button>
+          ) : null}
           <button type="button" className="ghost-button" onClick={handleEdit}>
-            Edit this profile
+            {isReceivedShare ? "Back to my calculator" : "Edit this profile"}
           </button>
         </div>
       </header>

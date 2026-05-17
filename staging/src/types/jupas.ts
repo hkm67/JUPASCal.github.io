@@ -6,6 +6,9 @@ export type Profile = {
   id: string;
   name: string;
   grades: StudentGrades;
+  // Profile-scoped picks. Optional for migration from pre-per-profile
+  // localStorage shapes — reads should treat `undefined` as `[]`.
+  pickedCodes?: (string | null)[];
 };
 
 export type RequirementPool = {

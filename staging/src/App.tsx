@@ -53,11 +53,59 @@ function App() {
 
 function CalculatorApp() {
   const [programmes, setProgrammes] = useState<Programme[]>([]);
+  // Profiles & local-storage state. Note `loadProfiles()` no longer appends
+  // a synthetic "Shared profile" — the recipient preview is a separate
+  // transient state (below) so the user's localStorage isn't mutated by
+  // just opening someone else's share link.
   const [profiles, setProfiles] = useState<Profile[]>(() => loadProfiles());
   const [activeProfileId, setActiveProfileId] = useState<string>(() => loadActiveProfileId(profiles));
+  // Recipient mode: a transient preview profile sourced from a sharing URL.
+  // Lives only in React state. Not persisted to localStorage until the user
+  // hits "Save as my profile". When non-null AND shareViewMode is true, the
+  // ShareView renders this instead of any local profile.
+  const [previewProfile, setPreviewProfile] = useState<Profile | null>(() => {
+    if (!IS_SHARED_VIEW || !INITIAL_HASH_STATE) return null;
+    return {
+      id: "__preview__",
+      name: "Shared plan",
+      grades: INITIAL_HASH_STATE.grades,
+      pickedCodes: INITIAL_HASH_STATE.pickedCodes,
+    };
+  });
   const activeProfile = profiles.find((p) => p.id === activeProfileId) || profiles[0];
-  const grades = activeProfile.grades;
+  // Picks live on the active profile (or the preview profile when viewing
+  // a received share). Undefined on legacy profiles → treat as [].
+  const sharedViewActive = !!previewProfile;
+  const displayProfile = sharedViewActive ? previewProfile! : activeProfile;
+  const grades = displayProfile.grades;
   const deferredGrades = useDeferredValue(grades);
+  const pickedCodes = displayProfile.pickedCodes ?? [];
+
+  function setPickedCodes(
+    updater: (string | null)[] | ((current: (string | null)[]) => (string | null)[]),
+  ) {
+    // Edits to picks while viewing a received share apply to that preview
+    // profile only (and never leak into localStorage). Otherwise they
+    // update the active local profile.
+    if (sharedViewActive && previewProfile) {
+      setPreviewProfile((prev) => {
+        if (!prev) return prev;
+        const current = prev.pickedCodes ?? [];
+        const next = typeof updater === "function" ? updater(current) : updater;
+        return { ...prev, pickedCodes: next };
+      });
+      return;
+    }
+    setProfiles((prev) =>
+      prev.map((p) => {
+        if (p.id !== activeProfileId) return p;
+        const current = p.pickedCodes ?? [];
+        const next = typeof updater === "function" ? updater(current) : updater;
+        return { ...p, pickedCodes: next };
+      }),
+    );
+  }
+
   const [theme, setTheme] = useState<Theme>(() => loadTheme());
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [programmeFiltersOpen, setProgrammeFiltersOpen] = useState(!HAS_HASH_STATE);
@@ -65,19 +113,17 @@ function CalculatorApp() {
   const [selectedOnly, setSelectedOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("benchmark");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  const [pickedCodes, setPickedCodes] = useState<(string | null)[]>(() => loadInitialPickedCodes());
   const [activeCode, setActiveCode] = useState<string>();
   const [reviewRequest, setReviewRequest] = useState(HAS_HASH_STATE ? 1 : 0);
   const [loadError, setLoadError] = useState<string>();
   const [dataLoaded, setDataLoaded] = useState(false);
-  // Share view is a soft view-switch (no page reload). State is initialised
-  // from the URL on first load (so direct shared-URL visits land in the
-  // share view) and toggled by ShareButton / ShareView's Edit affordance.
+  // Share view is a soft view-switch (no page reload). Initialised true if
+  // the URL arrived with `sharing=true`. Toggles via Share/Edit buttons.
   const [shareViewMode, setShareViewMode] = useState<boolean>(IS_SHARED_VIEW);
 
-  // Sync share view with browser back/forward navigation. popstate fires for
-  // the user's nav actions but not for pushState/replaceState we trigger
-  // ourselves, which is fine — we update the state manually in those paths.
+  // Sync share view with browser back/forward navigation. popstate fires
+  // for the user's nav actions but not for pushState/replaceState we
+  // trigger ourselves, which is fine — we update the state manually there.
   useEffect(() => {
     const onPopState = () => {
       setShareViewMode(readHashState()?.sharing === true);
@@ -157,18 +203,28 @@ function CalculatorApp() {
   }, []);
 
   useEffect(() => {
-    // Skip persistence while previewing the share view — the URL there is
-    // a share URL (sharing=true) and we don't want to (a) overwrite the
-    // user's own localStorage with a recipient's grades, or (b) re-write
-    // the URL hash and clobber the share URL the user just generated.
-    if (shareViewMode) return;
+    // Recipient (preview) mode: don't touch localStorage or URL. The URL
+    // is a received share that shouldn't be rewritten, and the local
+    // profile list shouldn't be mutated by just viewing a share.
+    if (sharedViewActive) return;
     localStorage.setItem("jupas-staging-profiles", JSON.stringify(profiles));
     localStorage.setItem("jupas-staging-active-profile-id", activeProfileId);
-    writeHashState(activeProfile.grades, pickedCodes);
-  }, [profiles, activeProfileId, pickedCodes, activeProfile.grades, shareViewMode]);
+    if (shareViewMode) {
+      // Own-share view: keep the URL pointed at the *currently displayed*
+      // profile's share URL so switching profiles via the switcher keeps
+      // the URL in sync with what's on screen.
+      buildShareUrl(activeProfile.grades, activeProfile.pickedCodes ?? []).then((url) => {
+        window.history.replaceState(null, "", url);
+      });
+    } else {
+      writeHashState(activeProfile.grades, activeProfile.pickedCodes ?? []);
+    }
+  }, [profiles, activeProfileId, shareViewMode, sharedViewActive, activeProfile]);
 
   async function enterShareMode(): Promise<string> {
-    const url = await buildShareUrl(activeProfile.grades, pickedCodes);
+    // Always shares the active local profile (not the preview — exiting
+    // and re-entering preview is a re-share of the original URL).
+    const url = await buildShareUrl(activeProfile.grades, activeProfile.pickedCodes ?? []);
     window.history.pushState(null, "", url);
     setShareViewMode(true);
     return url;
@@ -176,9 +232,29 @@ function CalculatorApp() {
 
   function exitShareMode() {
     setShareViewMode(false);
-    // The localStorage effect will run on the next render with
-    // shareViewMode=false and writeHashState() will replace the share
-    // URL with a plain calc URL.
+    // Drop the preview profile so subsequent renders use the local active
+    // profile. The localStorage effect will run on the next render and
+    // rewrite the URL to the active profile's calc URL.
+    setPreviewProfile(null);
+  }
+
+  function saveSharedAsProfile() {
+    // Copy the preview profile into the user's local profile list and
+    // make it active. Stays in share view until the user clicks Edit.
+    if (!previewProfile) return;
+    const newId = `profile-${Date.now()}`;
+    const newName = uniqueProfileName(previewProfile.name === "Shared plan" ? "Imported plan" : previewProfile.name);
+    const newProfile: Profile = {
+      id: newId,
+      name: newName,
+      grades: previewProfile.grades,
+      pickedCodes: previewProfile.pickedCodes,
+    };
+    setProfiles((prev) => [...prev, newProfile]);
+    setActiveProfileId(newId);
+    setPreviewProfile(null);
+    // Switch to calculator view so the new profile is editable.
+    setShareViewMode(false);
   }
 
   useEffect(() => {
@@ -236,6 +312,10 @@ function CalculatorApp() {
   }, [activeCode, pickedResults]);
 
   function setGrades(nextGrades: StudentGrades) {
+    if (sharedViewActive) {
+      setPreviewProfile((prev) => (prev ? { ...prev, grades: nextGrades } : prev));
+      return;
+    }
     setProfiles((prev) =>
       prev.map((p) => (p.id === activeProfileId ? { ...p, grades: nextGrades } : p))
     );
@@ -258,7 +338,7 @@ function CalculatorApp() {
     if (entered === null) return; // User cancelled — abort.
     const name = uniqueProfileName(entered.trim() || defaultName);
     const id = `profile-${Date.now()}`;
-    const newProfile: Profile = { id, name, grades: {} };
+    const newProfile: Profile = { id, name, grades: {}, pickedCodes: [] };
     setProfiles((prev) => [...prev, newProfile]);
     setActiveProfileId(id);
     setStep(1);
@@ -379,12 +459,14 @@ function CalculatorApp() {
   if (shareViewMode && programmes.length > 0 && pickedCount > 0) {
     return (
       <ShareView
-        profileName={activeProfile.name}
+        profileName={displayProfile.name}
         results={pickedResults}
-        profiles={profiles}
-        activeProfileId={activeProfileId}
-        onProfileChange={setActiveProfileId}
+        profiles={sharedViewActive ? undefined : profiles}
+        activeProfileId={sharedViewActive ? undefined : activeProfileId}
+        onProfileChange={sharedViewActive ? undefined : setActiveProfileId}
         onExitShareMode={exitShareMode}
+        isReceivedShare={sharedViewActive}
+        onSaveAsProfile={sharedViewActive ? saveSharedAsProfile : undefined}
       />
     );
   }
@@ -755,38 +837,20 @@ function loadTheme(): Theme {
 }
 
 function loadProfiles(): Profile[] {
-  const hashState = readHashState();
+  // localStorage is the sole source of profiles. Received-share URL state
+  // is kept in a separate `previewProfile` and is NEVER persisted unless
+  // the user explicitly clicks "Save as my profile" in ShareView.
   const local = loadLocalProfiles();
+  if (local.length > 0) return local;
 
-  // Share mode: keep any locally-saved profiles so the viewer can switch
-  // between them in ShareView. If none exist, fall back to a synthetic
-  // profile built from the hash state (recipient case).
-  if (hashState && Object.keys(hashState.grades).length > 0) {
-    if (local.length > 0) {
-      // Append a synthetic "Shared" profile only when the hash grades don't
-      // already match one of the local profiles (avoids duplicate rows).
-      const sharedGradesKey = JSON.stringify(hashState.grades);
-      const matchesLocal = local.some((p) => JSON.stringify(p.grades) === sharedGradesKey);
-      if (!matchesLocal) {
-        return [
-          ...local,
-          {
-            id: `shared-${Date.now()}`,
-            name: "Shared profile",
-            grades: hashState.grades,
-          },
-        ];
-      }
-      return local;
-    }
-    return [{
-      id: `shared-${Date.now()}`,
-      name: "Shared profile",
-      grades: hashState.grades,
-    }];
+  // No local profiles yet. If this is a fresh visit with a non-sharing
+  // deep-link URL (e.g. user bookmarked their own calc URL), seed a
+  // default profile from the URL state so they don't lose it.
+  const hash = readHashState();
+  if (hash && !hash.sharing && (Object.keys(hash.grades).length > 0 || hash.pickedCodes.length > 0)) {
+    return [{ id: "default", name: "My Profile", grades: hash.grades, pickedCodes: hash.pickedCodes }];
   }
-
-  return local.length > 0 ? local : [{ id: "default", name: "My Profile", grades: {} }];
+  return [{ id: "default", name: "My Profile", grades: {}, pickedCodes: [] }];
 }
 
 function loadLocalProfiles(): Profile[] {
@@ -799,6 +863,8 @@ function loadLocalProfiles(): Profile[] {
   } catch (e) {
     console.error("Failed to load profiles", e);
   }
+  // Legacy migration: pre-multi-profile localStorage stored grades on a
+  // top-level "jupas-staging-grades" key. Pull those into a default profile.
   let grades: StudentGrades = {};
   try {
     const legacyGrades = localStorage.getItem("jupas-staging-grades");
@@ -807,7 +873,7 @@ function loadLocalProfiles(): Profile[] {
     console.error("Failed to load legacy grades", e);
   }
   if (Object.keys(grades).length > 0) {
-    return [{ id: "default", name: "My Profile", grades }];
+    return [{ id: "default", name: "My Profile", grades, pickedCodes: [] }];
   }
   return [];
 }
@@ -819,18 +885,27 @@ function sanitizeProfiles(rawProfiles: unknown): Profile[] {
     const candidate = profile as Partial<Profile>;
     const id = typeof candidate.id === "string" && candidate.id.trim() ? candidate.id.trim().slice(0, 80) : `profile-${index + 1}`;
     const name = typeof candidate.name === "string" && candidate.name.trim() ? candidate.name.trim().slice(0, 60) : `My Profile ${index + 1}`;
-    return [{ id, name, grades: sanitizeGrades(candidate.grades) }];
+    const picks = Array.isArray(candidate.pickedCodes) ? sanitizeStoredPickedCodes(candidate.pickedCodes) : [];
+    return [{ id, name, grades: sanitizeGrades(candidate.grades), pickedCodes: picks }];
   });
 }
 
-function loadInitialPickedCodes(): (string | null)[] {
-  const hashState = readHashState();
-  if (hashState && hashState.pickedCodes.length > 0) return hashState.pickedCodes;
-  return [];
+function sanitizeStoredPickedCodes(raw: unknown[]): (string | null)[] {
+  const PROGRAMME_CODE = /^JS\d{4}$/;
+  const cleaned = raw.slice(0, 20).map((code) => {
+    if (typeof code !== "string") return null;
+    const trimmed = code.trim().toUpperCase();
+    return PROGRAMME_CODE.test(trimmed) ? trimmed : null;
+  });
+  // Trim trailing nulls (keep sparse internals).
+  let lastNonNull = -1;
+  for (let i = cleaned.length - 1; i >= 0; i--) {
+    if (cleaned[i] !== null) { lastNonNull = i; break; }
+  }
+  return cleaned.slice(0, lastNonNull + 1);
 }
 
 function loadActiveProfileId(profiles: Profile[]): string {
-  if (profiles.length === 1 && profiles[0].id.startsWith("shared-")) return profiles[0].id;
   const saved = localStorage.getItem("jupas-staging-active-profile-id");
   if (saved && profiles.some((p) => p.id === saved)) return saved;
   return profiles[0].id;
